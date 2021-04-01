@@ -16,7 +16,7 @@ ibov = GetIbovStocks() #Retorna as ações mais negociadas do Brasil, dados comp
 ibov$tickersSA = paste(ibov$tickers,".SA",sep='') #Criar uma coluna e adicionar o .SA nos tickers
 
 IBOVdatabase = BatchGetSymbols(
-  tickers = ibov$tickersSA, #Especificando as ações principais.
+  tickers = ibov$tickersSA, #Especificando as ações
   first.date = DI,
   last.date= DF,
   bench.ticker = benchmark,
@@ -43,7 +43,10 @@ df = gdfpd.get.info.companies()
 df_reduzido = subset(df,select = c(1,11,12,13,14))
 df_reduzido = df_reduzido[!duplicated(df_reduzido), ] #Tirar os duplicados
 df_reduzido = subset(df_reduzido,df_reduzido[5] != "") #Tirar as empresas que não tem um pregão
-#A tarefa agora é criar um dataframe a partir dos dois dataframes
+names(df_reduzido) = c("Nome da Empresa","Setor","Subsetor","Segmento","Tickers")
+
+#Uma empresa com mais de um pregão a pesquisa não funciona.
+pesquisa = subset(df_reduzido,df_reduzido[5]=="MYPK3")
 #df_reduce = subset(df_info,df_info[11]=="ATIVO")
 #df_reduce = subset(df_reduce, df_reduce[43]=="BOLSA")
 #df_reduce = subset(df_reduce, df_reduce[15]=="Categoria A")
