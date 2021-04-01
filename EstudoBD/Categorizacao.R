@@ -40,6 +40,7 @@ names(df_info)
 
 df_reduce = subset(df_info,df_info[11]=="ATIVO")
 df_reduce = subset(df_reduce, df_reduce[43]=="BOLSA")
+comm
 #df_reduce = subset(df_reduce, df_reduce[15]=="Categoria A")
 
 #https://www.msperlin.com/shiny/GetDFPData/
