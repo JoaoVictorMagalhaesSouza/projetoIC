@@ -34,6 +34,12 @@ for(i in 2:length(IBOVdatabase)){
   colnames(itera_databaseResumido) = c("Data",paste("Preços",IBOVdatabase[[i]][1,8])) #Renomeando as colunas
   databaseResumido = merge(databaseResumido,itera_databaseResumido, by = "Data") #Juntando os dataframes usando a Data como coluna chave para fazer os joins.
 }
-
-###
+##
 df_info = get_info_companies()
+names(df_info)
+
+df_reduce = subset(df_info,df_info[11]=="ATIVO")
+df_reduce = subset(df_reduce, df_reduce[43]=="BOLSA")
+#df_reduce = subset(df_reduce, df_reduce[15]=="Categoria A")
+
+#https://www.msperlin.com/shiny/GetDFPData/
