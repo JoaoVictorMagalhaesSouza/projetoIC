@@ -16,7 +16,7 @@ ibov = GetIbovStocks() #Retorna as ações mais negociadas do Brasil, dados comp
 ibov$tickersSA = paste(ibov$tickers,".SA",sep='') #Criar uma coluna e adicionar o .SA nos tickers
 
 IBOVdatabase = BatchGetSymbols(
-  tickers = ibov$tickersSA,
+  tickers = ibov$tickersSA, #Especificando as ações principais.
   first.date = DI,
   last.date= DF,
   bench.ticker = benchmark,
@@ -34,12 +34,18 @@ for(i in 2:length(IBOVdatabase)){
   colnames(itera_databaseResumido) = c("Data",paste("Preços",IBOVdatabase[[i]][1,8])) #Renomeando as colunas
   databaseResumido = merge(databaseResumido,itera_databaseResumido, by = "Data") #Juntando os dataframes usando a Data como coluna chave para fazer os joins.
 }
-##
-df_info = get_info_companies()
-names(df_info)
 
-df_reduce = subset(df_info,df_info[11]=="ATIVO")
-df_reduce = subset(df_reduce, df_reduce[43]=="BOLSA")
+#df_info = get_info_companies()
+#names(df_info)
+
+##Banco de Dados mais apurado com descrição e os tickers. 
+df = gdfpd.get.info.companies()
+df_reduzido = subset(df,select = c(1,11,12,13,14))
+df_reduzido = df_reduzido[!duplicated(df_reduzido), ] #Tirar os duplicados
+df_reduzido = subset(df_reduzido,df_reduzido[5] != "") #Tirar as empresas que não tem um pregão
+#A tarefa agora é criar um dataframe a partir dos dois dataframes
+#df_reduce = subset(df_info,df_info[11]=="ATIVO")
+#df_reduce = subset(df_reduce, df_reduce[43]=="BOLSA")
 #df_reduce = subset(df_reduce, df_reduce[15]=="Categoria A")
-
+#t1 = gdfpd.get.bovespa.data(1023)
 #https://www.msperlin.com/shiny/GetDFPData/
