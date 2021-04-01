@@ -45,26 +45,29 @@ df_reduzido = df_reduzido[!duplicated(df_reduzido), ] #Tirar os duplicados
 df_reduzido = subset(df_reduzido,df_reduzido[5] != "") #Tirar as empresas que não tem um pregão
 names(df_reduzido) = c("Nome da Empresa","Setor","Subsetor","Segmento","Tickers")
 
-tick = df_reduzido$Tickers
-print(tick[1])
-v = strsplit(tick[1],";")
-print(length(v[[1]]))
-print(v[[1]][3])
+#TESTANDO FILTRO
 
-for (i in 1:length(tick)){
-  v = strsplit(tick[i],";")
-  for (j in 1:length(v[[1]])){
-      if (v[[1]][j] == "MAPT3"){
-        posicao = i
-        numElemento = j
-      }
+#tick = df_reduzido$Tickers
+#print(tick[1])
+#v = strsplit(tick[1],";")
+#print(length(v[[1]]))
+#print(v[[1]][3])
+
+#for (i in 1:length(tick)){
+#  v = strsplit(tick[i],";")
+#  for (j in 1:length(v[[1]])){
+#      if (v[[1]][j] == "MAPT3"){
+#        posicao = i
+ #       numElemento = j
+  #    }
    
-  }
+ # }
   
-}
-v = strsplit(tick[posicao],";")
-print(v[[1]][numElemento])
+#}
+#v = strsplit(tick[posicao],";")
+#print(v[[1]][numElemento])
 
+#IMPLEMENTANDO FILTRO
 #Montar um dataframe com os dados de um setor específico.
 
 subsetor = "Energia Elétrica"
