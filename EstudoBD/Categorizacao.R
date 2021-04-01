@@ -8,7 +8,7 @@ library(reshape2)
 library(plyr)
 
 #acao = 'BBDC3.sa' #Empresa.sa -> para analisar alguma empresa em espec.
-DI = '2016-01-01' #Data de inicio
+DI = '2020-01-01' #Data de inicio
 DF = Sys.Date() #Data de fim(hoje)
 benchmark = '^BVSP' #índice da bolsa
 
@@ -70,8 +70,8 @@ names(df_reduzido) = c("Nome da Empresa","Setor","Subsetor","Segmento","Tickers"
 #IMPLEMENTANDO FILTRO
 #Montar um dataframe com os dados de um setor específico.
 
-subsetor = "Energia Elétrica"
-energia = subset(df_reduzido,df_reduzido[3]=="Energia Elétrica")
+subsetor = "Construção e Engenharia"
+energia = subset(df_reduzido,df_reduzido[3]==subsetor)
 energia_lista = energia$Tickers
 nlinhas = nrow(energia)
 numcol = ncol(databaseResumido)
@@ -90,8 +90,9 @@ for(i in 1:nlinhas){
   
 }
 
-print(names(databaseResumido[2]))
+df = melt(final,id.vars = "Data", variable.name = "Ações")
 
+ggplot(df,aes(Data,value)) + geom_line(aes(colour = Ações))
 
 
 #Uma empresa com mais de um pregão a pesquisa não funciona.
