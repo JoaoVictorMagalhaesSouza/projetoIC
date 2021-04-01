@@ -44,7 +44,7 @@ df_reduzido = subset(df,select = c(1,11,12,13,14))
 df_reduzido = df_reduzido[!duplicated(df_reduzido), ] #Tirar os duplicados
 df_reduzido = subset(df_reduzido,df_reduzido[5] != "") #Tirar as empresas que não tem um pregão
 names(df_reduzido) = c("Nome da Empresa","Setor","Subsetor","Segmento","Tickers")
-
+ABC
 #Uma empresa com mais de um pregão a pesquisa não funciona.
 pesquisa = subset(df_reduzido,df_reduzido[5]=="MYPK3")
 #df_reduce = subset(df_info,df_info[11]=="ATIVO")
