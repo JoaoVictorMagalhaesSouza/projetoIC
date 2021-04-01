@@ -27,11 +27,11 @@ IBOVdatabase = dlply(IBOVdatabase,.(ticker),function(x){rownames(x)=x$row;x$row=
 #Resumir o Banco de Dados
 
 databaseResumido = IBOVdatabase[[1]][,c(7,6)] #Extrair as colunas 7 e 6 do dataframe 1
-colnames(databaseResumido) = c("Data",paste("Preço",IBOVdatabase[[1]][1,8])) #Renomeando as colunas
+colnames(databaseResumido) = c("Data",paste(IBOVdatabase[[1]][1,8])) #Renomeando as colunas
 
 for(i in 2:length(IBOVdatabase)){
   itera_databaseResumido = IBOVdatabase[[i]][,c(7,6)] 
-  colnames(itera_databaseResumido) = c("Data",paste("Preços",IBOVdatabase[[i]][1,8])) #Renomeando as colunas
+  colnames(itera_databaseResumido) = c("Data",paste(IBOVdatabase[[i]][1,8])) #Renomeando as colunas
   databaseResumido = merge(databaseResumido,itera_databaseResumido, by = "Data") #Juntando os dataframes usando a Data como coluna chave para fazer os joins.
 }
 
@@ -44,8 +44,55 @@ df_reduzido = subset(df,select = c(1,11,12,13,14))
 df_reduzido = df_reduzido[!duplicated(df_reduzido), ] #Tirar os duplicados
 df_reduzido = subset(df_reduzido,df_reduzido[5] != "") #Tirar as empresas que não tem um pregão
 names(df_reduzido) = c("Nome da Empresa","Setor","Subsetor","Segmento","Tickers")
+
+tick = df_reduzido$Tickers
+print(tick[1])
+v = strsplit(tick[1],";")
+print(length(v[[1]]))
+print(v[[1]][3])
+
+for (i in 1:length(tick)){
+  v = strsplit(tick[i],";")
+  for (j in 1:length(v[[1]])){
+      if (v[[1]][j] == "MAPT3"){
+        posicao = i
+        numElemento = j
+      }
+   
+  }
+  
+}
+v = strsplit(tick[posicao],";")
+print(v[[1]][numElemento])
+
+#Montar um dataframe com os dados de um setor específico.
+
+subsetor = "Energia Elétrica"
+energia = subset(df_reduzido,df_reduzido[3]=="Energia Elétrica")
+energia_lista = energia$Tickers
+nlinhas = nrow(energia)
+numcol = ncol(databaseResumido)
+final <- data.frame(Data=c(databaseResumido[1]))
+for(i in 1:nlinhas){
+  tickers = strsplit(energia_lista[i],";")
+  for (j in 1:length(tickers[[1]])){
+    for (k in 2:numcol){
+    if (paste(tickers[[1]][j],"SA",sep=".") == names(databaseResumido[k])){
+     final[paste(tickers[[1]][j],"SA",sep=".")] = subset(databaseResumido,select = c(k))
+      print("Achei")
+    
+      }
+    }
+  }
+  
+}
+
+print(names(databaseResumido[2]))
+
+
+
 #Uma empresa com mais de um pregão a pesquisa não funciona.
-pesquisa = subset(df_reduzido,df_reduzido[5]=="MYPK3")
+pesquisa = subset(df_reduzido,df_reduzido[5]=="B3SA3")
 #df_reduce = subset(df_info,df_info[11]=="ATIVO")
 #df_reduce = subset(df_reduce, df_reduce[43]=="BOLSA")
 #df_reduce = subset(df_reduce, df_reduce[15]=="Categoria A")
