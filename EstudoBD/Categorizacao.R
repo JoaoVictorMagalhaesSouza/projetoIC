@@ -96,7 +96,7 @@ ggplot(df,aes(Data,value)) + geom_line(aes(colour = Ações))
 
 
 #Criar uma lista dos setores.
-
+#Tecnologia ??
 
 #Uma empresa com mais de um pregão a pesquisa não funciona.
 #pesquisa = subset(DataFrame_Empresas,DataFrame_Empresas[5]=="B3SA3")
