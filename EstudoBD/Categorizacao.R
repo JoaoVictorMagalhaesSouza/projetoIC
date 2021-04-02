@@ -39,12 +39,15 @@ for(i in 2:length(IBOVdatabase)){
 #names(df_info)
 
 ##Banco de Dados mais apurado com descrição e os tickers. 
-df = gdfpd.get.info.companies()
-DataFrame_Empresas = subset(df,select = c(1,11,12,13,14))
+bd = gdfpd.get.info.companies()
+DataFrame_Empresas = subset(bd,select = c(1,11,12,13,14))
 DataFrame_Empresas = DataFrame_Empresas[!duplicated(DataFrame_Empresas), ] #Tirar os duplicados
 DataFrame_Empresas = subset(DataFrame_Empresas,DataFrame_Empresas[5] != "") #Tirar as empresas que não tem um pregão
 names(DataFrame_Empresas) = c("Nome da Empresa","Setor","Subsetor","Segmento","Tickers")
 
+#Pegando todos os setores
+setores = subset(DataFrame_Empresas, select = c(2))
+setores = setores[!duplicated(setores),]
 #TESTANDO FILTRO
 
 #tick = DataFrame_Empresas$Tickers
@@ -69,9 +72,9 @@ names(DataFrame_Empresas) = c("Nome da Empresa","Setor","Subsetor","Segmento","T
 
 #IMPLEMENTANDO FILTRO
 #Montar um dataframe com os dados de um setor específico.
- 
-subsetor = "Construção Civil"     #"Construção e Engenharia"
-Acoes_Filtradas = subset(DataFrame_Empresas,DataFrame_Empresas[3]==subsetor)
+print(setores[[1]][9])
+setor = setores[[1]][9]    #Saúde
+Acoes_Filtradas = subset(DataFrame_Empresas,DataFrame_Empresas[2]==setor)
 Acoes_Filtradas_lista = Acoes_Filtradas$Tickers
 nlinhas = nrow(Acoes_Filtradas)
 numcol = ncol(BancoDeDados_Acoes)
