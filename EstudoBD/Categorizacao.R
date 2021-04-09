@@ -8,7 +8,7 @@ library(reshape2)
 library(plyr)
 
 #acao = 'BBDC3.sa' #Empresa.sa -> para analisar alguma empresa em espec.
-DI = '2020-01-01' #Data de inicio
+DI = '2019-01-01' #Data de inicio
 DF = Sys.Date() #Data de fim(hoje)
 benchmark = '^BVSP' #índice da bolsa
 
@@ -101,7 +101,6 @@ ggplot(df,aes(Data,value)) + geom_line(aes(colour = Ações))
 #Criar uma lista dos setores.
 #Tecnologia ??
 
-#Uma empresa com mais de um pregão a pesquisa não funciona.
 #pesquisa = subset(DataFrame_Empresas,DataFrame_Empresas[5]=="B3SA3")
 #df_reduce = subset(df_info,df_info[11]=="ATIVO")
 #df_reduce = subset(df_reduce, df_reduce[43]=="BOLSA")
