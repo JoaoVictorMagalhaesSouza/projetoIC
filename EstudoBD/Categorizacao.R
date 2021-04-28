@@ -2,13 +2,13 @@ library(BatchGetSymbols)
 library(quantmod)
 library(GetDFPData)
 library(GetDFPData2)
-library(ggplot2)
+library(tidyverse)
 library(ggthemes)
 library(reshape2)
-library(plyr)
+
 
 #acao = 'BBDC3.sa' #Empresa.sa -> para analisar alguma empresa em espec.
-DI = '2019-01-01' #Data de inicio
+DI = '2016-01-01' #Data de inicio
 DF = Sys.Date() #Data de fim(hoje)
 benchmark = '^BVSP' #índice da bolsa
 
@@ -96,7 +96,18 @@ for(i in 1:nlinhas){
 df = melt(DataFrame_Final,id.vars = "Data", variable.name = "Ações")
 
 ggplot(df,aes(Data,value)) + geom_line(aes(colour = Ações))
+##Pipe: pega o que vem antes e joga na função posterior.
+library(plotly)
+ plot <- BancoDeDados_Acoes %>% 
+  select(Data,ABEV3.SA,AZUL4.SA,B3SA3.SA) %>% 
+  melt(id.var = "Data") %>% 
+  ggplot(aes(Data,value))+geom_line(aes(colour = variable))
+ggplotly(plot)
+ 
 
+
+df.m <- melt(BancoDeDados_Acoes, id.var = "Data")
+ggplot(df.m,aes(variable,value))+geom_boxplot()
 
 #Criar uma lista dos setores.
 #Tecnologia ??

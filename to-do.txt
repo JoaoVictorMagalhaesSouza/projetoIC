@@ -1,3 +1,6 @@
-1) Elaborar BoxPlots bimestrais para cada ativo.
+1) Elaborar BoxPlots bimestrais juntamente com a série temporal do mesmo ativo, anuais e por setores para cada ativo.
 2) Operação no banco de dados "DataFrame_Empresas":
 	- A coluna Tickers deve ser quebrada em sub-colunas, cada uma contendo apenas 1 Ticker.
+3) Permitir ao usuário a escolha do período de monitoramento.
+4) Usar somente 2 Banco de Dados.
+5) Pesquisar modelos de gráficos na Área de Investimento.
