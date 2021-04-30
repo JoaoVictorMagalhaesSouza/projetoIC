@@ -52,23 +52,25 @@ names(DataFrame_Empresas) = c("Nome da Empresa","Setor","Subsetor","Segmento","T
 setores = subset(DataFrame_Empresas, select = c(2))
 setores = setores[!duplicated(setores),]
 
-bimestre = 2
+bimestre = 3
+mes1 <- paste("0",as.character((bimestre*2)-1),sep = "")
+mes2 <- paste("0",as.character(bimestre*2),sep="")
 j = 1
 dataIni = as.integer(strsplit(DI,"-")[[1]][1])+1
 dataF = as.integer(strsplit(as.character(DF),"-")[[1]][1])
 qtdeGraf <- dataF - dataIni #Quantidade de gráficos a serem gerados.
 
 dataAtual <- dataIni
-
+ploter <- list()
 for (i in 1:qtdeGraf){
   final <- 1
   contador <- 0
-  inicial < 0
+  inicial <- 0
   for (j in 1:nrow(BancoDeDados_Acoes)){
     #Ano
     if (strsplit(as.character(BancoDeDados_Acoes$Data[j]),"-")[[1]][1] == dataAtual){
-        #Bimestre que eu quero
-      if(strsplit(as.character(BancoDeDados_Acoes$Data[j]),"-")[[1]][2]=="05" || strsplit(as.character(BancoDeDados_Acoes$Data[j]),"-")[[1]][2]=="06"){
+      #Bimestre que eu quero
+      if(strsplit(as.character(BancoDeDados_Acoes$Data[j]),"-")[[1]][2]==mes1 || strsplit(as.character(BancoDeDados_Acoes$Data[j]),"-")[[1]][2]==mes2){
         final <- j
         print(BancoDeDados_Acoes$Data[j])
         contador <- contador + 1
@@ -79,32 +81,32 @@ for (i in 1:qtdeGraf){
   print(final)
   print(contador)
   print(inicial)
+  
   #Plotar aqui
   ploter[[i]] <- BancoDeDados_Acoes[inicial:final,] %>%        
     select(Data,ABEV3.SA) %>% 
     melt(id.var = "Data") %>% 
     ggplot(aes(Data,value))+geom_line(aes(colour = variable))
   dataAtual <- dataAtual+1
- 
+  print(typeof(ploter))
+  
 }
-ggplotly(ploter[[4]])
-
-##Agora é plotar os gráficos de inicial-final.
+ggplotly(ploter[[1]])
 
 
 
 
-for (i in linha:nrow(BancoDeDados_Acoes)){
-     if(strsplit(as.character(BancoDeDados_Acoes$Data[i]),"-")[[1]][2]=="05" || strsplit(as.character(BancoDeDados_Acoes$Data[i]),"-")[[1]][2]=="06"){
-       print(BancoDeDados_Acoes$Data[i])
-       plot[j] <- BancoDeDados_Acoes %>%        
-        select(Data,BBDC3.SA) %>% 
-        melt(id.var = "Data") %>% 
-        ggplot(aes(Data,value))+geom_line(aes(colour = variable))
-        j <- j+1
-     }
-}
-ggplotly(plot)
+# for (i in linha:nrow(BancoDeDados_Acoes)){
+#      if(strsplit(as.character(BancoDeDados_Acoes$Data[i]),"-")[[1]][2]=="05" || strsplit(as.character(BancoDeDados_Acoes$Data[i]),"-")[[1]][2]=="06"){
+#        print(BancoDeDados_Acoes$Data[i])
+#        plot[j] <- BancoDeDados_Acoes %>%        
+#         select(Data,BBDC3.SA) %>% 
+#         melt(id.var = "Data") %>% 
+#         ggplot(aes(Data,value))+geom_line(aes(colour = variable))
+#         j <- j+1
+#      }
+# }
+# ggplotly(plot)
 # 
 # #IMPLEMENTANDO FILTRO
 # #Montar um dataframe com os dados de um setor específico.
