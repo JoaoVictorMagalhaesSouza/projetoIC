@@ -6,6 +6,7 @@ library(tidyverse)
 library(ggthemes)
 library(reshape2)
 library(plyr)
+library(ggplot2)
 library(plotly)
 
 #acao = 'BBDC3.sa' #Empresa.sa -> para analisar alguma empresa em espec.
@@ -50,17 +51,45 @@ names(DataFrame_Empresas) = c("Nome da Empresa","Setor","Subsetor","Segmento","T
 #Pegando todos os setores
 setores = subset(DataFrame_Empresas, select = c(2))
 setores = setores[!duplicated(setores),]
+
 bimestre = 2
 j = 1
-dataIni = as.integer(strsplit(DI,"-")[[1]][1])
-#dataIni <- dataIni+1
+dataIni = as.integer(strsplit(DI,"-")[[1]][1])+1
+dataF = as.integer(strsplit(as.character(DF),"-")[[1]][1])
+qtdeGraf <- dataF - dataIni #Quantidade de gráficos a serem gerados.
 
-while(dataIni <= as.integer(strsplit(as.character(Sys.Date()),"-")[[1]][1])){
-  dataIni <- dataIni+1
-  
-  
+dataAtual <- dataIni
+
+for (i in 1:qtdeGraf){
+  final <- 1
+  contador <- 0
+  inicial < 0
+  for (j in 1:nrow(BancoDeDados_Acoes)){
+    #Ano
+    if (strsplit(as.character(BancoDeDados_Acoes$Data[j]),"-")[[1]][1] == dataAtual){
+        #Bimestre que eu quero
+      if(strsplit(as.character(BancoDeDados_Acoes$Data[j]),"-")[[1]][2]=="05" || strsplit(as.character(BancoDeDados_Acoes$Data[j]),"-")[[1]][2]=="06"){
+        final <- j
+        print(BancoDeDados_Acoes$Data[j])
+        contador <- contador + 1
+      }
+      inicial <- final-contador+1
+    }
+  }
+  print(final)
+  print(contador)
+  print(inicial)
+  #Plotar aqui
+  dataAtual <- dataAtual+1
+ 
 }
-for (i in 1:nrow(BancoDeDados_Acoes)){
+
+##Agora é plotar os gráficos de inicial-final.
+
+
+
+
+for (i in linha:nrow(BancoDeDados_Acoes)){
      if(strsplit(as.character(BancoDeDados_Acoes$Data[i]),"-")[[1]][2]=="05" || strsplit(as.character(BancoDeDados_Acoes$Data[i]),"-")[[1]][2]=="06"){
        print(BancoDeDados_Acoes$Data[i])
        plot[j] <- BancoDeDados_Acoes %>%        
@@ -68,9 +97,7 @@ for (i in 1:nrow(BancoDeDados_Acoes)){
         melt(id.var = "Data") %>% 
         ggplot(aes(Data,value))+geom_line(aes(colour = variable))
         j <- j+1
-        
      }
-  
 }
 ggplotly(plot)
 # 
