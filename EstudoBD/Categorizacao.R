@@ -66,7 +66,7 @@ for (i in 1:qtdeGraf){
   inicial < 0
   for (j in 1:nrow(BancoDeDados_Acoes)){
     #Ano
-    if (strsplit(as.character(BancoDeDados_Acoes$Data[j]),"-")[[1]][1] == "2015"){
+    if (strsplit(as.character(BancoDeDados_Acoes$Data[j]),"-")[[1]][1] == dataAtual){
         #Bimestre que eu quero
       if(strsplit(as.character(BancoDeDados_Acoes$Data[j]),"-")[[1]][2]=="05" || strsplit(as.character(BancoDeDados_Acoes$Data[j]),"-")[[1]][2]=="06"){
         final <- j
@@ -80,14 +80,14 @@ for (i in 1:qtdeGraf){
   print(contador)
   print(inicial)
   #Plotar aqui
-  ploter <- BancoDeDados_Acoes[inicial:final,] %>%        
+  ploter[[i]] <- BancoDeDados_Acoes[inicial:final,] %>%        
     select(Data,ABEV3.SA) %>% 
     melt(id.var = "Data") %>% 
     ggplot(aes(Data,value))+geom_line(aes(colour = variable))
   dataAtual <- dataAtual+1
  
 }
-ggplotly(ploter)
+ggplotly(ploter[[4]])
 
 ##Agora é plotar os gráficos de inicial-final.
 
