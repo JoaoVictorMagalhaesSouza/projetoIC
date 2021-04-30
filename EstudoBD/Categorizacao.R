@@ -51,14 +51,23 @@ names(DataFrame_Empresas) = c("Nome da Empresa","Setor","Subsetor","Segmento","T
 setores = subset(DataFrame_Empresas, select = c(2))
 setores = setores[!duplicated(setores),]
 bimestre = 2
+j = 1
+dataIni = as.integer(strsplit(DI,"-")[[1]][1])
+#dataIni <- dataIni+1
 
+while(dataIni <= as.integer(strsplit(as.character(Sys.Date()),"-")[[1]][1])){
+  dataIni <- dataIni+1
+  
+  
+}
 for (i in 1:nrow(BancoDeDados_Acoes)){
-     if(strsplit(as.character(BancoDeDados_Acoes$Data[i]),"-")[[1]][2]=="04"){
+     if(strsplit(as.character(BancoDeDados_Acoes$Data[i]),"-")[[1]][2]=="05" || strsplit(as.character(BancoDeDados_Acoes$Data[i]),"-")[[1]][2]=="06"){
        print(BancoDeDados_Acoes$Data[i])
-       plot <- BancoDeDados_Acoes %>%        
+       plot[j] <- BancoDeDados_Acoes %>%        
         select(Data,BBDC3.SA) %>% 
         melt(id.var = "Data") %>% 
         ggplot(aes(Data,value))+geom_line(aes(colour = variable))
+        j <- j+1
         
      }
   
