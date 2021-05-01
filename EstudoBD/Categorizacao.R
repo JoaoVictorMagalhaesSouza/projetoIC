@@ -9,6 +9,7 @@ library(plyr)
 library(ggplot2)
 library(plotly)
 
+
 #acao = 'BBDC3.sa' #Empresa.sa -> para analisar alguma empresa em espec.
 DI = '2014-01-01' #Data de inicio
 DF = Sys.Date() #Data de fim(hoje)
