@@ -62,6 +62,7 @@ qtdeGraf <- dataF - dataIni #Quantidade de gráficos a serem gerados.
 
 dataAtual <- dataIni
 ploter <- list()
+boxers <- list()
 for (i in 1:qtdeGraf){
   final <- 1
   contador <- 0
@@ -84,15 +85,16 @@ for (i in 1:qtdeGraf){
   
   #Plotar aqui
   ploter[[i]] <- BancoDeDados_Acoes[inicial:final,] %>%        
-    select(Data,ABEV3.SA) %>% 
+    select(Data,ABEV3.SA,BBAS3.SA) %>% 
     melt(id.var = "Data") %>% 
     ggplot(aes(Data,value))+geom_line(aes(colour = variable))
   dataAtual <- dataAtual+1
-  print(typeof(ploter))
+  boxers[[i]] = melt(BancoDeDados_Acoes[inicial:final,],id.vars = "Data", measure.vars = c("B3SA3.SA"))
+  
   
 }
-ggplotly(ploter[[1]])
-
+ggplotly(ploter[[4]])
+ggplot(boxers[[3]],aes(x=Data,y=value))+geom_boxplot()
 
 
 
