@@ -53,11 +53,11 @@ names(DataFrame_Empresas) = c("Nome da Empresa","Setor","Subsetor","Segmento","T
 setores = subset(DataFrame_Empresas, select = c(2))
 setores = setores[!duplicated(setores),]
 
-bimestre = 3
+bimestre = 4
 mes1 <- paste("0",as.character((bimestre*2)-1),sep = "")
 mes2 <- paste("0",as.character(bimestre*2),sep="")
 j = 1
-dataIni = as.integer(strsplit(DI,"-")[[1]][1])+1
+dataIni = (strsplit(DI,"-")[[1]][1])+1
 dataF = as.integer(strsplit(as.character(DF),"-")[[1]][1])
 qtdeGraf <- dataF - dataIni #Quantidade de gráficos a serem gerados.
 
