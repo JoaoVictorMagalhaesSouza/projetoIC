@@ -1,55 +1,84 @@
+rm(list=ls())
+if(!is.null(dev.list())) dev.off()
+cat("\014")
 library(BatchGetSymbols)
-library(quantmod)
-library(GetDFPData)
-library(GetDFPData2)
 library(tidyverse)
-library(ggthemes)
-library(reshape2)
-library(plyr)
-library(plotly)
+library(stringr)
+#library(quantmod)
+#library(GetDFPData)
+#library(GetDFPData2)
+#
+#library(ggthemes)
+#library(reshape2)
+#library(plyr)
+#library(plotly)
 
 #acao = 'BBDC3.sa' #Empresa.sa -> para analisar alguma empresa em espec.
 DI = '2014-01-01' #Data de inicio
 DF = Sys.Date() #Data de fim(hoje)
 benchmark = '^BVSP' #índice da bolsa
 
-tickersIbov = GetIbovStocks() #Retorna as ações mais negociadas do Brasil, dados completos.
+tickersIbov = GetIbovStocks() #Retorna as ações negociadas do Brasil, dados completos.
 tickersIbov$tickersSA = paste(tickersIbov$tickers,".SA",sep='') #Criar uma coluna e adicionar o .SA nos tickers
 
 IBOVdatabase = BatchGetSymbols(
   tickers = tickersIbov$tickersSA, #Especificando as ações
   first.date = DI,
   last.date= DF,
-  bench.ticker = benchmark,
-  
-)
-IBOVdatabase = IBOVdatabase$df.tickers #Pegando o segundo elemento da lista retornada, que é o que contém os dados.
-IBOVdatabase = dlply(IBOVdatabase,.(ticker),function(x){rownames(x)=x$row;x$row=NULL;x}) #Lista com vários dataframes
+  bench.ticker = benchmark)
+
+#Pegando o segundo elemento da lista retornada, que e o que contem os dados.
+IBOVdatabase = IBOVdatabase$df.tickers
+#Selecao de colunas de interesse
+IBOVdatabase <- IBOVdatabase %>% 
+  select(-c(5,9,10))
+#Estrutura do banco de dados
+str(IBOVdatabase)
+rm(tickersIbov)
+#Lista com varios dataframes de acordo com as acoes presentes em IBOVdatabase
+IBOVdatabase = dlply(IBOVdatabase,.(ticker),function(x){rownames(x)=x$row;x$row=NULL;x}) 
 #Resumir o Banco de Dados
 
-BancoDeDados_Acoes = IBOVdatabase[[1]][,c(7,6)] #Extrair as colunas 7 e 6 do dataframe 1
-colnames(BancoDeDados_Acoes) = c("Data",paste(IBOVdatabase[[1]][1,8])) #Renomeando as colunas
-
+BancoDeDados_Acoes = IBOVdatabase[[1]][,c(6,5)] #Extrair as colunas 7 e 6 do dataframe 1
+colnames(BancoDeDados_Acoes) = c("Data",paste(IBOVdatabase[[1]][1,7])) #Renomeando as colunas
+#teste <- IBOVdatabase[[1]]
 for(i in 2:length(IBOVdatabase)){
-  itera_BancoDeDados_Acoes = IBOVdatabase[[i]][,c(7,6)] 
-  colnames(itera_BancoDeDados_Acoes) = c("Data",paste(IBOVdatabase[[i]][1,8])) #Renomeando as colunas
+  itera_BancoDeDados_Acoes = IBOVdatabase[[i]][,c(6,5)] 
+  colnames(itera_BancoDeDados_Acoes) = c("Data",paste(IBOVdatabase[[i]][1,7])) #Renomeando as colunas
   BancoDeDados_Acoes = merge(BancoDeDados_Acoes,itera_BancoDeDados_Acoes, by = "Data") #Juntando os dataframes usando a Data como coluna chave para fazer os joins.
 }
-##Primeiro semestre faltante.
 
 #df_info = get_info_companies()
 #names(df_info)
 
 ##Banco de Dados mais apurado com descrição e os tickers. 
-bd = gdfpd.get.info.companies()
-DataFrame_Empresas = subset(bd,select = c(1,11,12,13,14))
-DataFrame_Empresas = DataFrame_Empresas[!duplicated(DataFrame_Empresas), ] #Tirar os duplicados
-DataFrame_Empresas = subset(DataFrame_Empresas,DataFrame_Empresas[5] != "") #Tirar as empresas que não tem um pregão
-names(DataFrame_Empresas) = c("Nome da Empresa","Setor","Subsetor","Segmento","Tickers")
-
+df_emp <-  GetDFPData::gdfpd.get.info.companies()
+df_emp <-  df_emp %>% select(c(1,11:14))
+#Tirar os duplicados
+df_emp <-  df_emp[!duplicated(df_emp), ]
+#Tirar as empresas que nao tem um pregao
+df_emp <- df_emp %>% filter(tickers!="")
+names(df_emp) = c("Nome","Setor","Subsetor","Segmento","Tickers")
+#Remover espacos entre as strings
+df_emp$Nome    <- str_squish(df_emp$Nome    )
+df_emp$Setor   <- str_squish(df_emp$Setor   )
+df_emp$Subsetor<- str_squish(df_emp$Subsetor)
+df_emp$Segmento<- str_squish(df_emp$Segmento)
+df_emp$Tickers <- str_squish(df_emp$Tickers )
+df_emp$Nome    <- str_trim(df_emp$Nome    )
+df_emp$Setor   <- str_trim(df_emp$Setor   )
+df_emp$Subsetor<- str_trim(df_emp$Subsetor)
+df_emp$Segmento<- str_trim(df_emp$Segmento)
+df_emp$Tickers <- str_trim(df_emp$Tickers )
+#Colocar em caixa alta
+df_emp$Nome    <- str_to_upper(df_emp$Nome    )
+df_emp$Setor   <- str_to_upper(df_emp$Setor   )
+df_emp$Subsetor<- str_to_upper(df_emp$Subsetor)
+df_emp$Segmento<- str_to_upper(df_emp$Segmento)
+df_emp$Tickers <- str_to_upper(df_emp$Tickers )
 #Pegando todos os setores
-setores = subset(DataFrame_Empresas, select = c(2))
-setores = setores[!duplicated(setores),]
+#setores = subset(df_emp, select = c(2))
+#setores = setores[!duplicated(setores),]
 bimestre = 2
 
 for (i in 1:nrow(BancoDeDados_Acoes)){
@@ -69,7 +98,7 @@ ggplotly(plot)
 # #Montar um dataframe com os dados de um setor específico.
 # print(setores[[1]][9])
 # setor = setores[[1]][9]    #Saúde
-# Acoes_Filtradas = subset(DataFrame_Empresas,DataFrame_Empresas[2]==setor)
+# Acoes_Filtradas = subset(df_emp,df_emp[2]==setor)
 # Acoes_Filtradas_lista = Acoes_Filtradas$Tickers
 # nlinhas = nrow(Acoes_Filtradas)
 # numcol = ncol(BancoDeDados_Acoes)
