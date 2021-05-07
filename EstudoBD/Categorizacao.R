@@ -30,6 +30,7 @@ IBOVdatabase = dlply(IBOVdatabase,.(ticker),function(x){rownames(x)=x$row;x$row=
 #Resumir o Banco de Dados
 
 BancoDeDados_Acoes = IBOVdatabase[[1]][,c(7,6)] #Extrair as colunas 7 e 6 do dataframe 1
+
 colnames(BancoDeDados_Acoes) = c("Data",paste(IBOVdatabase[[1]][1,8])) #Renomeando as colunas
 
 for(i in 2:length(IBOVdatabase)){
@@ -53,7 +54,7 @@ names(DataFrame_Empresas) = c("Nome da Empresa","Setor","Subsetor","Segmento","T
 setores = subset(DataFrame_Empresas, select = c(2))
 setores = setores[!duplicated(setores),]
 
-bimestre = 4
+bimestre = 2
 mes1 <- paste("0",as.character((bimestre*2)-1),sep = "")
 mes2 <- paste("0",as.character(bimestre*2),sep="")
 j = 1
@@ -94,8 +95,8 @@ for (i in 1:qtdeGraf){
   
   
 }
-ggplotly(ploter[[4]])
-ggplot(boxers[[3]],aes(x=Data,y=value))+geom_boxplot()
+ggplotly(ploter[[5]])
+ggplot(boxers[[1]],aes(x=Data,y=value))+geom_boxplot()
 
 
 
