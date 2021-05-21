@@ -4,14 +4,16 @@ cat("\014")
 library(BatchGetSymbols)
 library(tidyverse)
 library(stringr)
+library(plotly)
+library(GetDFPData)
+library(GetDFPData2)
+
 #library(quantmod)
-#library(GetDFPData)
-#library(GetDFPData2)
 #
 #library(ggthemes)
 #library(reshape2)
 #library(plyr)
-#library(plotly)
+
 
 #acao = 'BBDC3.sa' #Empresa.sa -> para analisar alguma empresa em espec.
 DI = '2014-01-01' #Data de inicio
