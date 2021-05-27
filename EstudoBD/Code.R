@@ -120,6 +120,10 @@ verificar_coluna <- function(data, coluna){
    }
    
  }
+ plott <- teste %>%         
+   melt(id.var = "Data") %>% 
+   ggplot(aes(Data,value))+geom_line(aes(colour = variable))
+ggplotly(plott)
  
  
  
