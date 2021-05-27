@@ -96,7 +96,7 @@ verificar_coluna <- function(data, coluna){
 #verificar_coluna(BancoDeDados_Acoes,aux)
 
  #Escolher um setor específico
- setor = setores[[1]][10]    #Saúde
+ setor = setores[[1]][9]    #Saúde
  #Pegar todas as empresas desse setor:
  Acoes_Filtradas = subset(df_emp,df_emp[2]==setor)
  #Pegar todos os tickers dessas empresas desse setor:
@@ -106,25 +106,25 @@ verificar_coluna <- function(data, coluna){
  #Conferir coluna a coluna 
   numcol = ncol(BancoDeDados_Acoes)
   #Pegando a coluna "Data" do BancoDeDados_Acoes
- DataFrame_Final <- data.frame(Data=c(BancoDeDados_Acoes[1]))
- teste <- data.frame(Data=c(BancoDeDados_Acoes[1]))
+ 
+ df_setor <- data.frame(Data=c(BancoDeDados_Acoes[1]))
  #Vamos conferir quais  os tickers desse BD Auxiliar(no setor escolhido) estao no BD do Yahoo.
  for(i in 1:nlinhas){
   tickers = strsplit(Acoes_Filtradas_lista[i],";")
    for (j in 1:length(tickers[[1]])){
      aux <- paste(tickers[[1]][j],"SA",sep=".")
       if (verificar_coluna(BancoDeDados_Acoes,aux)){
-        teste[aux] =  select(BancoDeDados_Acoes,aux)
+        df_setor[aux] =  select(BancoDeDados_Acoes,aux)
       }
      
    }
    
  }
- plott <- teste %>%         
+ plott <- df_setor %>%         
    melt(id.var = "Data") %>% 
    ggplot(aes(Data,value))+geom_line(aes(colour = variable))
 ggplotly(plott)
- 
+
  
  
  bimestre = 2
