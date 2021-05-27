@@ -4,14 +4,20 @@ cat("\014")
 library(BatchGetSymbols)
 library(tidyverse)
 library(stringr)
+library(plyr)
+library(plotly)
+library(reshape2)
 #library(quantmod)
 #library(GetDFPData)
 #library(GetDFPData2)
 #
 #library(ggthemes)
-#library(reshape2)
-#library(plyr)
-#library(plotly)
+
+#
+
+
+## O preço de fechamento corresponde ao último valor que o ativo foi negociado em uma sessão.
+## O preço ajustado é o preço de fechamento com alguns ajustes de desdobramentos e dividendos(dividendo é uma métrica declarada pela empresa, tipo juros). 
 
 #acao = 'BBDC3.sa' #Empresa.sa -> para analisar alguma empresa em espec.
 DI = '2014-01-01' #Data de inicio
@@ -134,29 +140,31 @@ ggplot(boxers[[1]],aes(x=Data,y=value))+geom_boxplot()
 #      }
 # }
 # ggplotly(plot)
-# 
-# #IMPLEMENTANDO FILTRO
-# #Montar um dataframe com os dados de um setor específico.
-# print(setores[[1]][9])
-# setor = setores[[1]][9]    #Saúde
-# Acoes_Filtradas = subset(DataFrame_Empresas,DataFrame_Empresas[2]==setor)
-# Acoes_Filtradas_lista = Acoes_Filtradas$Tickers
-# nlinhas = nrow(Acoes_Filtradas)
-# numcol = ncol(BancoDeDados_Acoes)
-# DataFrame_Final <- data.frame(Data=c(BancoDeDados_Acoes[1]))
-# for(i in 1:nlinhas){
-#   tickers = strsplit(Acoes_Filtradas_lista[i],";")
-#   for (j in 1:length(tickers[[1]])){
-#     for (k in 2:numcol){
-#     if (paste(tickers[[1]][j],"SA",sep=".") == names(BancoDeDados_Acoes[k])){
-#      DataFrame_Final[paste(tickers[[1]][j],"SA",sep=".")] = subset(BancoDeDados_Acoes,select = c(k))
-#       print("Achei")
-#     
-#       }
-#     }
-#   }
-#   
-# }
+setores = subset(df_emp, select = c(2))
+setores = setores[!duplicated(setores),]
+
+ #IMPLEMENTANDO FILTRO
+ #Montar um dataframe com os dados de um setor específico.
+ print(setores[[1]][9])
+ setor = setores[[1]][9]    #Saúde
+ Acoes_Filtradas = subset(df_emp,df_emp[2]==setor)
+ Acoes_Filtradas_lista = Acoes_Filtradas$Tickers
+ nlinhas <- nrow(Acoes_Filtradas)
+  numcol = ncol(BancoDeDados_Acoes)
+ DataFrame_Final <- data.frame(Data=c(BancoDeDados_Acoes[1]))
+ for(i in 1:nlinhas){
+  tickers = strsplit(Acoes_Filtradas_lista[i],";")
+   for (j in 1:length(tickers[[1]])){
+     for (k in 2:numcol){
+     if (paste(tickers[[1]][j],"SA",sep=".") == names(BancoDeDados_Acoes[k])){
+      DataFrame_Final[paste(tickers[[1]][j],"SA",sep=".")] = subset(BancoDeDados_Acoes,select = c(k))
+       print("Achei")
+     
+       }
+     }
+   }
+   
+ }
 # 
 # df = melt(DataFrame_Final,id.vars = "Data", variable.name = "Ações")
 # 
