@@ -12,13 +12,6 @@ library(reshape2)
 #library(GetDFPData2)
 #
 #library(ggthemes)
-
-
-
-
-
-
-
 ## O preço de fechamento corresponde ao último valor que o ativo foi negociado em uma sessão.
 ## O preço ajustado é o preço de fechamento com alguns ajustes de desdobramentos e dividendos(dividendo é uma métrica declarada pela empresa, tipo juros). 
 
