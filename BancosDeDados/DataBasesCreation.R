@@ -10,42 +10,20 @@ library(reshape2)
 #library(quantmod)
 #library(GetDFPData)
 #library(GetDFPData2)
-#
-#library(ggthemes)
-## O preço de fechamento corresponde ao último valor que o ativo foi negociado em uma sessão.
-## O preço ajustado é o preço de fechamento com alguns ajustes de desdobramentos e dividendos(dividendo é uma métrica declarada pela empresa, tipo juros). 
+
 
 library("twitteR")
 library("wordcloud")
 library("tm")
 library("wordcloud2")
 library("RColorBrewer")
-setup_twitter_oauth("GO2vKO8fZPICcYFry4WcbS397", "HReBTbs6fLVm4PhCpTjWdMJn82kAg8gX6BHHtv307vP5D0SCKt", "1402605860891791364-LKt10SqzmAEG652nP9YtveYu6JxVE0", "yTbybjYtbBqRZtbqNhGhFjzX861oHqLTzmxkaqtgCPb8R")
-tweets <- searchTwitter("B3",lang="pt", n = 100)
-#Transformar lista em DF
-tweets <- tweets %>% twListToDF() 
-view(tweets)
-tweetsText <- tweets$text
-docs <- Corpus(VectorSource(tweetsText))
-docs <- docs %>%
-   tm_map(removeNumbers) %>%
-   tm_map(removePunctuation) %>%
-   tm_map(stripWhitespace)
-docs <- tm_map(docs, content_transformer(tolower))
-docs <- tm_map(docs, removeWords, stopwords("portuguese"))
-
-dtm <- TermDocumentMatrix(docs) 
-matrix <- as.matrix(dtm) 
-words <- sort(rowSums(matrix),decreasing=TRUE) 
-df <- data.frame(word = names(words),freq=words)
-
-set.seed(1234)
-
-wordcloud(words = df$word, freq = df$freq, min.freq = 1,           max.words=50, random.order=FALSE, rot.per=0.35,  colors=brewer.pal(8, "Dark2"))
-wordcloud2(data=df, size=1.6, color='random-dark')
+#
+#library(ggthemes)
+## O preço de fechamento corresponde ao último valor que o ativo foi negociado em uma sessão.
+## O preço ajustado é o preço de fechamento com alguns ajustes de desdobramentos e dividendos(dividendo é uma métrica declarada pela empresa, tipo juros). 
 
 
-------------------------------------------#acao = 'BBDC3.sa' #Empresa.sa -> para analisar alguma empresa em espec.
+#acao = 'BBDC3.sa' #Empresa.sa -> para analisar alguma empresa em espec.
 DI = '2015-01-01' #Data de inicio
 DF = Sys.Date() #Data de fim(hoje)
 benchmark = '^BVSP' #índice da bolsa
@@ -162,7 +140,9 @@ listaAcoesUmSetor <- function(df_emp,setorMonitorado){
 }
 setorMonitorado = "SAÚDE"
 teste <- listaAcoesUmSetor(df_emp,setorMonitorado)
-teste <- teste[-1] #Tirar o nome Data
+teste <- teste[-1] #Tirar a coluna Data
+
+
 
 #######################################################
          #Parte de plotagem de gráficos:
@@ -181,7 +161,7 @@ serieTempAtivo <- function(df_emp,acao){
    ggplotly(plott)
 }
 #Chamando a funcao acima para ver a serie temporal de um setor.
-acao = "BBDC4.SA"
+acao = "B3SA3.SA"
 serieTempAtivo(df_emp,acao)
 
 
@@ -279,7 +259,39 @@ serieTempAlgumasAcoesSetor(df_emp,setorMonitorado,listaAcoes)
 
 
 
+########################################################
+#Nuvem de palavras:
+#######################################################
 
+geraNuvem <- function(acao){
+   dataIni = as.character(Sys.Date()-7)
+   dataFinal = as.character(Sys.Date())
+setup_twitter_oauth("GO2vKO8fZPICcYFry4WcbS397", "HReBTbs6fLVm4PhCpTjWdMJn82kAg8gX6BHHtv307vP5D0SCKt", "1402605860891791364-LKt10SqzmAEG652nP9YtveYu6JxVE0", "yTbybjYtbBqRZtbqNhGhFjzX861oHqLTzmxkaqtgCPb8R")
+
+tweets <- searchTwitter(acao,lang="pt", n = 2000,since = dataIni,until = dataFinal)
+#Transformar lista em DF
+tweets <- tweets %>% twListToDF() 
+view(tweets)
+tweetsText <- tweets$text
+docs <- Corpus(VectorSource(tweetsText))
+docs <- docs %>%
+   tm_map(removeNumbers) %>%
+   tm_map(removePunctuation) %>%
+   tm_map(stripWhitespace)
+docs <- tm_map(docs, content_transformer(tolower))
+docs <- tm_map(docs, removeWords, stopwords("portuguese"))
+
+dtm <- TermDocumentMatrix(docs) 
+matrix <- as.matrix(dtm) 
+words <- sort(rowSums(matrix),decreasing=TRUE) 
+df <- data.frame(word = names(words),freq=words)
+
+set.seed(1234)
+
+wordcloud(words = df$word, freq = df$freq, min.freq = 1,max.words=75, random.order=FALSE, rot.per=0.35,  colors=brewer.pal(8, "Dark2"))
+#wordcloud2(data=df, size=1.6, color='random-dark')
+}
+geraNuvem("Bitcoin")
 
 #####################################################
 #Parte de seleção de um bimestre(COMPLEMENTAR):
