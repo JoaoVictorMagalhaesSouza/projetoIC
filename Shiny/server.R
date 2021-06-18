@@ -28,7 +28,7 @@ shinyServer(function(input, output) {
                 select(Data,acao) %>% 
                 melt(id.var = "Data") %>% 
                 # box <- melt(temp,id.vars = "Data", measure.vars = c("ABEV3.SA"))
-                ggplot(aes(Data,value)) + geom_boxplot() + ggtitle("Boxplot do Ativo Selecionado: ") +labs(x = "Data", y = "Valor da Ação")
+                ggplot(aes(Data,value)) + geom_boxplot() + ggtitle("Boxplot do Ativo Selecionado: ") + tema + labs(x = "Data (ano)", y = "Valor da Ação (R$)")
             
             
             
@@ -59,10 +59,11 @@ shinyServer(function(input, output) {
     
     output$outPlotVariosAtivos <- renderUI ({
     fluidRow(column(10,
-        selectInput("inAtivosSetor",
-                     strong("Escolha os ativos que deseja monitorar: "),
+        selectizeInput("inAtivosSetor",
+                     strong("Escolha os ativos que deseja monitorar (máx 5): "),
                      choices = listaAcoesUmSetor(df_emp,BancoDeDados_Acoes,input$inSetor)[-1],
                      multiple = TRUE,
+                    options = list(maxItems = 5),
                     
                      
         ),
