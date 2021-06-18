@@ -7,7 +7,7 @@
 *.DataBasesCreation.R
 /DataBasesCreation.R
 /anotations
-*.RData
+*.RDataTmp
 *.Rhistory
 *.anotations
 *.DFP Cache Folder

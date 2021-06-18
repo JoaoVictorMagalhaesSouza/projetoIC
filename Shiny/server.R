@@ -39,7 +39,7 @@ shinyServer(function(input, output, session) {
                 select(Data,acao) %>% 
                 melt(id.var = "Data") %>% 
                 # box <- melt(temp,id.vars = "Data", measure.vars = c("ABEV3.SA"))
-                ggplot(aes(Data,value)) + geom_boxplot() + ggtitle("Boxplot do Ativo Selecionado: ") + tema +labs(x = "Data", y = "Valor da Ação")
+                ggplot(aes(Data,value)) + geom_boxplot() + ggtitle("Boxplot do Ativo Selecionado: ") +labs(x = "Data", y = "Valor da Ação")
             
             
             
