@@ -10,7 +10,7 @@
 # Define UI for application
  
 shinyUI(fluidPage(
-      theme = shinytheme("flatly"),responsive = TRUE,lang = "pt", title = "Análise da Bolsa de Valores de São Paulo",
+      theme = shinytheme("flatly"),lang = "pt", title = "Análise da Bolsa de Valores de São Paulo",
       navbarPage(title="ANÁLISE DA BOVESPA",
                 tabPanel("Apresentação do Projeto",
                          
@@ -28,6 +28,14 @@ shinyUI(fluidPage(
                                          column(9,
                                                 plotlyOutput("outPlotAtivo", height = 500)))),
                             ##
+                            tabPanel("Comparação com a B3",icon = icon("chart-line"),
+                                     fluidRow(column(3,
+                                                     selectInput("inAtivoCompB3",
+                                                                 strong("Escolha um ativo:"),
+                                                                 choices=noB3)),
+                                              column(9,
+                                                     plotlyOutput("outAtivoCompB3", height = 500)))),
+                            
                             tabPanel("Boxplot", icon = icon("bold"),
                                      fluidRow(column(3, 
                                                      selectInput("inAtivoBox", 

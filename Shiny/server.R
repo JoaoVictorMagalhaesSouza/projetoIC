@@ -7,7 +7,7 @@ shinyServer(function(input, output) {
             plott <- BancoDeDados_Acoes %>% 
                 select(Data,acao)  %>% 
                 melt(id.var = "Data") %>% 
-                ggplot(aes(Data,value))+geom_line(aes(colour = variable)) + ggtitle("Série Temporal do Ativo Selecionado: ") + tema +labs(x = "Data", y = "Valor da Ação", colour = "Ativo:")
+                ggplot(aes(Data,value))+geom_line(aes(colour = variable)) + ggtitle("Série Temporal do Ativo Selecionado: ") + tema +labs(x = "Data (ano)", y = "Valor da Ação (R$)", colour = "Ativo:")
             
             ggplotly(plott)
         }
@@ -34,6 +34,24 @@ shinyServer(function(input, output) {
             
         }
         boxPlotAtivo(BancoDeDados_Acoes,input$inAtivoBox)
+        
+    })
+    
+    output$outAtivoCompB3 <- renderPlotly({
+        compB3 <- function(df_emp,acao){
+            #Plotagem do resultado
+            plott <- BancoDeDados_Acoes %>% 
+                select(Data,acao)  %>% 
+                melt(id.var = "Data") %>% 
+                ggplot(aes(Data,value))+geom_line(aes(colour = variable)) + ggtitle("Comparação entre os dois ativos: ") + tema +labs(x = "Data (ano)", y = "Valor das Ações (R$)", colour = "Ativos:")
+            
+            ggplotly(plott)
+        }
+        #Chamando a funcao acima para ver a serie temporal de um setor.
+        #acao = "B3SA3.SA"
+        
+        compB3(df_emp,c(input$inAtivoCompB3,"B3SA3.SA"))
+        
         
     })
     
