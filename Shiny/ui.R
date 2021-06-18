@@ -8,9 +8,17 @@
 #
 
 # Define UI for application
+ 
 shinyUI(fluidPage(
-    navbarPage(title="ANÁLISE DA BOVESPA",
-               tabPanel("Ativo Único",
+      theme = shinytheme("flatly"),responsive = TRUE,lang = "pt", title = "Análise da Bolsa de Valores de São Paulo",
+      navbarPage(title="ANÁLISE DA BOVESPA",
+                tabPanel("Apresentação do Projeto",
+                         
+                         
+                         ),
+                
+                
+                tabPanel("Ativo Único",
                         tabsetPanel(
                             tabPanel("Série Temporal",icon = icon("chart-line"),
                                      fluidRow(column(3,
@@ -38,18 +46,21 @@ shinyUI(fluidPage(
                tabPanel("Vários Ativos",
                         tabsetPanel(
                           ##
-                          tabPanel("Série Temporal",
+                          tabPanel("Série Temporal",icon = icon("chart-line"),
                                    fluidRow(column(9,
                                                    selectInput("inSetor",
                                                                strong("Escolha o setor que deseja monitorar: "),
                                                                choices = listaSetores,
+                                                                selected = NULL,
                                                                multiple = FALSE,
                                                                ),
                                                                                                    ),
                                                     
                                       
                                           column(9,
-                                                 uiOutput("outPlotVariosAtivos")))),
+                                                 uiOutput("outPlotVariosAtivos"))),
+              
+                                   ),
                                             
                           tabPanel("SubMenu2.2",
                                    fluidRow(column(9,
@@ -60,7 +71,9 @@ shinyUI(fluidPage(
                )# barra de navegacao superior (Dados da Escola)
                
 )#fluidPage
+
 )#shinyUI
+
 )
 
 

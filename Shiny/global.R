@@ -17,9 +17,6 @@ library("twitteR")
 library("wordcloud")
 library("tm")
 library("wordcloud2")
-library("png")
-library("grImport2")
-library("rsvg")
 
 
 #library("tidyr")

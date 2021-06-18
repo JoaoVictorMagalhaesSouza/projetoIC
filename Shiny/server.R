@@ -40,7 +40,7 @@ shinyServer(function(input, output) {
     
     
     output$outPlotVariosAtivos <- renderUI ({
-    fluidRow(column(9,
+    fluidRow(column(10,
         selectInput("inAtivosSetor",
                      strong("Escolha os ativos que deseja monitorar: "),
                      choices = listaAcoesUmSetor(df_emp,BancoDeDados_Acoes,input$inSetor)[-1],
@@ -48,9 +48,10 @@ shinyServer(function(input, output) {
                     
                      
         ),
-        column(9,
-               plotlyOutput("teste", height = 600)
-               )
+        fixedRow(column(12, offset = 6, align ="center",
+                        plotlyOutput("outAtivosSetor", height = 600)
+        ))
+        
         ))
         
         
@@ -59,7 +60,7 @@ shinyServer(function(input, output) {
     })
     
     
-    output$teste <- renderPlotly({
+    output$outAtivosSetor <- renderPlotly({
         serieTempAlgumasAcoesSetor <- function(df_emp,setorMonitorado,listaAcoes){
             #setores = subset(df_emp, select = c(2))
             #setores = setores[!duplicated(setores),]
