@@ -17,6 +17,9 @@ library("twitteR")
 library("wordcloud")
 library("tm")
 library("wordcloud2")
+library("png")
+library("grImport2")
+library("rsvg")
 
 
 #library("tidyr")
@@ -140,5 +143,41 @@ tema <- theme(plot.title = element_text(family = "Helvetica", face = "bold", siz
 
 #saveRDS(BancoDeDados_Acoes,"BancoDeDados_Acoes.rds")
 
+listaTodosSetores <- function(df_emp){
+  setores = subset(df_emp, select = c(2))
+  setores = setores[!duplicated(setores),]
+  return(setores)
+}
+listaSetores  <- listaTodosSetores(df_emp)
 
+verificar_coluna <- function(data, coluna){
+  retorno <- coluna
+  retorno %in% names(data)
+}
 
+listaAcoesUmSetor <- function(df_emp,BancoDeDados_Acoes,setorMonitorado){
+  setor = setorMonitorado
+  #Pegar todas as empresas desse setor
+  Acoes_Filtradas = subset(df_emp,df_emp[2]==setor)
+  #Pegar todos os tickers dessas empresas desse setor
+  Acoes_Filtradas_lista = Acoes_Filtradas$Tickers
+  nlinhas <- nrow(Acoes_Filtradas)
+  numcol = ncol(BancoDeDados_Acoes)
+  #Pegando a coluna "Data" do BancoDeDados_Acoes para fazer um join depois
+  df_setor <- data.frame(Data=c(BancoDeDados_Acoes[1]))
+  #Vamos conferir quais  os tickers desse BD Auxiliar(no setor escolhido) estao no BD do Yahoo.
+  for(i in 1:nlinhas){
+    tickers = strsplit(Acoes_Filtradas_lista[i],";")
+    for (j in 1:length(tickers[[1]])){
+      aux <- paste(tickers[[1]][j],"SA",sep=".")
+      if (verificar_coluna(BancoDeDados_Acoes,aux)){
+        df_setor[aux] =  select(BancoDeDados_Acoes,aux)
+      }
+      
+    }
+    
+  }
+  acoesDoSetor <- colnames(df_setor)
+  return(acoesDoSetor)
+  
+}

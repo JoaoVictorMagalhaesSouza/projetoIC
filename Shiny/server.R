@@ -1,37 +1,26 @@
-#
-# This is the server logic of a Shiny web application. You can run the
-# application by clicking 'Run App' above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
 
-# Define server logic required to draw a histogram
-shinyServer(function(input, output, session) {
+shinyServer(function(input, output) {
 
-    ##################################################################
-    #########################Dados do Participante####################
-    ##################################################################
-    
-    output$PlotAtivo1 <- renderPlotly({
+    output$outPlotAtivo <- renderPlotly({
         serieTempAtivo <- function(df_emp,acao){
             #Plotagem do resultado
             plott <- BancoDeDados_Acoes %>% 
                 select(Data,acao)  %>% 
                 melt(id.var = "Data") %>% 
                 ggplot(aes(Data,value))+geom_line(aes(colour = variable)) + ggtitle("Série Temporal do Ativo Selecionado: ") + tema +labs(x = "Data", y = "Valor da Ação", colour = "Ativo:")
+            
             ggplotly(plott)
         }
         #Chamando a funcao acima para ver a serie temporal de um setor.
         #acao = "B3SA3.SA"
-        serieTempAtivo(df_emp,input$Ativo1)
+       
+        serieTempAtivo(df_emp,input$inAtivoSerie)
         
     })
     
     
     ##Problema aqui: tive que mudar de plotly para plot
-    output$PlotAtivo2 <- renderPlot({
+    output$outBoxplotAtivo <- renderPlot({
         boxPlotAtivo <- function(BancoDeDados_Acoes,acao){
 
                 
@@ -44,19 +33,76 @@ shinyServer(function(input, output, session) {
             
             
         }
-        print(typeof(input$Ativo2))
-        boxPlotAtivo(BancoDeDados_Acoes,input$Ativo2)
+        boxPlotAtivo(BancoDeDados_Acoes,input$inAtivoBox)
         
     })
     
-    output$plot2 <- renderLeaflet({
-        dados %>% group_by(Country, latitude, longitude) %>% summarise(NrUniv=n_distinct(University)) %>% 
-            leaflet() %>% 
-            addTiles() %>% 
-            addMarkers(lng = ~longitude, lat = ~latitude, popup = ~NrUniv,
-                       clusterOptions = markerClusterOptions(maxClusterRadius = 15))
+    
+    
+    output$outPlotVariosAtivos <- renderUI ({
+    fluidRow(column(9,
+        selectInput("inAtivosSetor",
+                     strong("Escolha os ativos que deseja monitorar: "),
+                     choices = listaAcoesUmSetor(df_emp,BancoDeDados_Acoes,input$inSetor)[-1],
+                     multiple = TRUE,
+                    
+                     
+        ),
+        column(9,
+               plotlyOutput("teste")
+               )
+        ))
+        
+        
+        
+        
     })
     
+    
+    output$teste <- renderPlotly({
+        serieTempAlgumasAcoesSetor <- function(df_emp,setorMonitorado,listaAcoes){
+            #setores = subset(df_emp, select = c(2))
+            #setores = setores[!duplicated(setores),]
+            #Escolher um setor específico
+            setor = setorMonitorado #setores[[1]][9]    #Saúde
+            #Pegar todas as empresas desse setor:
+            Acoes_Filtradas = subset(df_emp,df_emp[2]==setor)
+            #Pegar todos os tickers dessas empresas desse setor:
+            Acoes_Filtradas_lista = Acoes_Filtradas$Tickers
+            #Obter o numero de linhas do BD das acoes do setor especificado
+            nlinhas <- nrow(Acoes_Filtradas)
+            #Conferir coluna a coluna 
+            numcol = ncol(BancoDeDados_Acoes)
+            #Pegando a coluna "Data" do BancoDeDados_Acoes
+            
+            df_setor <- data.frame(Data=c(BancoDeDados_Acoes[1]))
+            #Vamos conferir quais  os tickers desse BD Auxiliar(no setor escolhido) estao no BD do Yahoo.
+            for(i in 1:nlinhas){
+                tickers = strsplit(Acoes_Filtradas_lista[i],";")
+                for (j in 1:length(tickers[[1]])){
+                    aux <- paste(tickers[[1]][j],"SA",sep=".")
+                    if (verificar_coluna(BancoDeDados_Acoes,aux)){
+                        df_setor[aux] =  select(BancoDeDados_Acoes,aux)
+                    }
+                    
+                }
+                
+            }
+            #Plotagem do resultado
+            plott <- df_setor %>%
+                select(Data,listaAcoes) %>%
+                melt(id.var = "Data") %>% 
+                ggplot(aes(Data,value))+geom_line(aes(colour = variable))
+            ggplotly(plott)
+        }
+        #Passaremos a lista com as acoes que o usuario quer monitorar e o setor tambem.
+        listaAcoes <- input$inAtivosSetor    #c("FLRY3.SA","RADL3.SA")
+        setorMonitorado <- input$inSetor
+        serieTempAlgumasAcoesSetor(df_emp,setorMonitorado,listaAcoes)
+        
+    })
+   
+   
    output$plot3 <- renderPlotly({
        plot2 <- dados %>% filter(Country=="BRAZIL") %>% 
            filter(University=="UNIVERSIDADE FEDERAL DE VICOSA",
