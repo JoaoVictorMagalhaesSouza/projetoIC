@@ -49,7 +49,7 @@ shinyServer(function(input, output) {
                      
         ),
         column(9,
-               plotlyOutput("teste")
+               plotlyOutput("teste", height = 600)
                )
         ))
         
@@ -98,7 +98,9 @@ shinyServer(function(input, output) {
         #Passaremos a lista com as acoes que o usuario quer monitorar e o setor tambem.
         listaAcoes <- input$inAtivosSetor    #c("FLRY3.SA","RADL3.SA")
         setorMonitorado <- input$inSetor
-        serieTempAlgumasAcoesSetor(df_emp,setorMonitorado,listaAcoes)
+        if (!is.null(listaAcoes)){
+            serieTempAlgumasAcoesSetor(df_emp,setorMonitorado,listaAcoes)
+        }
         
     })
    
