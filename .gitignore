@@ -6,3 +6,8 @@
 .httr-oauth
 *.DataBasesCreation.R
 /DataBasesCreation.R
+*.RData
+*.Rhistory
+*.anotations
+*.DFP Cache Folder
+*.httr-oauth
