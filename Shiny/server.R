@@ -18,6 +18,66 @@ shinyServer(function(input, output) {
         
     })
     
+    output$outBimestral <- renderPlotly({
+        dadosBimestre <- function(DF,BancoDeDados_Acoes,ano,bimestre,acao){
+            intBim = as.integer(bimestre)
+            if (intBim < 5){
+            mes1 <- paste("0",as.character((intBim*2)-1),sep = "")
+            mes2 <- paste("0",as.character(intBim*2),sep="")
+            }
+            else if (intBim == 5){
+            mes1 <- paste("0",as.character((intBim*2)-1),sep = "")
+            mes2 <- "10"
+            }
+            else{
+            mes1 <- 11
+            mes2 <- 12
+            }
+            j = 1
+            #dataIni = 2016
+            #dataF = as.integer(strsplit(as.character(DF),"-")[[1]][1])
+            #qtdeGraf <- dataF - dataIni #Quantidade de gráficos a serem gerados.
+            
+            dataAtual <- ano
+            # boxers <- list()
+              # print(dataAtual)
+             final <- 1
+             contador <- 0
+             inicial <- 0
+                for (j in 1:nrow(BancoDeDados_Acoes)){
+                    #Ano
+                    if (strsplit(as.character(BancoDeDados_Acoes$Data[j]),"-")[[1]][1] == dataAtual){
+                        #Bimestre que eu quero
+                        if(strsplit(as.character(BancoDeDados_Acoes$Data[j]),"-")[[1]][2]==mes1 || strsplit(as.character(BancoDeDados_Acoes$Data[j]),"-")[[1]][2]==mes2){
+                            final <- j
+                            #print(BancoDeDados_Acoes$Data[j])
+                            contador <- contador + 1
+                        }
+                        inicial <- final-contador+1
+                    }
+                }
+               
+                
+                #Plotar aqui
+                ploter <- BancoDeDados_Acoes[inicial:final,] %>%        
+                    select(Data,acao) %>% 
+                    melt(id.var = "Data") %>% 
+                    ggplot(aes(Data,value))+geom_line(aes(colour = variable))
+                
+                #boxers[[i]] = melt(BancoDeDados_Acoes[inicial:final,],id.vars = "Data", measure.vars = c("B3SA3.SA"))
+                
+                
+            
+            ggplotly(ploter)
+        }
+        
+        dadosBimestre(DF,BancoDeDados_Acoes,input$inAno,input$inBimestre,input$inAtivoBimestral)
+        
+        
+        
+        
+    })
+    
     
     
     output$outAtivoCompB3 <- renderPlotly({
@@ -26,7 +86,7 @@ shinyServer(function(input, output) {
             plott <- BancoDeDados_Acoes %>% 
                 select(Data,acao)  %>% 
                 melt(id.var = "Data") %>% 
-                ggplot(aes(Data,value))+geom_line(aes(colour = variable)) + ggtitle("Comparação entre os dois ativos: ") + tema +labs(x = "Data (ano)", y = "Valor das Ações (R$)", colour = "Ativos:")
+                ggplot(aes(Data,value))+geom_line(aes(colour = variable)) + ggtitle("Comparação do ativo com a B3 ") + tema +labs(x = "Data (ano)", y = "Valor das Ações (R$)", colour = "Ativos:")
             
             ggplotly(plott)
         }

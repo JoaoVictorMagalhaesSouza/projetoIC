@@ -17,6 +17,8 @@ library("twitteR")
 library("wordcloud")
 library("tm")
 library("wordcloud2")
+library("rsconnect")
+library("pracma")
 
 
 #library("tidyr")
@@ -185,3 +187,13 @@ listaSemB3 <- function(){
   acoes <- names(acoes)[-1]
 }
 noB3 <- listaSemB3()
+
+#bimestres <- c("Janeiro/Fevereiro","Março/Abril","Maio/Junho","Julho/Agosto","Setembro/Outubro","Novembro/Dezembro")
+bimestres <- c(1,2,3,4,5,6)
+anoAtual <- strsplit(as.character(Sys.Date()),"-")[[1]][1]
+anos <- 2016:anoAtual
+# #Conexao:
+# rsconnect::setAccountInfo(name='joaovictormsouza',
+#                           token='89CFD8B87FC46DEDFC474857FF5AD978',
+#                           secret='2YYEmRUi0rjHOHdUWgtNLUFWzPQek9/hLYNN1wCo')
+

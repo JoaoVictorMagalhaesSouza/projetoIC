@@ -14,14 +14,14 @@ shinyUI(fluidPage(
       navbarPage(title="ANÁLISE DA BOVESPA",
                 
                  tabPanel("Apresentação",
-                          titlePanel("Motivações"),
+                          h2("Motivações"),
                           sidebarLayout(
                             sidebarPanel(
                               icon("info"),
                               p(style = "text-align: justify;","Diante das problemáticas nos diversos âmbitos
                                 sociais presenciados ultimamente e, partindo da premissa de que a educação básica brasileira não promulga boas
                                 práticas de educação financeira, sentimentos a necessidade de promover uma ideia
-                                que fometasse, auxiliasse e consolidasse o estudo acerca do Mercado Financeiro,
+                                que fomentasse, auxiliasse e consolidasse o estudo acerca do Mercado Financeiro,
                                 que é de extrema importância e bastante impactante no processo de formação do ser."),
                               br(),
                               p(style = "text-align: justify;","Além disso, também agregamos à essa causa o ideal de somar e impulsionar
@@ -32,6 +32,21 @@ shinyUI(fluidPage(
                             ),
                             
                             mainPanel(
+                              h2("Nossa Proposta"),
+                              icon("check"),
+                              br(),
+                              p(style = "text-align: justify;","Propomos com este trabalho, então, uma maneira mais prática,
+                                intuitiva e em mais alto nível uma forma de visualizar",em("dashboards"),"interativos acerca de pregões
+                                da Bolsa de Valores de São Paulo. Nós reunimos um Banco de Dados contendo os valores do 
+                                Preço Ajustado das ações mais negocidadas da BOVESPA desde Janeiro de 2016 até o dia atual. 
+                                "),
+                              br(),
+                              p(style = "text-align: justify;","Sendo assim, nós produzimos
+                                séries temporais e",em("boxplots")," de acordo com os filtros que o usuário queira aplicar, de modo a facilitar
+                                e guiar sua busca. Dessa forma, buscamos disseminar a ideia de levar essas métricas que embasam a análise de dados
+                                de forma que os usuários não precisem saber fazê-las via alguma linguagem de programação, bastando apenas possuir o
+                                interesse de analisá-las via ",em("dashboards"),"."),
+                              
                               
                             )
                             
@@ -42,7 +57,7 @@ shinyUI(fluidPage(
                 
                 tabPanel("Ativo Único",
                         tabsetPanel(
-                            tabPanel("Série Temporal",icon = icon("chart-line"),
+                            tabPanel("Série Temporal Geral",icon = icon("chart-line"),
                                      fluidRow(column(3,
                                                      selectInput("inAtivoSerie",
                                                                  strong("Escolha um ativo:"),
@@ -50,6 +65,28 @@ shinyUI(fluidPage(
                                          column(9,
                                                 plotlyOutput("outPlotAtivo", height = 500)))),
                             ##
+                            tabPanel("Série Temporal Bimestral",icon = icon("chart-line"),
+                                     fluidRow(column(3,
+                                                     selectInput("inAtivoBimestral",
+                                                                 strong("Escolha um ativo:"),
+                                                                 choices=c(names(BancoDeDados_Acoes[-1]))),
+                              
+                                                     
+                                                     selectInput("inBimestre",
+                                                                 strong("Escolha um bimestre:"),
+                                                                 choices = bimestres
+                                                                 ),
+                                                    
+                                                     selectInput("inAno",
+                                                                 strong("Escolha um ano:"),
+                                                                 choices = anos
+                                                     ),
+                                                     column(9,
+                                                        plotlyOutput("outPlotBim",height = 500)    
+                                                     ),
+                                                     ),
+                                              column(9,
+                                                     plotlyOutput("outBimestral", height = 500)))),
                             tabPanel("Comparação com a B3",icon = icon("chart-line"),
                                      fluidRow(column(3,
                                                      selectInput("inAtivoCompB3",
