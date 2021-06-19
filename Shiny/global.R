@@ -19,6 +19,7 @@ library("tm")
 library("wordcloud2")
 library("rsconnect")
 library("pracma")
+library("ggthemes")
 
 
 #library("tidyr")

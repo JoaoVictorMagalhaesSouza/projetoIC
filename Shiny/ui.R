@@ -38,7 +38,8 @@ shinyUI(fluidPage(
                               p(style = "text-align: justify;","Propomos com este trabalho, então, uma maneira mais prática,
                                 intuitiva e em mais alto nível uma forma de visualizar",em("dashboards"),"interativos acerca de pregões
                                 da Bolsa de Valores de São Paulo. Nós reunimos um Banco de Dados contendo os valores do 
-                                Preço Ajustado das ações mais negocidadas da BOVESPA desde Janeiro de 2016 até o dia atual. 
+                                Preço Ajustado das ações mais negocidadas da BOVESPA desde Janeiro de 2016 até o dia atual. O Banco de Dados
+                                é atualizado todo dia às 06:00 a.m, no horário de Brasília, de acordo com os dados fornecidos pela API do Yahoo Finance.
                                 "),
                               br(),
                               p(style = "text-align: justify;","Sendo assim, nós produzimos
@@ -64,29 +65,38 @@ shinyUI(fluidPage(
                                                                  choices=c(names(BancoDeDados_Acoes[-1])))),
                                          column(9,
                                                 plotlyOutput("outPlotAtivo", height = 500)))),
+                            
+                            tabPanel("Série Temporal Anual",icon = icon("chart-line"),
+                                     fluidRow(column(3,
+                                                     selectInput("inAtivoAnual",
+                                                                 strong("Escolha um ativo:"),
+                                                                 choices=c(names(BancoDeDados_Acoes[-1]))),
+                                                     
+                                                     selectInput("inAnoAnual",
+                                                                 strong("Escolha um ano:"),
+                                                                 choices = anos
+                                                                 )
+                                                     ),
+                                              column(9,
+                                                     plotlyOutput("outAtivoAnual", height = 500)))),
                             ##
                             tabPanel("Série Temporal Bimestral",icon = icon("chart-line"),
-                                     fluidRow(column(3,
+                                     fluidRow(column(9,
                                                      selectInput("inAtivoBimestral",
                                                                  strong("Escolha um ativo:"),
                                                                  choices=c(names(BancoDeDados_Acoes[-1]))),
                               
                                                      
-                                                     selectInput("inBimestre",
-                                                                 strong("Escolha um bimestre:"),
-                                                                 choices = bimestres
-                                                                 ),
-                                                    
                                                      selectInput("inAno",
                                                                  strong("Escolha um ano:"),
                                                                  choices = anos
                                                      ),
                                                      column(9,
-                                                        plotlyOutput("outPlotBim",height = 500)    
+                                                            uiOutput("outAno")    
                                                      ),
+                                                     
                                                      ),
-                                              column(9,
-                                                     plotlyOutput("outBimestral", height = 500)))),
+                                              )),
                             tabPanel("Comparação com a B3",icon = icon("chart-line"),
                                      fluidRow(column(3,
                                                      selectInput("inAtivoCompB3",
@@ -95,7 +105,7 @@ shinyUI(fluidPage(
                                               column(9,
                                                      plotlyOutput("outAtivoCompB3", height = 500)))),
                             
-                            tabPanel("Boxplot", icon = icon("bold"),
+                            tabPanel("Boxplot Geral", icon = icon("bold"),
                                      fluidRow(column(3, 
                                                      selectInput("inAtivoBox", 
                                                                  strong("Escolha um ativo:"), 

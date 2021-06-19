@@ -7,16 +7,97 @@ shinyServer(function(input, output) {
             plott <- BancoDeDados_Acoes %>% 
                 select(Data,acao)  %>% 
                 melt(id.var = "Data") %>% 
-                ggplot(aes(Data,value))+geom_line(aes(colour = variable)) + ggtitle("Série Temporal: ") + tema +labs(x = "Data (ano)", y = "Valor da Ação (R$)", colour = "Ativo:")
+                ggplot(aes(Data,value))+geom_line(aes(colour = variable)) + ggtitle("Série Temporal: ") + theme_light() +labs(x = "Data (ano)", y = "Valor da Ação (R$)", colour = "Ativo:") + scale_x_date(date_breaks = "9 months", date_labels = "%b/%Y")
             
             ggplotly(plott)
         }
         #Chamando a funcao acima para ver a serie temporal de um setor.
-        #acao = "B3SA3.SA"
+        
        
         serieTempAtivo(df_emp,input$inAtivoSerie)
         
     })
+    
+    output$outAtivoAnual <- renderPlotly({
+        dadosAnual <- function(DF,BancoDeDados_Acoes,ano,acao){
+            j = 1
+            #dataIni = 2016
+            #dataF = as.integer(strsplit(as.character(DF),"-")[[1]][1])
+            #qtdeGraf <- dataF - dataIni #Quantidade de gráficos a serem gerados.
+            dataAtual <- ano
+            # boxers <- list()
+            # print(dataAtual)
+            final <- 1
+            contador <- 0
+            inicial <- 0
+            for (j in 1:nrow(BancoDeDados_Acoes)){
+                #Ano
+                if (strsplit(as.character(BancoDeDados_Acoes$Data[j]),"-")[[1]][1] == dataAtual){
+                    #Bimestre que eu quero
+                    final <- j
+                        #print(BancoDeDados_Acoes$Data[j])
+                        contador <- contador + 1
+                    
+                    inicial <- final-contador+1
+                }
+            }
+            
+            
+            #Plotar aqui
+            ploter <- BancoDeDados_Acoes[inicial:final,] %>%        
+                select(Data,acao) %>% 
+                melt(id.var = "Data") %>% 
+                ggplot(aes(Data,value))+geom_line(aes(colour = variable)) #+  #geom_smooth(method = "loess", se = FALSE)
+            
+            #boxers[[i]] = melt(BancoDeDados_Acoes[inicial:final,],id.vars = "Data", measure.vars = c("B3SA3.SA"))
+            
+            
+            
+            ggplotly(ploter)
+        }
+        
+        dadosAnual(DF,BancoDeDados_Acoes,input$inAnoAnual,input$inAtivoAnual)
+        
+        
+        
+    })
+    
+    
+    output$outAno <- renderUI({
+    
+        if (input$inAno == anoAtual){
+            mesAtual <- strsplit(as.character(Sys.Date()),"-")[[1]][2]
+            numBimestres <- as.integer(mesAtual)%/%2
+            bimestresOf <- 1:numBimestres
+    
+        }
+        else{
+            bimestresOf <- c(1,2,3,4,5,6)
+        
+        }
+        
+        fluidRow(column(12,
+                        selectInput("inBimestre",
+                                       strong("Escolha um bimestre: "),
+                                       choices = bimestresOf,
+                                       
+                        ),
+                    
+                        fixedRow(column(12, offset = 6, align ="center",
+                                        plotlyOutput("outBimestral", height = 600)
+                        ))
+                        
+        ))
+        
+        
+        
+        
+                
+        
+        
+        
+    })
+    
     
     output$outBimestral <- renderPlotly({
         dadosBimestre <- function(DF,BancoDeDados_Acoes,ano,bimestre,acao){
@@ -108,7 +189,7 @@ shinyServer(function(input, output) {
                 select(Data,acao) %>% 
                 melt(id.var = "Data") %>% 
                 # box <- melt(temp,id.vars = "Data", measure.vars = c("ABEV3.SA"))
-                ggplot(aes(Data,value)) + geom_boxplot() + ggtitle("Boxplot: ") + labs(x = "Data (ano)", y = "Valor da Ação (R$)")
+                ggplot(aes(Data,value)) + geom_boxplot(fill='#56B4E9',color = "blue",outlier.colour = "red") + ggtitle("Boxplot: ") + labs(x = "Data (ano)", y = "Valor da Ação (R$)") + theme_classic()
             
             
             
