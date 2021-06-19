@@ -7,7 +7,7 @@ shinyServer(function(input, output) {
             plott <- BancoDeDados_Acoes %>% 
                 select(Data,acao)  %>% 
                 melt(id.var = "Data") %>% 
-                ggplot(aes(Data,value))+geom_line(aes(colour = variable)) + ggtitle("Série Temporal do Ativo Selecionado: ") + tema +labs(x = "Data (ano)", y = "Valor da Ação (R$)", colour = "Ativo:")
+                ggplot(aes(Data,value))+geom_line(aes(colour = variable)) + ggtitle("Série Temporal: ") + tema +labs(x = "Data (ano)", y = "Valor da Ação (R$)", colour = "Ativo:")
             
             ggplotly(plott)
         }
@@ -15,6 +15,26 @@ shinyServer(function(input, output) {
         #acao = "B3SA3.SA"
        
         serieTempAtivo(df_emp,input$inAtivoSerie)
+        
+    })
+    
+    
+    
+    output$outAtivoCompB3 <- renderPlotly({
+        compB3 <- function(df_emp,BancoDeDados_Acoes,acao){
+            #Plotagem do resultado
+            plott <- BancoDeDados_Acoes %>% 
+                select(Data,acao)  %>% 
+                melt(id.var = "Data") %>% 
+                ggplot(aes(Data,value))+geom_line(aes(colour = variable)) + ggtitle("Comparação entre os dois ativos: ") + tema +labs(x = "Data (ano)", y = "Valor das Ações (R$)", colour = "Ativos:")
+            
+            ggplotly(plott)
+        }
+        #Chamando a funcao acima para ver a serie temporal de um setor.
+        #acao = "B3SA3.SA"
+        
+        compB3(df_emp,BancoDeDados_Acoes,c(input$inAtivoCompB3,"B3SA3.SA"))
+        
         
     })
     
@@ -28,7 +48,7 @@ shinyServer(function(input, output) {
                 select(Data,acao) %>% 
                 melt(id.var = "Data") %>% 
                 # box <- melt(temp,id.vars = "Data", measure.vars = c("ABEV3.SA"))
-                ggplot(aes(Data,value)) + geom_boxplot() + ggtitle("Boxplot do Ativo Selecionado: ") + tema + labs(x = "Data (ano)", y = "Valor da Ação (R$)")
+                ggplot(aes(Data,value)) + geom_boxplot() + ggtitle("Boxplot: ") + labs(x = "Data (ano)", y = "Valor da Ação (R$)")
             
             
             
@@ -37,31 +57,56 @@ shinyServer(function(input, output) {
         
     })
     
-    output$outAtivoCompB3 <- renderPlotly({
-        compB3 <- function(df_emp,acao){
-            #Plotagem do resultado
-            plott <- BancoDeDados_Acoes %>% 
-                select(Data,acao)  %>% 
-                melt(id.var = "Data") %>% 
-                ggplot(aes(Data,value))+geom_line(aes(colour = variable)) + ggtitle("Comparação entre os dois ativos: ") + tema +labs(x = "Data (ano)", y = "Valor das Ações (R$)", colour = "Ativos:")
+    output$outSetorComp <- renderPlotly({
+        serieTempSetor <- function(df_emp,BancoDeDados_Acoes,setorMonitorado){
+            #aux <- "B3SA3.SA"
+            #verificar_coluna(BancoDeDados_Acoes,aux)
             
+            #Escolher um setor específico
+            setor = setorMonitorado #setores[[1]][9]    #Saúde
+            #Pegar todas as empresas desse setor:
+            Acoes_Filtradas = subset(df_emp,df_emp[2]==setor)
+            #Pegar todos os tickers dessas empresas desse setor:
+            Acoes_Filtradas_lista = Acoes_Filtradas$Tickers
+            #Obter o numero de linhas do BD das acoes do setor especificado
+            nlinhas <- nrow(Acoes_Filtradas)
+            #Conferir coluna a coluna 
+            numcol = ncol(BancoDeDados_Acoes)
+            #Pegando a coluna "Data" do BancoDeDados_Acoes
+            
+            df_setor <- data.frame(Data=c(BancoDeDados_Acoes[1]))
+            #Vamos conferir quais  os tickers desse BD Auxiliar(no setor escolhido) estao no BD do Yahoo.
+            for(i in 1:nlinhas){
+                tickers = strsplit(Acoes_Filtradas_lista[i],";")
+                for (j in 1:length(tickers[[1]])){
+                    aux <- paste(tickers[[1]][j],"SA",sep=".")
+                    if (verificar_coluna(BancoDeDados_Acoes,aux)){
+                        df_setor[aux] =  select(BancoDeDados_Acoes,aux)
+                    }
+                    
+                }
+                
+            }
+            #Plotagem do resultado
+            plott <- df_setor %>%         
+                melt(id.var = "Data") %>% 
+                ggplot(aes(Data,value))+geom_line(aes(colour = variable))
             ggplotly(plott)
         }
         #Chamando a funcao acima para ver a serie temporal de um setor.
-        #acao = "B3SA3.SA"
-        
-        compB3(df_emp,c(input$inAtivoCompB3,"B3SA3.SA"))
+        #No shiny criaremos uma listBox para o usuario escolher o setor.
+        setorMonitorado = input$inSetorComp
+        serieTempSetor(df_emp,BancoDeDados_Acoes,setorMonitorado)
         
         
     })
     
     
-    
-    output$outPlotVariosAtivos <- renderUI ({
+    output$outSetorFilt <- renderUI ({
     fluidRow(column(10,
         selectizeInput("inAtivosSetor",
                      strong("Escolha os ativos que deseja monitorar (máx 5): "),
-                     choices = listaAcoesUmSetor(df_emp,BancoDeDados_Acoes,input$inSetor)[-1],
+                     choices = listaAcoesUmSetor(df_emp,BancoDeDados_Acoes,input$inSetorFilt)[-1],
                      multiple = TRUE,
                     options = list(maxItems = 5),
                     
@@ -117,7 +162,7 @@ shinyServer(function(input, output) {
         }
         #Passaremos a lista com as acoes que o usuario quer monitorar e o setor tambem.
         listaAcoes <- input$inAtivosSetor    #c("FLRY3.SA","RADL3.SA")
-        setorMonitorado <- input$inSetor
+        setorMonitorado <- input$inSetorFilt
         if (!is.null(listaAcoes)){
             serieTempAlgumasAcoesSetor(df_emp,setorMonitorado,listaAcoes)
         }

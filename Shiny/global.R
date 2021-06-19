@@ -183,6 +183,5 @@ listaSemB3 <- function(){
   acoes <- BancoDeDados_Acoes
   acoes$B3SA3.SA <- NULL
   acoes <- names(acoes)[-1]
-  print(acoes)
 }
 noB3 <- listaSemB3()
