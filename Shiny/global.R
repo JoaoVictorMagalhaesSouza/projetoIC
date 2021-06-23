@@ -193,6 +193,7 @@ noB3 <- listaSemB3()
 bimestres <- c(1,2,3,4,5,6)
 anoAtual <- strsplit(as.character(Sys.Date()),"-")[[1]][1]
 anos <- 2016:anoAtual
+secoes <- c("Apresentação","Ativo Único", "Setorial Completo", "Setorial Filtrado", "Sobre os Envolvidos")
 # #Conexao:
 # rsconnect::setAccountInfo(name='joaovictormsouza',
 #                           token='89CFD8B87FC46DEDFC474857FF5AD978',

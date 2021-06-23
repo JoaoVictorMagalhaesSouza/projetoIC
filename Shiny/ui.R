@@ -25,8 +25,8 @@ shinyUI(fluidPage(
                                 que é de extrema importância e bastante impactante no processo de formação do ser."),
                               br(),
                               p(style = "text-align: justify;","Além disso, também agregamos à essa causa o ideal de somar e impulsionar
-                                o campo da Ciência de Dados no Mercado Financeiro Brasileiro, uma vez que há uma carência
-                                muito grande dos Bancos de Dados e ",em("dashboards"),"nacionais nesse setor.
+                                o campo da Ciência de Dados no Mercado Financeiro Brasileiro, uma vez que os dados são muito incipientes e incompletos, formando assim uma carência
+                                muito grande de Bancos de Dados e ",em("dashboards"),"nacionais nesse setor.
                                 "),
                               
                             ),
@@ -113,7 +113,22 @@ shinyUI(fluidPage(
                                               
                                               ##Problema aqui: tive que mudar de plotly para plot                   
                                               column(9,
-                                                plotOutput("outBoxplotAtivo", height = 600))))
+                                                plotOutput("outBoxplotAtivo", height = 600)))),
+                            
+                            tabPanel("Boxplot Anual", icon = icon("bold"),
+                                     fluidRow(column(3, 
+                                                     selectInput("inBoxAnualAtivo", 
+                                                                 strong("Escolha um ativo:"), 
+                                                                 choices=c(names(BancoDeDados_Acoes[-1]))),
+                                                     
+                                                     selectInput("inBoxAnualAno",
+                                                                 strong("Escolha um ano:"),
+                                                                 choices = anos)
+                                                     ),
+                                              
+                                                                
+                                              column(9,
+                                                     plotOutput("outBoxAnual", height = 600))))
                             
                             
                             
@@ -178,13 +193,16 @@ shinyUI(fluidPage(
                                Federal de Viçosa - Campus Florestal."),
                             br(),
                             icon("at"),
-                            em("   joao.souza5@ufv.br"),
+                            em("   JoaoVictorMagalhaesSouza@gmail.com"),
                             br(),
                             icon("instagram"),
                             a(href = "https://www.instagram.com/joaovictormagalhaessouza/",em("joaovictormagalhaessouza")),
                             br(),
                             icon("github"),
                             a(href = "https://github.com/JoaoVictorMagalhaesSouza",em("joaovictormagalhaessouza")),
+                            br(),
+                            icon("briefcase"),
+                            a(href="https://joaovictormagalhaessouza.github.io/", em("https://joaovictormagalhaessouza.github.io/")),
                             
                             
                             ),
@@ -197,7 +215,27 @@ shinyUI(fluidPage(
                         
                         
                         
+               ),
+               tabPanel("Bug Report",
+                        tabsetPanel(
+                          tabPanel("Reportar um problema",icon = icon("bug"),
+                                   fluidRow(column(9,
+                                                   textInput("inBugNome","Nome"),
+                                                   textInput("inBugEmail","Email"),
+                                                   selectInput("inBugSecao",strong("Seção de ocorrência"),choices = secoes),
+                                                   dateInput("inBugData",label="Data do ocorrido",format = "dd-mm-yyyy"),
+                                                   textAreaInput("inBugDescrip",label="Descrição do problema",width="400px",rows=4,cols = 9),
+                                                   fileInput("inBugFile",label="Anexar screenshot (importante)")
+                                   ),
+                                   
+                                   
+                                   column(9,
+                                          plotlyOutput("outSetorComp"))),
+                                   
+                          )
+                        )
                )
+               
                
                
 )#fluidPage
