@@ -134,9 +134,9 @@ shinyUI(fluidPage(
                             
                         )
                     ),
-                tabPanel("Setorial Completo",
+                tabPanel("Setorial",
                          tabsetPanel(
-                           tabPanel("Série Temporal",icon = icon("chart-line"),
+                           tabPanel("Setorial Completo",icon = icon("chart-line"),
                                     fluidRow(column(9,
                                                     selectInput("inSetorComp",
                                                                 strong("Escolha o setor que deseja monitorar: "),
@@ -150,37 +150,49 @@ shinyUI(fluidPage(
                                     column(9,
                                            plotlyOutput("outSetorComp"))),
                                     
+                           ),
+                           tabPanel("Setorial Filtrado",icon = icon("chart-line"),
+                                    fluidRow(column(9,
+                                                    selectInput("inSetorFilt",
+                                                                strong("Escolha o setor que deseja monitorar: "),
+                                                                choices = listaSetores,
+                                                                selected = NULL,
+                                                                multiple = FALSE,
+                                                    ),
+                                    ),
+                                    
+                                    
+                                    column(9,
+                                           uiOutput("outSetorFilt"))),
+                                    
                            )
+                           
                          )
                          ),
+                
+              tabPanel("Fronteira de Markowitz",
+                       tabsetPanel(
+                         tabPanel("O que é ", icon = icon("question"),
+                                  fluidRow(column(9,
+                                                  selectInput("inAtivosMark",
+                                                  strong("Escolha os ativos que deseja montar a carteira:"),
+                                                  choices=c(names(BancoDeDados_Acoes[-1])),
+                                                  multiple = TRUE
+                                                            )
+                                                  ),
+                                           
+                                           column(9,
+                                                  plotlyOutput("outCartMark"))
+                                           )
+                                  
+                                  )
+                         
+                       )
+                
+              ),
               
                 
-                 tabPanel("Setorial Filtrado",
-                        tabsetPanel(
-                          ##
-                          tabPanel("Série Temporal",icon = icon("chart-line"),
-                                   fluidRow(column(9,
-                                                   selectInput("inSetorFilt",
-                                                               strong("Escolha o setor que deseja monitorar: "),
-                                                               choices = listaSetores,
-                                                                selected = NULL,
-                                                               multiple = FALSE,
-                                                               ),
-                                                                                                   ),
-                                                    
-                                      
-                                          column(9,
-                                                 uiOutput("outSetorFilt"))),
-              
-                                   ),
-                                            
-                          tabPanel("SubMenu2.2",
-                                   fluidRow(column(9,
-                                                   plotlyOutput("plot3", height = 600))))
-                          
-                          
-                        )# barra de navegacao interna
-               ),
+                 
                tabPanel("Sobre os Envolvidos",
                         titlePanel("Informações"),
                         sidebarLayout(
@@ -215,26 +227,8 @@ shinyUI(fluidPage(
                         
                         
                         
-               ),
-               tabPanel("Bug Report",
-                        tabsetPanel(
-                          tabPanel("Reportar um problema",icon = icon("bug"),
-                                   fluidRow(column(9,
-                                                   textInput("inBugNome","Nome"),
-                                                   textInput("inBugEmail","Email"),
-                                                   selectInput("inBugSecao",strong("Seção de ocorrência"),choices = secoes),
-                                                   dateInput("inBugData",label="Data do ocorrido",format = "dd-mm-yyyy"),
-                                                   textAreaInput("inBugDescrip",label="Descrição do problema",width="400px",rows=4,cols = 9),
-                                                   fileInput("inBugFile",label="Anexar screenshot (importante)")
-                                   ),
-                                   
-                                   
-                                   column(9,
-                                          plotlyOutput("outSetorComp"))),
-                                   
-                          )
-                        )
                )
+               
                
                
                
