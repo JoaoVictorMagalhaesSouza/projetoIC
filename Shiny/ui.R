@@ -91,8 +91,8 @@ shinyUI(fluidPage(
                                                                  strong("Escolha um ano:"),
                                                                  choices = anos
                                                      ),
-                                                     column(9,
-                                                            uiOutput("outAno")    
+                                                     fluidRow(column(9,
+                                                            uiOutput("outAno")  )  
                                                      ),
                                                      
                                                      ),
@@ -177,20 +177,26 @@ shinyUI(fluidPage(
                                   
                                   ),
                          tabPanel("Carteira", icon = icon("wallet"),
+                                  
                                   fluidRow(column(9,
                                                   selectInput("inAtivosMark",
-                                                              strong("Escolha os ativos do portfólio (min. 2):"),
+                                                              strong("Escolha os ativos do portfólio (mín. 2):"),
                                                               choices=c(names(BancoDeDados_Acoes[-1])),
                                                               multiple = TRUE
                                                   )
+                                                  
                                   ),
+                                  mainPanel(
+                                  fluidRow(column(offset = 5,width = 12,plotlyOutput("outCartMark"))),
                                   
-                                  column(9,
-                                         plotlyOutput("outCartMark"))
                                   )
+                                  
+                                  
+                                  
                                   
                          )
                          
+                       )
                        )
                 
               ),

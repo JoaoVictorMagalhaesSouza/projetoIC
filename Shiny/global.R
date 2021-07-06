@@ -56,11 +56,7 @@ f1 = list(family = "Arial", size = 10, color = "rgb(30,30,30)")
 #   paste0(day(date),"/",monthsEn[month(date)])
 # }
 
-## colors for observed data
-blu = 'rgb(100,140,240)'
-dblu = 'rgb(0,0,102)'
-red = 'rgb(200,30,30)'
-dred = 'rgb(100,30,30)'
+
 #BancoDeDados_Acoes <- readRDS("BancoDeDados_Acoes.rds")
 ##############################################################################
 horas <- strsplit(as.character(Sys.time())," ")
@@ -185,6 +181,7 @@ listaSemB3 <- function(){
   acoes <- BancoDeDados_Acoes
   acoes$B3SA3.SA <- NULL
   acoes <- names(acoes)[-1]
+  return(acoes)
 }
 noB3 <- listaSemB3()
 

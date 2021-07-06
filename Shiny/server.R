@@ -67,7 +67,15 @@ shinyServer(function(input, output) {
     
         if (input$inAno == anoAtual){
             mesAtual <- strsplit(as.character(Sys.Date()),"-")[[1]][2]
-            numBimestres <- as.integer(mesAtual)%/%2
+            print(mesAtual)
+            mesAtual <- as.integer(mesAtual)
+            if(mesAtual%%2==0){
+            numBimestres <- mesAtual%/%2
+            }
+            else{
+                numBimestres <- (mesAtual%/%2)+1 
+            }
+            print(numBimestres)
             bimestresOf <- 1:numBimestres
     
         }
