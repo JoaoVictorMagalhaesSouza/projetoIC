@@ -291,7 +291,7 @@ shinyServer(function(input, output) {
     output$outSetorFilt <- renderUI ({
     fluidRow(column(10,
         selectizeInput("inAtivosSetor",
-                     strong("Escolha os ativos que deseja monitorar (máx 5): "),
+                     strong("Escolha os ativos que deseja monitorar (máx. 5): "),
                      choices = listaAcoesUmSetor(df_emp,BancoDeDados_Acoes,input$inSetorFilt)[-1],
                      multiple = TRUE,
                     options = list(maxItems = 5),
@@ -356,15 +356,22 @@ shinyServer(function(input, output) {
     })
     
     output$outCartMark <- renderPlotly({
+        opts <- options()  # save old options
+        
+        options(ggplot2.continuous.colour="viridis")
+        options(ggplot2.continuous.fill = "viridis")
+        
+        
+        montarCarteiraMark <- function(BancoDeDados_Acoes){
         n_sim <- 2000
         df <- select(BancoDeDados_Acoes,Data,input$inAtivosMark)
         #df <- rename(df,Data=Date)
         names(df)[1] <- c("Date")
-        print(df)
+        #print(df)
         
         # names(df) <- c("Data", "ABEV3.SA", "B3SA3.SA", "BBAS3.SA",
         #                "BBDC3.SA", "BBXC4.SA")
-       # names(df) <- c("Date")
+        # names(df) <- c("Date")
         from_day_to_month <- function(df){
             df <- df %>%  dplyr::mutate(Date=lubridate::ymd(Date))
             df <- df %>%  dplyr::mutate(year = lubridate::year(Date), 
@@ -377,7 +384,7 @@ shinyServer(function(input, output) {
         }
         
         upload_stock <- function(x,max_d){
-            df <- BancoDeDados_Acoes[,1:6]
+            df <- select(BancoDeDados_Acoes,Data,input$inAtivosMark)
             names(df)[1] <- c("Date")
             
             df <- from_day_to_month(df)
@@ -410,7 +417,9 @@ shinyServer(function(input, output) {
         series <- na.omit(series)
         dates         <- series$dates
         
-        names_stocks <- str_sub(names(series)[-1], end  = -6)
+        #Mudei aq
+        names_stocks <- names(series)[-1]
+        
         
         
         # Compute the monthly returns
@@ -505,16 +514,20 @@ shinyServer(function(input, output) {
         summary     <- rbind(summary_pos, summary_ptf)
         
         summary           <- as.data.frame(apply(summary, 2, function(col) round(col,4)))
-        rownames(summary) <- str_sub(rownames(summary),1 ,-6)
+        rownames(summary) <- rownames(summary)
         
-        a  <- ggplot(aes(x=risk_yld, y=return, color = sharpe_ratio, text=W), data =df_ptf_sim) +
-            geom_point()+ 
+        a  <- ggplot(aes(x=risk_yld, y=return, color = sharpe_ratio , text=W), data =df_ptf_sim) +
+            geom_point()+
+            
             theme_classic() +
             scale_y_continuous(labels = scales::percent) +
             scale_x_continuous(labels = scales::percent) +
-            labs(x = 'Annualized Risk',
-                 y = 'Annualized Returns',
-                 title = "Portfolio Optimization & Efficient Frontier") +
+            
+            labs(x = 'Risco',
+                 y = 'Retorno Esperado',
+                 title = "Fronteira Eficiente de Markowitz",
+                 colour = "Retorno/Risco") +
+            
             geom_point(aes(x = risk_yld, y = return), data =min_risk , color = 'red') +
             geom_point(aes(x = risk_yld, y = return), data =max_sharpe_ratio, color = 'green') 
         
@@ -554,110 +567,36 @@ shinyServer(function(input, output) {
             scale_y_continuous(labels = scales::percent)  
         
         
-        ggplotly(a, tooltip = "text") 
+        a <- ggplotly(a, tooltip = "text") 
         
-        # b  <- ggplotly(b)
-        # c  <- ggplotly(c)
-        # d  <- ggcorr(yld[,2:(n_stock+1)],label = TRUE) +
-        #     theme(plot.title  = element_text(color = "black", size = 25, face = "bold"))
-        # e  <- ggplotly(e)
-        # 
-        # 
-        # 
-        # 
-        # 
-        # 
-        # 
-        # 
-        # 
-        # 
-        # 
-        # 
-        # 
-        # 
-        # 
-        # 
-        # 
-        # 
-        # 
-        # ################
-        # 
-        # df <- as.timeSeries(df)
-        # ##RETORNOS ESPERADOS
-        # ret.esperados = colMeans(df)
-        # ret.esperados
-        # 
-        # #MATRIZ DE COVARIÃNCIAS
-        # mat.cov = cov(df)
-        # mat.cov
-        # 
-        # 
-        # #####################################################
-        # ##OTIMIZAÃÃO DO PORTIFÃLIO
-        # Fronteira1 = portfolioFrontier(df, spec = portfolioSpec(), constraints = "LongOnly")
-        # plot(Fronteira1)
-        # frontierPlot(Fronteira1, 
-        #              col = c('blue', 'red'), 
-        #              pch = 20)
-        # 
-        # #####################
-        # 
-        # 
-        # ggplot(aes(x=mat.cov, y=ret.esperados, color = sharpe_ratio, text=W), data =df) +
-        #     geom_point()+ 
-        #     theme_classic() +
-        #     scale_y_continuous(labels = scales::percent) +
-        #     scale_x_continuous(labels = scales::percent) +
-        #     labs(x = 'Annualized Risk',
-        #          y = 'Annualized Returns',
-        #          title = "Portfolio Optimization & Efficient Frontier") +
-        #     geom_point(aes(x = risk_yld, y = return), data =min_risk , color = 'red') +
-        #     geom_point(aes(x = risk_yld, y = return), data =max_sharpe_ratio, color = 'green') 
-        # 
-        # max_sharpe_ratio_long  <-  gather(max_sharpe_ratio,"stock","weight",-c("return","risk_yld","sharpe_ratio","W"))
-        # b <- ggplot(max_sharpe_ratio_long,aes(x="",y=weight, fill=stock)) +
-        #     geom_bar(stat="identity", width=1, color="white")+
-        #     labs(x = '',
-        #          y = 'Asset allocation',
-        #          title = "Maximum sharpe ratio portfolio") + 
-        #     theme_classic()
-        # 
-        # min_risk_long  <-  gather(min_risk,"stock","weight",-c("return","risk_yld","sharpe_ratio","W"))
-        # c <- ggplot(min_risk_long,aes(x="",y=weight, fill=stock)) +
-        #     geom_bar(stat="identity", width=1, color="white")+
-        #     labs(x = '',
-        #          y = 'Asset allocation',
-        #          title = "Minimum risk portfolio") + 
-        #     theme_classic()
-        # 
-        # # Yld chart
-        # den <- bind_rows(replicate(nrow(series) - 1, series[1,-1], simplify = FALSE))
-        # num <- series[2:nrow(series),-1] 
-        # e   <- cbind(dates[-1] , (num - den) / den) %>% dplyr::rename(dates = 'dates[-1]')
-        # rm(den,num)
-        # 
-        # 
-        # e <-  e %>% gather(key = "Stock", value = "Price", -dates) %>%
-        #     ggplot(., aes(x = dates , y = Price , color = Stock)) +
-        #     geom_line() + 
-        #     theme_bw() +
-        #     labs(x = 'Date',
-        #          y = '',
-        #          title = "Performance") +
-        #     scale_x_date(date_breaks = "3 month", date_labels = "%b-%y") + 
-        #     theme(axis.text.x = element_text(angle = 90),
-        #           plot.title  = element_text(color = "black", size = 25, face = "bold"),
-        #           panel.border = element_blank()) +
-        #     scale_y_continuous(labels = scales::percent)  
-        # 
-        # 
-        # a  <- ggplotly(a, tooltip = "text") %>% partial_bundle() 
-        # # b  <- ggplotly(b)
-        # # c  <- ggplotly(c)
-        # # d  <- ggcorr(yld[,2:(n_stock+1)],label = TRUE) +
-        # #     theme(plot.title  = element_text(color = "black", size = 25, face = "bold"))
-        # # e  <- ggplotly(e)
-        # 
+         # b  <- ggplotly(b)
+         # c  <- ggplotly(c)
+         # d  <- ggcorr(yld[,2:(n_stock+1)],label = TRUE) +
+         #     theme(plot.title  = element_text(color = "black", size = 25, face = "bold"))
+         # e  <- ggplotly(e)
+         
+        }
+        qtdeAtivos <- length(input$inAtivosMark) 
+        if (qtdeAtivos > 1){
+            montarCarteiraMark(BancoDeDados_Acoes)
+        }
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
         
     })
    

@@ -172,20 +172,24 @@ shinyUI(fluidPage(
                 
               tabPanel("Fronteira de Markowitz",
                        tabsetPanel(
-                         tabPanel("O que é ", icon = icon("question"),
+                         tabPanel("O que é", icon = icon("question"),
+                                  
+                                  
+                                  ),
+                         tabPanel("Carteira", icon = icon("wallet"),
                                   fluidRow(column(9,
                                                   selectInput("inAtivosMark",
-                                                  strong("Escolha os ativos que deseja montar a carteira:"),
-                                                  choices=c(names(BancoDeDados_Acoes[-1])),
-                                                  multiple = TRUE
-                                                            )
-                                                  ),
-                                           
-                                           column(9,
-                                                  plotlyOutput("outCartMark"))
-                                           )
+                                                              strong("Escolha os ativos do portfólio (min. 2):"),
+                                                              choices=c(names(BancoDeDados_Acoes[-1])),
+                                                              multiple = TRUE
+                                                  )
+                                  ),
                                   
+                                  column(9,
+                                         plotlyOutput("outCartMark"))
                                   )
+                                  
+                         )
                          
                        )
                 
