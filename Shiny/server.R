@@ -356,10 +356,6 @@ shinyServer(function(input, output) {
     })
     
     output$outCartMark <- renderPlotly({
-        opts <- options()  # save old options
-        
-        options(ggplot2.continuous.colour="viridis")
-        options(ggplot2.continuous.fill = "viridis")
         
         
         montarCarteiraMark <- function(BancoDeDados_Acoes){
@@ -518,7 +514,7 @@ shinyServer(function(input, output) {
         
         a  <- ggplot(aes(x=risk_yld, y=return, color = sharpe_ratio , text=W), data =df_ptf_sim) +
             geom_point()+
-            
+            scale_color_viridis()+
             theme_classic() +
             scale_y_continuous(labels = scales::percent) +
             scale_x_continuous(labels = scales::percent) +

@@ -18,7 +18,8 @@ library("pracma")
 library("ggthemes")
 library("lubridate")
 library("GGally")
-
+library("ggplot2")
+library("viridis")
 
 #library("tidyr")
 #library("httr")
