@@ -224,13 +224,29 @@ shinyServer(function(input, output) {
                     theme_classic()
                 e  <- ggplotly(e)
                 
+                df_aux <- as.timeSeries(BancoDeDados_Acoes)
+                df <- df_aux[,c(input$inAtivosMark)]
+        
+                Fronteira1 = portfolioFrontier(df, spec = portfolioSpec(), constraints = "LongOnly")
+                portfolio.eficiente <- tangencyPortfolio(df, spec = portfolioSpec(), constraints = "LongOnly")
+                risco <- cbind(portfolio.eficiente@portfolio@portfolio$covRiskBudgets)
+                tab <- as.data.frame(risco)
+                tab$Ativos <- rownames(tab)
+                names(tab) <- c("Percentual", "Ativos")
+                tab$Percentual <- tab$Percentual*100
+    
+                
+                
+                
                 incProgress(5/5,detail = "A exibir: ")
+                
                 
                 
                 output$outCartMark <- renderPlotly(a)
                 output$outMark1 <- renderPlotly(b)
                 output$outMark2 <- renderPlotly(c)
                 output$outMark3 <- renderPlot(d)
+                output$outTabelaMark <- renderTable(tab)
                 
             
             }
@@ -603,6 +619,11 @@ shinyServer(function(input, output) {
         }
         
     })
+    
+    
+        
+        
+    
     
    
    

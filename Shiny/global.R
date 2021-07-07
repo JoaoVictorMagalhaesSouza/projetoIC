@@ -20,6 +20,9 @@ library("lubridate")
 library("GGally")
 library("ggplot2")
 library("viridis")
+library("fPortfolio")
+library("timeSeries")
+
 
 #library("tidyr")
 #library("httr")

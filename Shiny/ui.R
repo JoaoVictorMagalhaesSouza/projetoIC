@@ -200,8 +200,8 @@ shinyUI(fluidPage(
                                  #             column(plotOutput("outMark3"),width = 6)
                                  #             
                                  #             ),
-                                 splitLayout(style = "border 1px solid silver",cellWidths = c("50%","50%","50%"),plotlyOutput("outMark1"),plotlyOutput("outMark2"),plotOutput("outMark3"),cellspacing = "2")
-                                 
+                                 splitLayout(style = "border 1px solid silver",cellWidths = c("50%","50%","50%"),plotlyOutput("outMark1"),plotlyOutput("outMark2"),plotOutput("outMark3"),cellspacing = "2"),
+                                 tableOutput("outTabelaMark"),
                                  
                                   #fluidRow(column(offset = 5,width = 10, plotOutput("outMark3"))),
                                  # # fluidRow(column(offset = 5,width = 10, plotlyOutput("outMark4"))),
