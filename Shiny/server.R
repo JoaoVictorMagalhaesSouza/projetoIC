@@ -1,5 +1,234 @@
 
 shinyServer(function(input, output) {
+    
+    observeEvent(
+        input$buttonOk,{
+            qtdeAtivos <- length(input$inAtivosMark) 
+            if (qtdeAtivos > 1){
+                print("S")
+                n_sim <- 2000
+                df <- select(BancoDeDados_Acoes,Data,input$inAtivosMark)
+                #df <- rename(df,Data=Date)
+                names(df)[1] <- c("Date")
+                #print(df)
+                
+                # names(df) <- c("Data", "ABEV3.SA", "B3SA3.SA", "BBAS3.SA",
+                #                "BBDC3.SA", "BBXC4.SA")
+                # names(df) <- c("Date")
+                from_day_to_month <- function(df){
+                    df <- df %>%  dplyr::mutate(Date=lubridate::ymd(Date))
+                    df <- df %>%  dplyr::mutate(year = lubridate::year(Date), 
+                                                month= lubridate::month(Date)) %>%
+                        dplyr::group_by(year,month) %>%
+                        arrange(Date) %>%
+                        filter(row_number()==1)
+                    df <- df %>% mutate(Date=ymd(paste0(year,"-",month,"-01")))
+                    df
+                }
+                
+                upload_stock <- function(x,max_d){
+                    df <- select(BancoDeDados_Acoes,Data,input$inAtivosMark)
+                    names(df)[1] <- c("Date")
+                    
+                    df <- from_day_to_month(df)
+                    df <- df %>% select(1,x,year,month) #%>% filter(Data<="2021/06/20")
+                    df$Date <- as.Date(df$Date)
+                    max_date <- as.Date(paste0(year(max_d),"-",month(max_d), "-01"))
+                    df <- subset(df, Date <= max_date)
+                    
+                }
+                sel_stocks <-input$inAtivosMark
+                #upload_stock("B3SA3.SA", "2021/06/20")
+                
+                
+                series  <- lapply(sel_stocks, upload_stock, max_d = "2021/06/18")
+                n_stock <- length(series)
+                percentage <- function(number){
+                    paste(round(100* number, 2), "%", sep="")
+                } 
+                sel_min_month <- which.min(sapply(series,function(dat) {length(dat$Date)}))
+                dates         <- series[[sel_min_month]]$Date
+                first_month   <- length(dates)
+                series <- lapply(series,function(dat){
+                    if(nrow(dat)>first_month){
+                        dat <- dat[(nrow(dat)-first_month+1):nrow(dat),]
+                    }
+                    dat[,2]
+                })
+                series <- do.call("cbind",series)
+                series <- cbind(dates,series)
+                series <- na.omit(series)
+                dates         <- series$dates
+                
+                #Mudei aq
+                names_stocks <- names(series)[-1]
+                
+                
+                
+                # Compute the monthly returns
+                yld     <-  (series[2:nrow(series),-1] - series[1:(nrow(series)-1),-1]) / series[1:(nrow(series)-1),-1]
+                
+                # Compute the yearly covariance
+                cov_yld <-  cov(yld)*12
+                
+                yld     <-  cbind(dates[-1],yld)
+                # Mean monthly returns for each stock 
+                mean_yld <- colMeans(yld[,-1])
+                # Build the efficient frontier 
+                set.seed(20101995)
+                
+                # Start simulation
+                ptf_sim     <- lapply(1:n_sim,function(sim){
+                    # Random weights
+                    w_i_abs   <- sample(1:1000,n_stock,replace = TRUE)
+                    # Rescale weights in (0,1)
+                    w_i       <-  w_i_abs/sum(w_i_abs)
+                    
+                    # Annualized simulated returns
+                    return_i  <- (sum(w_i*mean_yld)+1)^12 - 1
+                    
+                    # Annualized simulated covariances
+                    risk_yld  <- t(w_i) %*% cov_yld %*% w_i
+                    
+                    # Sharpe ratio
+                    sharpe_ratio <- return_i/risk_yld
+                    
+                    list(w_i=w_i, return_i=return_i, risk_yld=risk_yld, sharpe_ratio=sharpe_ratio)
+                })
+                df_ptf_sim <- data.frame(return       = sapply(ptf_sim,function(col){col$return_i}),
+                                         risk_yld     = sapply(ptf_sim,function(col){col$risk_yld}),
+                                         sharpe_ratio = sapply(ptf_sim,function(col){col$sharpe_ratio})
+                )
+                # Insert the weights in the dataframe
+                for(i in 1:n_stock){
+                    df_ptf_sim <- cbind(df_ptf_sim, sapply(ptf_sim,function(col){col[[1]][i]}))
+                    
+                }
+                # Names the columns containing the weights
+                names(df_ptf_sim)[(length(df_ptf_sim)-n_stock+1):length(df_ptf_sim)]   <- names_stocks
+                
+                # Build a summary column (whose value will appear when hovering with mouse on graph "a")
+                tmp <-  apply(df_ptf_sim[,names_stocks], 1, function(stock){
+                    paste0(names_stocks,":", percentage(stock), "<br>")
+                })
+                df_ptf_sim$W <- do.call("paste", c(as.data.frame(t(tmp)),sep="  "))
+                rm(tmp)
+                
+                # Select minimum risk portfolio 
+                min_risk         <- df_ptf_sim[which.min(df_ptf_sim$risk_yld),]
+                # Select maximum sharp ratio portfolio 
+                max_sharpe_ratio <- df_ptf_sim[which.max(df_ptf_sim$sharpe_ratio),]
+                
+                # Build the minimum risk portfolio and maximum sharp ratio portfolio 
+                extract_weight <- function(w){
+                    weights <- scan(text = w, what = "") %>% 
+                        str_remove_all(., "%<br>")
+                    weights <- as.numeric(substr(sub(".*:", "", weights),1,4))/100
+                    return(weights)
+                }
+                extract_weight_min_risk  <- extract_weight(min_risk$W)
+                extract_max_sharpe_ratio  <- extract_weight(max_sharpe_ratio$W)
+                
+                ptf_max_sharpe <- apply(series[-1],1,function(row){extract_max_sharpe_ratio * row }) %>%
+                    colSums(.)
+                ptf_min_risk         <- apply(series[-1],1,function(row){extract_weight_min_risk * row }) %>%
+                    colSums(.) 
+                ptf                  <- rbind(ptf_max_sharpe, ptf_min_risk) %>% as.data.frame() %>%
+                    t() %>% round(.,2)
+                series               <- cbind(series,ptf)
+                yld_ptf              <- (ptf[2:nrow(ptf),] - ptf[1:(nrow(ptf)-1),]) / ptf[1:(nrow(ptf)-1),]
+                # Summary Portfolio
+                summary_ptf <- data.frame(Mean  = colMeans(yld_ptf), 
+                                          Sd    = apply(yld_ptf,2,sd),
+                                          Worst = apply(yld_ptf,2,min),
+                                          Max   = apply(yld_ptf,2,max),
+                                          median   = apply(yld_ptf,2, function(col) quantile(col, probs = 0.50 ))
+                )
+                
+                
+                
+                # Summary
+                summary_pos <- data.frame(Mean  = mean_yld, 
+                                          Sd    = apply(yld[,-1],2,sd),
+                                          Worst = apply(yld[,-1],2,min),
+                                          Max   = apply(yld[,-1],2,max),
+                                          median   = apply(yld[,-1],2, function(col) quantile(col, probs = 0.50 ))
+                )
+                summary     <- rbind(summary_pos, summary_ptf)
+                
+                summary           <- as.data.frame(apply(summary, 2, function(col) round(col,4)))
+                rownames(summary) <- rownames(summary)
+                
+                a  <- ggplot(aes(x=risk_yld, y=return, color = sharpe_ratio , text=W), data =df_ptf_sim) +
+                    geom_point()+
+                    scale_color_viridis()+
+                    theme_classic() +
+                    scale_y_continuous(labels = scales::percent) +
+                    scale_x_continuous(labels = scales::percent) +
+                    
+                    labs(x = 'Risco',
+                         y = 'Retorno Esperado',
+                         title = "Fronteira Eficiente de Markowitz",
+                         colour = "Retorno/Risco") +
+                    
+                    geom_point(aes(x = risk_yld, y = return), data =min_risk , color = 'red') +
+                    geom_point(aes(x = risk_yld, y = return), data =max_sharpe_ratio, color = 'green') 
+                
+                max_sharpe_ratio_long  <-  gather(max_sharpe_ratio,"stock","weight",-c("return","risk_yld","sharpe_ratio","W"))
+                b <- ggplot(max_sharpe_ratio_long,aes(x="",y=weight, fill=stock)) +
+                    geom_bar(stat="identity", width=1, color="white")+
+                    labs(x = '',
+                         y = 'Asset allocation',
+                         title = "Maximum sharpe ratio portfolio") + 
+                    theme_classic()
+                
+                min_risk_long  <-  gather(min_risk,"stock","weight",-c("return","risk_yld","sharpe_ratio","W"))
+                c <- ggplot(min_risk_long,aes(x="",y=weight, fill=stock)) +
+                    geom_bar(stat="identity", width=1, color="white")+
+                    labs(x = '',
+                         y = 'Asset allocation',
+                         title = "Minimum risk portfolio") + 
+                    theme_classic()
+                
+                # Yld chart
+                den <- bind_rows(replicate(nrow(series) - 1, series[1,-1], simplify = FALSE))
+                num <- series[2:nrow(series),-1] 
+                e   <- cbind(dates[-1] , (num - den) / den) %>% dplyr::rename(dates = 'dates[-1]')
+                rm(den,num)
+                
+                e <-  e %>% gather(key = "Stock", value = "Price", -dates) %>%
+                    ggplot(., aes(x = dates , y = Price , color = Stock)) +
+                    geom_line() + 
+                    theme_bw() +
+                    labs(x = 'Date',
+                         y = '',
+                         title = "Performance") +
+                    scale_x_date(date_breaks = "3 month", date_labels = "%b-%y") + 
+                    theme(axis.text.x = element_text(angle = 90),
+                          plot.title  = element_text(color = "black", size = 25, face = "bold"),
+                          panel.border = element_blank()) +
+                    scale_y_continuous(labels = scales::percent)  
+                
+                a  <- ggplotly(a, tooltip = "text") 
+                b  <- ggplotly(b)
+                c  <- ggplotly(c)
+                d  <- ggcorr(yld[,2:(n_stock+1)],label = TRUE) +
+                    #theme(plot.title  = element_text(color = "black", size = 25, face = "bold")) +
+            
+                    labs(title = "Tabela de Correlação dos Ativos")+
+                    theme_classic()
+                e  <- ggplotly(e)
+                
+                output$outCartMark <- renderPlotly(a)
+                output$outMark1 <- renderPlotly(b)
+                output$outMark2 <- renderPlotly(c)
+                output$outMark3 <- renderPlot(d)
+                
+            }
+        }
+        
+    )
+    
 
     output$outPlotAtivo <- renderPlotly({
         serieTempAtivo <- function(df_emp,acao){
@@ -363,246 +592,7 @@ shinyServer(function(input, output) {
         
     })
     
-    output$outCartMark <- renderPlotly({
-        
-        
-        montarCarteiraMark <- function(BancoDeDados_Acoes){
-        n_sim <- 2000
-        df <- select(BancoDeDados_Acoes,Data,input$inAtivosMark)
-        #df <- rename(df,Data=Date)
-        names(df)[1] <- c("Date")
-        #print(df)
-        
-        # names(df) <- c("Data", "ABEV3.SA", "B3SA3.SA", "BBAS3.SA",
-        #                "BBDC3.SA", "BBXC4.SA")
-        # names(df) <- c("Date")
-        from_day_to_month <- function(df){
-            df <- df %>%  dplyr::mutate(Date=lubridate::ymd(Date))
-            df <- df %>%  dplyr::mutate(year = lubridate::year(Date), 
-                                        month= lubridate::month(Date)) %>%
-                dplyr::group_by(year,month) %>%
-                arrange(Date) %>%
-                filter(row_number()==1)
-            df <- df %>% mutate(Date=ymd(paste0(year,"-",month,"-01")))
-            df
-        }
-        
-        upload_stock <- function(x,max_d){
-            df <- select(BancoDeDados_Acoes,Data,input$inAtivosMark)
-            names(df)[1] <- c("Date")
-            
-            df <- from_day_to_month(df)
-            df <- df %>% select(1,x,year,month) #%>% filter(Data<="2021/06/20")
-            df$Date <- as.Date(df$Date)
-            max_date <- as.Date(paste0(year(max_d),"-",month(max_d), "-01"))
-            df <- subset(df, Date <= max_date)
-            
-        }
-        sel_stocks <-input$inAtivosMark
-        #upload_stock("B3SA3.SA", "2021/06/20")
-        
-        
-        series  <- lapply(sel_stocks, upload_stock, max_d = "2021/06/18")
-        n_stock <- length(series)
-        percentage <- function(number){
-            paste(round(100* number, 2), "%", sep="")
-        } 
-        sel_min_month <- which.min(sapply(series,function(dat) {length(dat$Date)}))
-        dates         <- series[[sel_min_month]]$Date
-        first_month   <- length(dates)
-        series <- lapply(series,function(dat){
-            if(nrow(dat)>first_month){
-                dat <- dat[(nrow(dat)-first_month+1):nrow(dat),]
-            }
-            dat[,2]
-        })
-        series <- do.call("cbind",series)
-        series <- cbind(dates,series)
-        series <- na.omit(series)
-        dates         <- series$dates
-        
-        #Mudei aq
-        names_stocks <- names(series)[-1]
-        
-        
-        
-        # Compute the monthly returns
-        yld     <-  (series[2:nrow(series),-1] - series[1:(nrow(series)-1),-1]) / series[1:(nrow(series)-1),-1]
-        
-        # Compute the yearly covariance
-        cov_yld <-  cov(yld)*12
-        
-        yld     <-  cbind(dates[-1],yld)
-        # Mean monthly returns for each stock 
-        mean_yld <- colMeans(yld[,-1])
-        # Build the efficient frontier 
-        set.seed(20101995)
-        
-        # Start simulation
-        ptf_sim     <- lapply(1:n_sim,function(sim){
-            # Random weights
-            w_i_abs   <- sample(1:1000,n_stock,replace = TRUE)
-            # Rescale weights in (0,1)
-            w_i       <-  w_i_abs/sum(w_i_abs)
-            
-            # Annualized simulated returns
-            return_i  <- (sum(w_i*mean_yld)+1)^12 - 1
-            
-            # Annualized simulated covariances
-            risk_yld  <- t(w_i) %*% cov_yld %*% w_i
-            
-            # Sharpe ratio
-            sharpe_ratio <- return_i/risk_yld
-            
-            list(w_i=w_i, return_i=return_i, risk_yld=risk_yld, sharpe_ratio=sharpe_ratio)
-        })
-        df_ptf_sim <- data.frame(return       = sapply(ptf_sim,function(col){col$return_i}),
-                                 risk_yld     = sapply(ptf_sim,function(col){col$risk_yld}),
-                                 sharpe_ratio = sapply(ptf_sim,function(col){col$sharpe_ratio})
-        )
-        # Insert the weights in the dataframe
-        for(i in 1:n_stock){
-            df_ptf_sim <- cbind(df_ptf_sim, sapply(ptf_sim,function(col){col[[1]][i]}))
-            
-        }
-        # Names the columns containing the weights
-        names(df_ptf_sim)[(length(df_ptf_sim)-n_stock+1):length(df_ptf_sim)]   <- names_stocks
-        
-        # Build a summary column (whose value will appear when hovering with mouse on graph "a")
-        tmp <-  apply(df_ptf_sim[,names_stocks], 1, function(stock){
-            paste0(names_stocks,":", percentage(stock), "<br>")
-        })
-        df_ptf_sim$W <- do.call("paste", c(as.data.frame(t(tmp)),sep="  "))
-        rm(tmp)
-        
-        # Select minimum risk portfolio 
-        min_risk         <- df_ptf_sim[which.min(df_ptf_sim$risk_yld),]
-        # Select maximum sharp ratio portfolio 
-        max_sharpe_ratio <- df_ptf_sim[which.max(df_ptf_sim$sharpe_ratio),]
-        
-        # Build the minimum risk portfolio and maximum sharp ratio portfolio 
-        extract_weight <- function(w){
-            weights <- scan(text = w, what = "") %>% 
-                str_remove_all(., "%<br>")
-            weights <- as.numeric(substr(sub(".*:", "", weights),1,4))/100
-            return(weights)
-        }
-        extract_weight_min_risk  <- extract_weight(min_risk$W)
-        extract_max_sharpe_ratio  <- extract_weight(max_sharpe_ratio$W)
-        
-        ptf_max_sharpe <- apply(series[-1],1,function(row){extract_max_sharpe_ratio * row }) %>%
-            colSums(.)
-        ptf_min_risk         <- apply(series[-1],1,function(row){extract_weight_min_risk * row }) %>%
-            colSums(.) 
-        ptf                  <- rbind(ptf_max_sharpe, ptf_min_risk) %>% as.data.frame() %>%
-            t() %>% round(.,2)
-        series               <- cbind(series,ptf)
-        yld_ptf              <- (ptf[2:nrow(ptf),] - ptf[1:(nrow(ptf)-1),]) / ptf[1:(nrow(ptf)-1),]
-        # Summary Portfolio
-        summary_ptf <- data.frame(Mean  = colMeans(yld_ptf), 
-                                  Sd    = apply(yld_ptf,2,sd),
-                                  Worst = apply(yld_ptf,2,min),
-                                  Max   = apply(yld_ptf,2,max),
-                                  median   = apply(yld_ptf,2, function(col) quantile(col, probs = 0.50 ))
-        )
-        
-        
-        
-        # Summary
-        summary_pos <- data.frame(Mean  = mean_yld, 
-                                  Sd    = apply(yld[,-1],2,sd),
-                                  Worst = apply(yld[,-1],2,min),
-                                  Max   = apply(yld[,-1],2,max),
-                                  median   = apply(yld[,-1],2, function(col) quantile(col, probs = 0.50 ))
-        )
-        summary     <- rbind(summary_pos, summary_ptf)
-        
-        summary           <- as.data.frame(apply(summary, 2, function(col) round(col,4)))
-        rownames(summary) <- rownames(summary)
-        
-        a  <- ggplot(aes(x=risk_yld, y=return, color = sharpe_ratio , text=W), data =df_ptf_sim) +
-            geom_point()+
-            scale_color_viridis()+
-            theme_classic() +
-            scale_y_continuous(labels = scales::percent) +
-            scale_x_continuous(labels = scales::percent) +
-            
-            labs(x = 'Risco',
-                 y = 'Retorno Esperado',
-                 title = "Fronteira Eficiente de Markowitz",
-                 colour = "Retorno/Risco") +
-            
-            geom_point(aes(x = risk_yld, y = return), data =min_risk , color = 'red') +
-            geom_point(aes(x = risk_yld, y = return), data =max_sharpe_ratio, color = 'green') 
-        
-        max_sharpe_ratio_long  <-  gather(max_sharpe_ratio,"stock","weight",-c("return","risk_yld","sharpe_ratio","W"))
-        b <- ggplot(max_sharpe_ratio_long,aes(x="",y=weight, fill=stock)) +
-            geom_bar(stat="identity", width=1, color="white")+
-            labs(x = '',
-                 y = 'Asset allocation',
-                 title = "Maximum sharpe ratio portfolio") + 
-            theme_classic()
-        
-        min_risk_long  <-  gather(min_risk,"stock","weight",-c("return","risk_yld","sharpe_ratio","W"))
-        c <- ggplot(min_risk_long,aes(x="",y=weight, fill=stock)) +
-            geom_bar(stat="identity", width=1, color="white")+
-            labs(x = '',
-                 y = 'Asset allocation',
-                 title = "Minimum risk portfolio") + 
-            theme_classic()
-        
-        # Yld chart
-        den <- bind_rows(replicate(nrow(series) - 1, series[1,-1], simplify = FALSE))
-        num <- series[2:nrow(series),-1] 
-        e   <- cbind(dates[-1] , (num - den) / den) %>% dplyr::rename(dates = 'dates[-1]')
-        rm(den,num)
-        
-        e <-  e %>% gather(key = "Stock", value = "Price", -dates) %>%
-            ggplot(., aes(x = dates , y = Price , color = Stock)) +
-            geom_line() + 
-            theme_bw() +
-            labs(x = 'Date',
-                 y = '',
-                 title = "Performance") +
-            scale_x_date(date_breaks = "3 month", date_labels = "%b-%y") + 
-            theme(axis.text.x = element_text(angle = 90),
-                  plot.title  = element_text(color = "black", size = 25, face = "bold"),
-                  panel.border = element_blank()) +
-            scale_y_continuous(labels = scales::percent)  
-        
-        
-        a <- ggplotly(a, tooltip = "text") 
-        
-         # b  <- ggplotly(b)
-         # c  <- ggplotly(c)
-         # d  <- ggcorr(yld[,2:(n_stock+1)],label = TRUE) +
-         #     theme(plot.title  = element_text(color = "black", size = 25, face = "bold"))
-         # e  <- ggplotly(e)
-         
-        }
-        qtdeAtivos <- length(input$inAtivosMark) 
-        if (qtdeAtivos > 1){
-            montarCarteiraMark(BancoDeDados_Acoes)
-        }
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-        
-    })
+   
    
    
     

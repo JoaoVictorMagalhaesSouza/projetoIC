@@ -183,11 +183,29 @@ shinyUI(fluidPage(
                                                               strong("Escolha os ativos do portfólio (mín. 2):"),
                                                               choices=c(names(BancoDeDados_Acoes[-1])),
                                                               multiple = TRUE
-                                                  )
+                                                  ),
+                                                  actionButton(inputId="buttonOk", label="Gerar", icon("paper-plane"), 
+                                                               style="color: #fff; background-color: #337ab7; border-color: #2e6da4")
                                                   
                                   ),
                                   mainPanel(
+                                 
                                   fluidRow(column(offset = 5,width = 12,plotlyOutput("outCartMark"))),
+                                  br(),
+                                  br(),
+                                  br(),
+                                 # #  
+                                 #    fluidRow(column(plotlyOutput("outMark1"),width = 6),
+                                 #             column(plotlyOutput("outMark2"),width = 6),
+                                 #             column(plotOutput("outMark3"),width = 6)
+                                 #             
+                                 #             ),
+                                 splitLayout(style = "border 1px solid silver",cellWidths = c("50%","50%","50%"),plotlyOutput("outMark1"),plotlyOutput("outMark2"),plotOutput("outMark3"),cellspacing = "2")
+                                 
+                                 
+                                  #fluidRow(column(offset = 5,width = 10, plotOutput("outMark3"))),
+                                 # # fluidRow(column(offset = 5,width = 10, plotlyOutput("outMark4"))),
+                                  
                                   
                                   )
                                   
