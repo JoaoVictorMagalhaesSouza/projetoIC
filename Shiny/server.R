@@ -3,11 +3,14 @@ shinyServer(function(input, output) {
     
     observeEvent(
         input$buttonOk,{
+            withProgress(message = 'Gerando Carteira', value = 0, {
             qtdeAtivos <- length(input$inAtivosMark) 
             if (qtdeAtivos > 1){
                 print("S")
                 n_sim <- 2000
                 df <- select(BancoDeDados_Acoes,Data,input$inAtivosMark)
+                incProgress(1/5,detail = "Obtendo dados...")
+                
                 #df <- rename(df,Data=Date)
                 names(df)[1] <- c("Date")
                 #print(df)
@@ -39,8 +42,8 @@ shinyServer(function(input, output) {
                 }
                 sel_stocks <-input$inAtivosMark
                 #upload_stock("B3SA3.SA", "2021/06/20")
-                
-                
+                incProgress(2/5,detail = "Reduzindo os dados...")
+                Sys.sleep(0.2)
                 series  <- lapply(sel_stocks, upload_stock, max_d = "2021/06/18")
                 n_stock <- length(series)
                 percentage <- function(number){
@@ -126,6 +129,7 @@ shinyServer(function(input, output) {
                     weights <- as.numeric(substr(sub(".*:", "", weights),1,4))/100
                     return(weights)
                 }
+                incProgress(3/5,detail = "Inferindo informações...")
                 extract_weight_min_risk  <- extract_weight(min_risk$W)
                 extract_max_sharpe_ratio  <- extract_weight(max_sharpe_ratio$W)
                 
@@ -158,6 +162,7 @@ shinyServer(function(input, output) {
                 
                 summary           <- as.data.frame(apply(summary, 2, function(col) round(col,4)))
                 rownames(summary) <- rownames(summary)
+                incProgress(4/5,detail = "Montando os plots...")
                 
                 a  <- ggplot(aes(x=risk_yld, y=return, color = sharpe_ratio , text=W), data =df_ptf_sim) +
                     geom_point()+
@@ -169,7 +174,7 @@ shinyServer(function(input, output) {
                     labs(x = 'Risco',
                          y = 'Retorno Esperado',
                          title = "Fronteira Eficiente de Markowitz",
-                         colour = "Retorno/Risco") +
+                         colour = "Índice Sharpe") +
                     
                     geom_point(aes(x = risk_yld, y = return), data =min_risk , color = 'red') +
                     geom_point(aes(x = risk_yld, y = return), data =max_sharpe_ratio, color = 'green') 
@@ -215,18 +220,25 @@ shinyServer(function(input, output) {
                 d  <- ggcorr(yld[,2:(n_stock+1)],label = TRUE) +
                     #theme(plot.title  = element_text(color = "black", size = 25, face = "bold")) +
             
-                    labs(title = "Tabela de Correlação dos Ativos")+
+                    labs(title = "Matriz de Correlação dos Ativos")+
                     theme_classic()
                 e  <- ggplotly(e)
+                
+                incProgress(5/5,detail = "A exibir: ")
+                
                 
                 output$outCartMark <- renderPlotly(a)
                 output$outMark1 <- renderPlotly(b)
                 output$outMark2 <- renderPlotly(c)
                 output$outMark3 <- renderPlot(d)
                 
+            
             }
-        }
+            })
+            
+            }
         
+    
     )
     
 
