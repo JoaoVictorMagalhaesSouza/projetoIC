@@ -176,9 +176,9 @@ shinyUI(fluidPage(
                                   
                                   
                                   ),
-                         tabPanel("Carteira", icon = icon("wallet"),
-                                  
-                                  fluidRow(column(9,
+                         tabPanel("Portfólio", icon = icon("wallet"),
+                                  sidebarLayout(
+                                  column(9,
                                                   selectInput("inAtivosMark",
                                                               strong("Escolha os ativos do portfólio (mín. 2):"),
                                                               choices=c(names(BancoDeDados_Acoes[-1])),
@@ -187,9 +187,14 @@ shinyUI(fluidPage(
                                                   actionButton(inputId="buttonOk", label="Gerar", icon("paper-plane"), 
                                                                style="color: #fff; background-color: #337ab7; border-color: #2e6da4")
                                                   
-                                  ),
-                                  mainPanel(
                                  
+                                                  ),
+                                  mainPanel(
+                                  div(
+                                  h2("Portfólio Eficiente de Markowitz"),
+                                  #style = "; resize:horizontal; overflow: hidden; position:relative; margin-left: 400px; margin-bottom: 60px",
+                                  style = "position:relative; top:-130px ; left:430px; color:red",
+                                  ),
                                   fluidRow(column(offset = 5,width = 12,plotlyOutput("outCartMark"))),
                                   br(),
                                   br(),
@@ -201,13 +206,18 @@ shinyUI(fluidPage(
                                  #             
                                  #             ),
                                  splitLayout(style = "border 1px solid silver",cellWidths = c("50%","50%","50%"),plotlyOutput("outMark1"),plotlyOutput("outMark2"),plotOutput("outMark3"),cellspacing = "2"),
-                                 tableOutput("outTabelaMark"),
+                                 br(),
+                                 br(),
+                                 br(),
+                                 fluidRow(column(offset = 7,width = 8,tableOutput("outTabelaMark"))),
+                                 
                                  
                                   #fluidRow(column(offset = 5,width = 10, plotOutput("outMark3"))),
                                  # # fluidRow(column(offset = 5,width = 10, plotlyOutput("outMark4"))),
                                   
                                   
-                                  )
+                                  ),
+                                 
                                   
                                   
                                   

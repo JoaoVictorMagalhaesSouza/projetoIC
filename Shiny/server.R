@@ -235,7 +235,7 @@ shinyServer(function(input, output) {
                 names(tab) <- c("Percentual", "Ativos")
                 tab$Percentual <- tab$Percentual*100
     
-                
+                #A tabela leva em consideração a distribuição ótima (tangente)?
                 
                 
                 incProgress(5/5,detail = "A exibir: ")
