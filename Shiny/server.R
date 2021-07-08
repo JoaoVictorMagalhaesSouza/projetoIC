@@ -348,9 +348,9 @@ shinyServer(function(input, output) {
                                        
                         ),
                     
-                        fixedRow(column(12, offset = 6, align ="center",
+                        div(fluidRow(column(12, offset = 6, align ="center",
                                         plotlyOutput("outBimestral", height = 600)
-                        ))
+                        )),style = "position:relative; top:-240px;"),
                         
         ))
         
@@ -563,9 +563,10 @@ shinyServer(function(input, output) {
                     
                      
         ),
-        fixedRow(column(12, offset = 6, align ="center",
+        
+        div(fluidRow(column(12, offset = 6, align ="center",
                         plotlyOutput("outAtivosSetor", height = 600)
-        ))
+        )),style = "position:relative; top:-170px;")
         
         ))
         

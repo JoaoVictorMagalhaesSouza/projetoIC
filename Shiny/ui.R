@@ -91,9 +91,11 @@ shinyUI(fluidPage(
                                                                  strong("Escolha um ano:"),
                                                                  choices = anos
                                                      ),
+                                                     
                                                      fluidRow(column(9,
                                                             uiOutput("outAno")  )  
                                                      ),
+                                                     
                                                      
                                                      ),
                                               )),
@@ -146,11 +148,14 @@ shinyUI(fluidPage(
                                                     ),
                                     ),
                                     
-                                    
+                                    div(
+                                     fixedRow( 
                                     column(9,
-                                           plotlyOutput("outSetorComp"))),
+                                           plotlyOutput("outSetorComp")),
+                                  #style = "position:relative; top:-50px ; left: 100px"
+                                    ))
                                     
-                           ),
+                           )),
                            tabPanel("Setorial Filtrado",icon = icon("chart-line"),
                                     fluidRow(column(9,
                                                     selectInput("inSetorFilt",
