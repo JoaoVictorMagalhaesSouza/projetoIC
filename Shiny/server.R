@@ -24,7 +24,7 @@ shinyServer(function(input, output) {
                                                 month= lubridate::month(Date)) %>%
                         dplyr::group_by(year,month) %>%
                         arrange(Date) %>%
-                        filter(row_number()==1)
+                        dplyr::filter(row_number()==1)
                     df <- df %>% mutate(Date=ymd(paste0(year,"-",month,"-01")))
                     df
                 }

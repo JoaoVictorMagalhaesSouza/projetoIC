@@ -22,6 +22,7 @@ library("ggplot2")
 library("viridis")
 library("fPortfolio")
 library("timeSeries")
+library("dplyr")
 
 
 #library("tidyr")
@@ -113,7 +114,7 @@ df_emp <-  df_emp %>% select(c(1,11:14))
 #Tirar os duplicados
 df_emp <-  df_emp[!duplicated(df_emp), ]
 #Tirar as empresas que nao tem um pregao
-df_emp <- df_emp %>% filter(tickers!="")
+df_emp <- df_emp %>% dplyr::filter(tickers!="")
 names(df_emp) = c("Nome","Setor","Subsetor","Segmento","Tickers")
 #Remover espacos entre as strings
 df_emp$Nome    <- str_squish(df_emp$Nome    )
