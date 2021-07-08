@@ -6,7 +6,7 @@ shinyServer(function(input, output) {
             withProgress(message = 'Gerando Carteira', value = 0, {
             qtdeAtivos <- length(input$inAtivosMark) 
             if (qtdeAtivos > 1){
-                print("S")
+                #print("S")
                 n_sim <- 2000
                 df <- select(BancoDeDados_Acoes,Data,input$inAtivosMark)
                 incProgress(1/5,detail = "Obtendo dados...")
@@ -324,7 +324,7 @@ shinyServer(function(input, output) {
     
         if (input$inAno == anoAtual){
             mesAtual <- strsplit(as.character(Sys.Date()),"-")[[1]][2]
-            print(mesAtual)
+            #print(mesAtual)
             mesAtual <- as.integer(mesAtual)
             if(mesAtual%%2==0){
             numBimestres <- mesAtual%/%2
@@ -332,7 +332,7 @@ shinyServer(function(input, output) {
             else{
                 numBimestres <- (mesAtual%/%2)+1 
             }
-            print(numBimestres)
+            #print(numBimestres)
             bimestresOf <- 1:numBimestres
     
         }
