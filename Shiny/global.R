@@ -23,6 +23,7 @@ library("viridis")
 library("fPortfolio")
 library("timeSeries")
 library("dplyr")
+library("plotrix")
 
 
 #library("tidyr")

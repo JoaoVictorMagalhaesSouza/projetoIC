@@ -183,36 +183,40 @@ shinyServer(function(input, output) {
                 b <- ggplot(max_sharpe_ratio_long,aes(x="",y=weight, fill=stock)) +
                     geom_bar(stat="identity", width=1, color="white")+
                     labs(x = '',
-                         y = 'Asset allocation',
-                         title = "Portfólio de melhor Índice Sharpe") + 
+                         y = 'Alocação dos Ativos (%)',
+                         #Ponto ótimo, equilibrio perfeiro entre risco e retorno.
+                         title = "Portfólio de melhor Índice Sharpe",
+                         colour = "Ativos:") + 
+                        
                     theme_classic()
                 
                 min_risk_long  <-  gather(min_risk,"stock","weight",-c("return","risk_yld","sharpe_ratio","W"))
                 c <- ggplot(min_risk_long,aes(x="",y=weight, fill=stock)) +
                     geom_bar(stat="identity", width=1, color="white")+
                     labs(x = '',
-                         y = 'Asset allocation',
-                         title = "Portfólio de Menor Risco") + 
+                         y = 'Alocação dos Ativos (%)',
+                         title = "Portfólio de Menor Risco",
+                         colour = "Ativos:") + 
                     theme_classic()
                 
                 # Yld chart
                 den <- bind_rows(replicate(nrow(series) - 1, series[1,-1], simplify = FALSE))
                 num <- series[2:nrow(series),-1] 
-                e   <- cbind(dates[-1] , (num - den) / den) %>% dplyr::rename(dates = 'dates[-1]')
+                #e   <- cbind(dates[-1] , (num - den) / den) %>% dplyr::rename(dates = 'dates[-1]')
                 rm(den,num)
                 
-                e <-  e %>% gather(key = "Stock", value = "Price", -dates) %>%
-                    ggplot(., aes(x = dates , y = Price , color = Stock)) +
-                    geom_line() + 
-                    theme_bw() +
-                    labs(x = 'Date',
-                         y = '',
-                         title = "Performance") +
-                    scale_x_date(date_breaks = "3 month", date_labels = "%b-%y") + 
-                    theme(axis.text.x = element_text(angle = 90),
-                          plot.title  = element_text(color = "black", size = 25, face = "bold"),
-                          panel.border = element_blank()) +
-                    scale_y_continuous(labels = scales::percent)  
+                # e <-  e %>% gather(key = "Stock", value = "Price", -dates) %>%
+                #     ggplot(., aes(x = dates , y = Price , color = Stock)) +
+                #     geom_line() + 
+                #     theme_bw() +
+                #     labs(x = 'Date',
+                #          y = '',
+                #          title = "Performance") +
+                #     scale_x_date(date_breaks = "3 month", date_labels = "%b-%y") + 
+                #     theme(axis.text.x = element_text(angle = 90),
+                #           plot.title  = element_text(color = "black", size = 25, face = "bold"),
+                #           panel.border = element_blank()) +
+                #     scale_y_continuous(labels = scales::percent)  
                 
                 a  <- ggplotly(a, tooltip = "text") 
                 b  <- ggplotly(b)
@@ -222,7 +226,7 @@ shinyServer(function(input, output) {
             
                     labs(title = "Matriz de Correlação dos Ativos")+
                     theme_classic()
-                e  <- ggplotly(e)
+                #e  <- ggplotly(e)
                 
                 # df_aux <- as.timeSeries(BancoDeDados_Acoes)
                 # df <- df_aux[,c(input$inAtivosMark)]
@@ -238,7 +242,10 @@ shinyServer(function(input, output) {
                 tab <- max_sharpe_ratio_long
                 tab <- select(tab,stock,weight)
                 names(tab) <- c("Ativo","Percentual")
-                tab$Percentual <- tab$Percentual*100 
+                tab$Percentual <- tab$Percentual*100
+                
+                
+                
     
                 #A tabela leva em consideração a distribuição ótima (tangente)?
                 

@@ -185,7 +185,7 @@ shinyUI(fluidPage(
                                       icon("info"),
                                       p(style = "text-align: justify;",strong("Harry Max Markowitz")," é um importante economista de origem estadunidense. Formado em Economia
                                         pela Universidade de Chicago, Harry trouxe grandes contribuições para a área, ganhando até mesmo o Prêmio Nobel de Economia de 1990.
-                                        Dentre seus longos anos de estudo, elaborou a chamada",strong("Teoria Moderna do Portfólio (1952),"), "um dos objetos de estudo e interesse deste projeto."),
+                                        Dentre seus longos anos de estudo, elaborou a chamada",strong("Teoria Moderna do Portfólio (1952),"), "um dos principais objetos de interesse deste projeto."),
                                       br(),
                                       
                                       
@@ -214,7 +214,7 @@ shinyUI(fluidPage(
                                   
                                   
                                   ),
-                         tabPanel("Portfólio", icon = icon("wallet"),
+                         tabPanel("Simular Portfólio", icon = icon("wallet"),
                                   sidebarLayout(
                                   column(9,
                                                   selectInput("inAtivosMark",
@@ -228,11 +228,11 @@ shinyUI(fluidPage(
                                  
                                                   ),
                                   mainPanel(
-                                  div(
-                                  h2("Portfólio Eficiente de Markowitz"),
-                                  #style = "; resize:horizontal; overflow: hidden; position:relative; margin-left: 400px; margin-bottom: 60px",
-                                  style = "position:relative; top:-130px ; left:430px; color:red",
-                                  ),
+                                  # div(
+                                  # h2("Portfólio Eficiente de Markowitz"),
+                                  # #style = "; resize:horizontal; overflow: hidden; position:relative; margin-left: 400px; margin-bottom: 60px",
+                                  # style = "position:relative; top:-130px ; left:430px;",
+                                  # ),
                                   fluidRow(column(offset = 5,width = 12,plotlyOutput("outCartMark"))),
                                   br(),
                                   br(),
@@ -243,11 +243,23 @@ shinyUI(fluidPage(
                                  #             column(plotOutput("outMark3"),width = 6)
                                  #             
                                  #             ),
-                                 splitLayout(style = "border 1px solid silver",cellWidths = c("50%","50%","50%"),plotlyOutput("outMark1"),plotlyOutput("outMark2"),plotOutput("outMark3"),cellspacing = "2"),
+                                 div(
+                                 splitLayout(style = "border 1px solid silver",cellWidths = c("50%","25%","50%"),plotlyOutput("outMark1"),NULL,plotlyOutput("outMark2")),
+                                 style = "position:relative; left:150px",
+                                 ),
                                  br(),
                                  br(),
                                  br(),
-                                 fluidRow(column(offset = 7,width = 8,tableOutput("outTabelaMark"))),
+                                 # div(
+                                 # h3("Percentual de Distribuição do Melhor Índice Sharpe"),
+                                 # 
+                                 # ),
+                                 br(),
+                                 div(
+                                 splitLayout(style = "botder 1px solid silver",cellWidths = c("50%","25%","50%"),plotOutput("outMark3"),NULL,tableOutput("outTabelaMark")),
+                                 style = "position:relative; left:150px",
+                                 ),
+                                 
                                  
                                  
                                   #fluidRow(column(offset = 5,width = 10, plotOutput("outMark3"))),
