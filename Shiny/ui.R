@@ -179,6 +179,39 @@ shinyUI(fluidPage(
                        tabsetPanel(
                          tabPanel("O que é", icon = icon("question"),
                                   
+                                  em(h2("Harry Markowitz")),
+                                  sidebarLayout(
+                                    sidebarPanel(
+                                      icon("info"),
+                                      p(style = "text-align: justify;",strong("Harry Max Markowitz")," é um importante economista de origem estadunidense. Formado em Economia
+                                        pela Universidade de Chicago, Harry trouxe grandes contribuições para a área, ganhando até mesmo o Prêmio Nobel de Economia de 1990.
+                                        Dentre seus longos anos de estudo, elaborou a chamada",strong("Teoria Moderna do Portfólio (1952),"), "um dos objetos de estudo e interesse deste projeto."),
+                                      br(),
+                                      
+                                      
+                                    ),
+                                    
+                                    mainPanel(
+                                      h2("Teoria Moderna do Portfólio"),
+                                      icon("info"),
+                                      br(),
+                                      p(style = "text-align: justify;","A Teoria Moderna do Portfólio, também conhecida como Fronteira Eficience de Markowitz ou Portfólio Eficiente de Markowitz,
+                                      consiste em uma teoria na qual objetiva-se otimizar a carteira de investimentos de um investidor analisando dois fatores: risco e retorno.
+                                      Grosseiramente, é possível analisar combinações de proporções de risco e retorno dos ativos da carteira, de maneira a escolher combinações de investimento que sejam
+                                      mais rentáveis e menos arriscadas.
+                                "),
+                                      br(),
+                                      p(style = "text-align: justify;","Essa análise permite que guiar o investidor de forma que, correndo o mesmo risco para diferente distribuições de recursos de investimento,
+                                        ele possa escolher a que lhe trará o maior retorno. Paralelamente, a teoria traz, interessantemente, o fato de que a carteira deve ser montada com ações de diferentes setores,
+                                        de modo que apresentem uma correlação forte e negativa (inversamente proporcionais), visando sempre otimizar mas, ao mesmo tempo, minimizar as possíveis perdas.
+                                        Logo, é possível observar que a Fronteira Eficiente consiste em todos os pontos onde o retorno é máximo e estes pontos, por sua vez, variação de acordo com o risco que o investidor
+                                        está disposto a correr."),
+                                      
+                                      
+                                    )
+                                    
+                                  )
+                                  
                                   
                                   ),
                          tabPanel("Portfólio", icon = icon("wallet"),

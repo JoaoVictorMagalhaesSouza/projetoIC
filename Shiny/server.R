@@ -184,7 +184,7 @@ shinyServer(function(input, output) {
                     geom_bar(stat="identity", width=1, color="white")+
                     labs(x = '',
                          y = 'Asset allocation',
-                         title = "Maximum sharpe ratio portfolio") + 
+                         title = "Portfólio de melhor Índice Sharpe") + 
                     theme_classic()
                 
                 min_risk_long  <-  gather(min_risk,"stock","weight",-c("return","risk_yld","sharpe_ratio","W"))
@@ -192,7 +192,7 @@ shinyServer(function(input, output) {
                     geom_bar(stat="identity", width=1, color="white")+
                     labs(x = '',
                          y = 'Asset allocation',
-                         title = "Minimum risk portfolio") + 
+                         title = "Portfólio de Menor Risco") + 
                     theme_classic()
                 
                 # Yld chart
@@ -224,16 +224,21 @@ shinyServer(function(input, output) {
                     theme_classic()
                 e  <- ggplotly(e)
                 
-                df_aux <- as.timeSeries(BancoDeDados_Acoes)
-                df <- df_aux[,c(input$inAtivosMark)]
-        
-                Fronteira1 = portfolioFrontier(df, spec = portfolioSpec(), constraints = "LongOnly")
-                portfolio.eficiente <- tangencyPortfolio(df, spec = portfolioSpec(), constraints = "LongOnly")
-                risco <- cbind(portfolio.eficiente@portfolio@portfolio$covRiskBudgets)
-                tab <- as.data.frame(risco)
-                tab$Ativos <- rownames(tab)
-                names(tab) <- c("Percentual", "Ativos")
-                tab$Percentual <- tab$Percentual*100
+                # df_aux <- as.timeSeries(BancoDeDados_Acoes)
+                # df <- df_aux[,c(input$inAtivosMark)]
+                # 
+                # Fronteira1 = portfolioFrontier(df, spec = portfolioSpec(), constraints = "LongOnly")
+                # portfolio.eficiente <- tangencyPortfolio(df, spec = portfolioSpec(), constraints = "LongOnly")
+                # risco <- cbind(portfolio.eficiente@portfolio@portfolio$covRiskBudgets)
+                # tab <- as.data.frame(risco)
+                # tab$Ativos <- rownames(tab)
+                # names(tab) <- c("Percentual", "Ativos")
+                # tab$Percentual <- tab$Percentual*100
+                
+                tab <- max_sharpe_ratio_long
+                tab <- select(tab,stock,weight)
+                names(tab) <- c("Ativo","Percentual")
+                tab$Percentual <- tab$Percentual*100 
     
                 #A tabela leva em consideração a distribuição ótima (tangente)?
                 
