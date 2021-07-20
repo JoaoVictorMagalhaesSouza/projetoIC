@@ -385,7 +385,7 @@ shinyServer(function(input, output) {
                     plott <- BancoDeDados_Acoes %>% 
                         select(Data,acao)  %>% 
                         melt(id.var = "Data") %>% 
-                        ggplot(aes(Data,value))+geom_line(aes(colour = variable)) + ggtitle("Série Temporal: ") + theme_light() +labs(x = "Data (ano)", y = "Valor da Ação (R$)", colour = "Ativo:") + scale_x_date(date_breaks = "9 months", date_labels = "%b/%Y")
+                        ggplot(aes(Data,value))+geom_line(aes(colour = variable),show.legend = FALSE) + ggtitle("Série Temporal: ") + theme_light() +labs(x = "Data (ano)", y = "Valor da Ação (R$)") + scale_x_date(date_breaks = "9 months", date_labels = "%b/%Y")
                     
                     ggplotly(plott)
                 }
@@ -446,8 +446,7 @@ shinyServer(function(input, output) {
                         BD_aux$Mes[i] <- strsplit(as.character(BD_aux$Data[i]),"-")[[1]][2]
                     }
                     BD_aux <- BD_aux %>% select(Data,Mes,everything())
-                    print(bimestre)
-                    print(acao)
+                   
                     intBim = as.integer(bimestre)
                     if (intBim < 5){
                         mes1 <- paste("0",as.character((intBim*2)-1),sep = "")
@@ -461,8 +460,7 @@ shinyServer(function(input, output) {
                         mes1 <- "11"
                         mes2 <- "12"
                     }
-                  print(mes1)
-                  print(mes2)
+                  
                     #Adjusts
                     #Plotar aqui
                     ploter <- BD_aux[BD_aux$Mes == mes1 | BD_aux$Mes == mes2 ,] %>%        
