@@ -89,7 +89,7 @@ shinyUI(fluidPage(
                                                      
                                                      selectInput("inAno",
                                                                  strong("Escolha um ano:"),
-                                                                 choices = anos
+                                                                 choices = c("Todos",anos),
                                                      ),
                                                      
                                                      fluidRow(column(9,
@@ -204,7 +204,7 @@ shinyUI(fluidPage(
                                       p(style = "text-align: justify;","Essa análise permite que guiar o investidor de forma que, correndo o mesmo risco para diferente distribuições de recursos de investimento,
                                         ele possa escolher a que lhe trará o maior retorno. Paralelamente, a teoria traz, interessantemente, o fato de que a carteira deve ser montada com ações de diferentes setores,
                                         de modo que apresentem uma correlação forte e negativa (inversamente proporcionais), visando sempre otimizar mas, ao mesmo tempo, minimizar as possíveis perdas.
-                                        Logo, é possível observar que a Fronteira Eficiente consiste em todos os pontos onde o retorno é máximo e estes pontos, por sua vez, variação de acordo com o risco que o investidor
+                                        Logo, é possível observar que a Fronteira Eficiente consiste em todos os pontos onde o retorno é máximo e estes pontos, por sua vez, variam de acordo com o risco que o investidor
                                         está disposto a correr."),
                                       
                                       

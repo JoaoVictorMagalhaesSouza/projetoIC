@@ -24,7 +24,7 @@ library("fPortfolio")
 library("timeSeries")
 library("dplyr")
 library("plotrix")
-
+library("httr")
 
 #library("tidyr")
 #library("httr")
@@ -108,6 +108,8 @@ for(i in 2:length(IBOVdatabase)){
 rm(itera_BancoDeDados_Acoes)
 #Tratamento para comecar a partir de 2016
 BancoDeDados_Acoes = BancoDeDados_Acoes[-(1:184),]
+
+
 
 ##Banco de Dados mais apurado com descrição e os tickers. 
 df_emp <-  GetDFPData::gdfpd.get.info.companies()
@@ -195,8 +197,4 @@ bimestres <- c(1,2,3,4,5,6)
 anoAtual <- strsplit(as.character(Sys.Date()),"-")[[1]][1]
 anos <- 2016:anoAtual
 secoes <- c("Apresentação","Ativo Único", "Setorial Completo", "Setorial Filtrado", "Sobre os Envolvidos")
-# #Conexao:
-# rsconnect::setAccountInfo(name='joaovictormsouza',
-#                           token='89CFD8B87FC46DEDFC474857FF5AD978',
-#                           secret='2YYEmRUi0rjHOHdUWgtNLUFWzPQek9/hLYNN1wCo')
 
