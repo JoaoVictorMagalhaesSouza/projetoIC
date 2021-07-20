@@ -109,7 +109,7 @@ rm(itera_BancoDeDados_Acoes)
 #Tratamento para comecar a partir de 2016
 BancoDeDados_Acoes = BancoDeDados_Acoes[-(1:184),]
 
-
+##
 
 ##Banco de Dados mais apurado com descrição e os tickers. 
 df_emp <-  GetDFPData::gdfpd.get.info.companies()

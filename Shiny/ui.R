@@ -58,29 +58,29 @@ shinyUI(fluidPage(
                 
                 tabPanel("Ativo Único",
                         tabsetPanel(
-                            tabPanel("Série Temporal Geral",icon = icon("chart-line"),
-                                     fluidRow(column(3,
-                                                     selectInput("inAtivoSerie",
-                                                                 strong("Escolha um ativo:"),
-                                                                 choices=c(names(BancoDeDados_Acoes[-1])))),
-                                         column(9,
-                                                plotlyOutput("outPlotAtivo", height = 500)))),
-                            
-                            tabPanel("Série Temporal Anual",icon = icon("chart-line"),
-                                     fluidRow(column(3,
-                                                     selectInput("inAtivoAnual",
-                                                                 strong("Escolha um ativo:"),
-                                                                 choices=c(names(BancoDeDados_Acoes[-1]))),
-                                                     
-                                                     selectInput("inAnoAnual",
-                                                                 strong("Escolha um ano:"),
-                                                                 choices = anos
-                                                                 )
-                                                     ),
-                                              column(9,
-                                                     plotlyOutput("outAtivoAnual", height = 500)))),
-                            ##
-                            tabPanel("Série Temporal Bimestral",icon = icon("chart-line"),
+                            # tabPanel("Série Temporal Geral",icon = icon("chart-line"),
+                            #          fluidRow(column(3,
+                            #                          selectInput("inAtivoSerie",
+                            #                                      strong("Escolha um ativo:"),
+                            #                                      choices=c(names(BancoDeDados_Acoes[-1])))),
+                            #              column(9,
+                            #                     plotlyOutput("outPlotAtivo", height = 500)))),
+                            # 
+                            # tabPanel("Série Temporal Anual",icon = icon("chart-line"),
+                            #          fluidRow(column(3,
+                            #                          selectInput("inAtivoAnual",
+                            #                                      strong("Escolha um ativo:"),
+                            #                                      choices=c(names(BancoDeDados_Acoes[-1]))),
+                            #                          
+                            #                          selectInput("inAnoAnual",
+                            #                                      strong("Escolha um ano:"),
+                            #                                      choices = anos
+                            #                                      )
+                            #                          ),
+                            #                   column(9,
+                            #                          plotlyOutput("outAtivoAnual", height = 500)))),
+                            # ##
+                            tabPanel("Série Temporal",icon = icon("chart-line"),
                                      fluidRow(column(9,
                                                      selectInput("inAtivoBimestral",
                                                                  strong("Escolha um ativo:"),

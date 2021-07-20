@@ -392,7 +392,7 @@ shinyServer(function(input, output) {
                 #Chamando a funcao acima para ver a serie temporal de um setor.
                 
                 
-                serieTempAtivo(df_emp,input$inAtivoSerie)
+                serieTempAtivo(df_emp,input$inAtivoBimestral)
             }
             
             else if(as.character(input$inBimestre)=="Todos" && as.character(input$inAno)!="Todos"){
@@ -433,7 +433,7 @@ shinyServer(function(input, output) {
                     ggplotly(ploter)
                 }
                 
-                dadosAnual(DF,BancoDeDados_Acoes,input$inAno,input$inAtivoAnual)
+                dadosAnual(DF,BancoDeDados_Acoes,input$inAno,input$inAtivoBimestral)
                 
                     
             }
@@ -442,11 +442,12 @@ shinyServer(function(input, output) {
             ####FAZER AQ
                 dadosBimestrais <- function(DF,BancoDeDados_Acoes,bimestre,acao){
                     BD_aux <- BancoDeDados_Acoes
-                    for (i in 1:nrow(BancoDeDados_Acoes)){
+                    for (i in 1:nrow(BD_aux)){
                         BD_aux$Mes[i] <- strsplit(as.character(BD_aux$Data[i]),"-")[[1]][2]
                     }
                     BD_aux <- BD_aux %>% select(Data,Mes,everything())
-                    
+                    print(bimestre)
+                    print(acao)
                     intBim = as.integer(bimestre)
                     if (intBim < 5){
                         mes1 <- paste("0",as.character((intBim*2)-1),sep = "")
@@ -460,7 +461,8 @@ shinyServer(function(input, output) {
                         mes1 <- "11"
                         mes2 <- "12"
                     }
-                   
+                  print(mes1)
+                  print(mes2)
                     #Adjusts
                     #Plotar aqui
                     ploter <- BD_aux[BD_aux$Mes == mes1 | BD_aux$Mes == mes2 ,] %>%        
@@ -475,7 +477,7 @@ shinyServer(function(input, output) {
                     ggplotly(ploter)
                 }
                 
-                dadosBimestrais(DF,BancoDeDados_Acoes,input$inBimestre,input$inAtivoAnual)
+                dadosBimestrais(DF,BancoDeDados_Acoes,input$inBimestre,input$inAtivoBimestral)
                 
                 
                 
