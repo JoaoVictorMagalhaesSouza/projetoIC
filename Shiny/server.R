@@ -461,7 +461,7 @@ shinyServer(function(input, output) {
                         mes2 <- "12"
                     }
                    
-                    
+                    #Adjusts
                     #Plotar aqui
                     ploter <- BD_aux[BD_aux$Mes == mes1 | BD_aux$Mes == mes2 ,] %>%        
                         select(Data,acao) %>% 
