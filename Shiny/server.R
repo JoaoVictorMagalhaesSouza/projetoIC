@@ -180,8 +180,13 @@ shinyServer(function(input, output) {
                     geom_point(aes(x = risk_yld, y = return), data =max_sharpe_ratio, color = 'green') 
                 
                 max_sharpe_ratio_long  <-  gather(max_sharpe_ratio,"stock","weight",-c("return","risk_yld","sharpe_ratio","W"))
-                b <- ggplot(max_sharpe_ratio_long,aes(x="",y=weight, fill=stock)) +
+                colnames(max_sharpe_ratio_long)[5] <- "Ativo"
+                colnames(max_sharpe_ratio_long)[6] <- "Percentual"
+                print(max_sharpe_ratio_long)
+                b <- ggplot(max_sharpe_ratio_long,aes(x="",y=Percentual, fill=Ativo)) +
+        
                     geom_bar(stat="identity", width=1, color="white")+
+                
                     labs(x = '',
                          y = 'Alocação dos Ativos (%)',
                          #Ponto ótimo, equilibrio perfeiro entre risco e retorno.
@@ -191,7 +196,9 @@ shinyServer(function(input, output) {
                     theme_classic()
                 
                 min_risk_long  <-  gather(min_risk,"stock","weight",-c("return","risk_yld","sharpe_ratio","W"))
-                c <- ggplot(min_risk_long,aes(x="",y=weight, fill=stock)) +
+                colnames(min_risk_long)[5] <- "Ativo"
+                colnames(min_risk_long)[6] <- "Percentual"
+                c <- ggplot(min_risk_long,aes(x="",y=Percentual, fill=Ativo)) +
                     geom_bar(stat="identity", width=1, color="white")+
                     labs(x = '',
                          y = 'Alocação dos Ativos (%)',
@@ -240,8 +247,8 @@ shinyServer(function(input, output) {
                 # tab$Percentual <- tab$Percentual*100
                 
                 tab <- max_sharpe_ratio_long
-                tab <- select(tab,stock,weight)
-                names(tab) <- c("Ativo","Percentual")
+                tab <- select(tab,Ativo,Percentual)
+                #names(tab) <- c("Ativo","Percentual")
                 tab$Percentual <- tab$Percentual*100
                 
                 
