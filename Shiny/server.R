@@ -197,6 +197,7 @@ shinyServer(function(input, output) {
                 min_risk_long  <-  gather(min_risk,"stock","weight",-c("return","risk_yld","sharpe_ratio","W"))
                 colnames(min_risk_long)[5] <- "Ativo"
                 colnames(min_risk_long)[6] <- "Percentual"
+                print(min_risk_long)
                 c <- ggplot(min_risk_long,aes(x="",y=Percentual, fill=Ativo)) +
                     geom_bar(stat="identity", width=1, color="white")+
                     labs(x = '',
@@ -208,21 +209,25 @@ shinyServer(function(input, output) {
                 # Yld chart
                 den <- bind_rows(replicate(nrow(series) - 1, series[1,-1], simplify = FALSE))
                 num <- series[2:nrow(series),-1] 
-                #e   <- cbind(dates[-1] , (num - den) / den) %>% dplyr::rename(dates = 'dates[-1]')
+                e   <- cbind(dates[-1] , (num - den) / den) %>% dplyr::rename(dates = 'dates[-1]')
                 rm(den,num)
+                colnames(e)[ncol(e)-1] <- "Port. Maior Índice Sharpe"
+                colnames(e)[ncol(e)] <- "Port. Menor Risco"
                 
-                # e <-  e %>% gather(key = "Stock", value = "Price", -dates) %>%
-                #     ggplot(., aes(x = dates , y = Price , color = Stock)) +
-                #     geom_line() + 
-                #     theme_bw() +
-                #     labs(x = 'Date',
-                #          y = '',
-                #          title = "Performance") +
-                #     scale_x_date(date_breaks = "3 month", date_labels = "%b-%y") + 
-                #     theme(axis.text.x = element_text(angle = 90),
-                #           plot.title  = element_text(color = "black", size = 25, face = "bold"),
-                #           panel.border = element_blank()) +
-                #     scale_y_continuous(labels = scales::percent)  
+               
+               
+             e <-  e %>% gather(key = "Stock", value = "Price", -dates) %>%
+                     ggplot(., aes(x = dates , y = Price , color = Stock)) +
+                     geom_line() + 
+                     theme_bw() +
+                     labs(x = 'Date',
+                          y = '',
+                          title = "Performance") +
+                     scale_x_date(date_breaks = "3 month", date_labels = "%b-%y") + 
+                     theme(axis.text.x = element_text(angle = 90),
+                           plot.title  = element_text(color = "black", size = 25, face = "bold"),
+                           panel.border = element_blank()) +
+                     scale_y_continuous(labels = scales::percent)  
                 
                 a  <- ggplotly(a, tooltip = "text") 
                 b  <- ggplotly(b)
@@ -232,7 +237,7 @@ shinyServer(function(input, output) {
             
                     labs(title = "Matriz de Correlação dos Ativos")+
                     theme_classic()
-                #e  <- ggplotly(e)
+                e  <- ggplotly(e)
                 
                 # df_aux <- as.timeSeries(BancoDeDados_Acoes)
                 # df <- df_aux[,c(input$inAtivosMark)]
@@ -270,6 +275,7 @@ shinyServer(function(input, output) {
                 output$outMark3 <- renderPlot(d)
                 output$outTabelaMark <- renderTable(tab)
                 output$outTabelaMark2 <- renderTable(tab2)
+                output$outMark4 <- renderPlotly(e)
                 
             
             }

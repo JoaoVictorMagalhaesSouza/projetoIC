@@ -217,6 +217,10 @@ shinyUI(fluidPage(
                                       p(style = "text-align: justify;","Generalizando, o risco para uma carteira com N ativos é expresso da seguinte forma:"),
                                       br(),
                                       p(style = "text-align: center; color: red;",strong("Risco(A,B,C,...,N) = var(A) + var(B) + var(C) + ... + var(N) + 2*cov(A,B) + 2*cov(A,C) + ... + 2*cov(A,N) + ... + 2*cov(N-1,N)")),
+                                      br(),
+                                      p(style = "text-align: justify;","Estatisticamente, a covariância pode ser escrita também em função da correlação entre os ativos. Dessa forma, se os ativos apresentarem uma correlação forte e negativa,
+                                        isso significa que quando um ativo for desvalorizado, o outro não-necessariamente será desvalorizado também, minimizando o risco do investimento."),
+                                      
                                       
                                       
                                       
@@ -268,6 +272,7 @@ shinyUI(fluidPage(
                                  # ),
                                  br(),
                                  div(
+                                   splitLayout(style = "botder 1px solid silver",cellWidths = c("50%","25%","50%"),strong(h3("Carteira de Melhor Índice Sharpe")),NULL,strong(h3("Carteira de Menor Risco"))), 
                                  splitLayout(style = "botder 1px solid silver",cellWidths = c("50%","25%","50%"),tableOutput("outTabelaMark"),NULL,tableOutput("outTabelaMark2")),
                                  style = "position:relative; left:150px",
                                  ),
@@ -275,6 +280,10 @@ shinyUI(fluidPage(
                                  br(),
                                  br(),
                                  plotOutput("outMark3"),
+                                 br(),
+                                 br(),
+                                 br(),
+                                 plotlyOutput("outMark4"),
                                  
                                  
                                  
