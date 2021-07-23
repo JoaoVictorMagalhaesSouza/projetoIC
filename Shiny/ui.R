@@ -206,6 +206,18 @@ shinyUI(fluidPage(
                                         de modo que apresentem uma correlação forte e negativa (inversamente proporcionais), visando sempre otimizar mas, ao mesmo tempo, minimizar as possíveis perdas.
                                         Logo, é possível observar que a Fronteira Eficiente consiste em todos os pontos onde o retorno é máximo e estes pontos, por sua vez, variam de acordo com o risco que o investidor
                                         está disposto a correr."),
+                                      br(),
+                                      h4("O que é o ",strong("risco")," ?"),
+                                      br(),
+                                      p(style = "text-align: justify;","O cálculo do risco, seguindo a Teoria do Portfólio de Markowitz, é calculada utilizando a variância de todos os ativos presentes na carteira acrescida do cálculo
+                                        da covariância entre os pares de ativos da carteira. Logo, se tivermos uma carteira com apenas dois ativos A e B, termos o risco dado por: "),
+                                      br(),
+                                      p(style = "text-align: center;",strong("Risco(A,B) = var(A) + var(B) + 2*cov(A,B)")),
+                                      br(),
+                                      p(style = "text-align: justify;","Generalizando, o risco para uma carteira com N ativos é expresso da seguinte forma:"),
+                                      br(),
+                                      p(style = "text-align: center; color: red;",strong("Risco(A,B,C,...,N) = var(A) + var(B) + var(C) + ... + var(N) + 2*cov(A,B) + 2*cov(A,C) + ... + 2*cov(A,N) + ... + 2*cov(N-1,N)")),
+                                      
                                       
                                       
                                     )
@@ -256,9 +268,13 @@ shinyUI(fluidPage(
                                  # ),
                                  br(),
                                  div(
-                                 splitLayout(style = "botder 1px solid silver",cellWidths = c("50%","25%","50%"),plotOutput("outMark3"),NULL,tableOutput("outTabelaMark")),
+                                 splitLayout(style = "botder 1px solid silver",cellWidths = c("50%","25%","50%"),tableOutput("outTabelaMark"),NULL,tableOutput("outTabelaMark2")),
                                  style = "position:relative; left:150px",
                                  ),
+                                 br(),
+                                 br(),
+                                 br(),
+                                 plotOutput("outMark3"),
                                  
                                  
                                  

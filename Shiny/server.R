@@ -182,7 +182,6 @@ shinyServer(function(input, output) {
                 max_sharpe_ratio_long  <-  gather(max_sharpe_ratio,"stock","weight",-c("return","risk_yld","sharpe_ratio","W"))
                 colnames(max_sharpe_ratio_long)[5] <- "Ativo"
                 colnames(max_sharpe_ratio_long)[6] <- "Percentual"
-                print(max_sharpe_ratio_long)
                 b <- ggplot(max_sharpe_ratio_long,aes(x="",y=Percentual, fill=Ativo)) +
         
                     geom_bar(stat="identity", width=1, color="white")+
@@ -251,6 +250,10 @@ shinyServer(function(input, output) {
                 #names(tab) <- c("Ativo","Percentual")
                 tab$Percentual <- tab$Percentual*100
                 
+                tab2 <- min_risk_long
+                tab2 <- select(tab2,Ativo,Percentual)
+                tab2$Percentual <- tab2$Percentual*100
+                
                 
                 
     
@@ -266,6 +269,7 @@ shinyServer(function(input, output) {
                 output$outMark2 <- renderPlotly(c)
                 output$outMark3 <- renderPlot(d)
                 output$outTabelaMark <- renderTable(tab)
+                output$outTabelaMark2 <- renderTable(tab2)
                 
             
             }
