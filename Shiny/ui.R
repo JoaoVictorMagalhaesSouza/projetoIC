@@ -220,7 +220,23 @@ shinyUI(fluidPage(
                                       br(),
                                       p(style = "text-align: justify;","Estatisticamente, a covariância pode ser escrita também em função da correlação entre os ativos. Dessa forma, se os ativos apresentarem uma correlação forte e negativa,
                                         isso significa que quando um ativo for desvalorizado, o outro não-necessariamente será desvalorizado também, minimizando o risco do investimento."),
+                                      br(),
+                                      h4("O que é o ",strong("retorno esperado")," ?"),
+                                      br(),
+                                      p(style = "text-align: justify;","O retorno esperado é medido a partir do cálculo da soma dos valores esperados dos ativos da carteira, considerando seu comportamento temporalmente, ou seja, levando em conta seu desempenho ao longo do tempo.
+                                        Sendo assim, se tivermos uma carteira com dois ativos X e Y, nosso retorno esperado será: "),
+                                      br(),
+                                      p(style = "text-align: center;",strong("Retorno esperado(A,B) = E(A) + E(B)")),
+                                      br(),
+                                      p(style = "text-align: justify;","De modo geral, o retorno esperado pode ser escrito, para uma carteira com N ativos, como: "),
+                                      br(),
+                                      p(style = "text-align: center; color: red;",strong("Retorno esperado(A,B,...,N) = E(A) + E(B) + ... + E(N)")),
+                                      br(),
+                                      p(style = "text-align: justify;","Dessa forma, podemos entender que se um investimento tem 50% de chances de valorizar 20% e 50% de chances de desvalorizar 10%, o retorno esperado é de ",strong("5%")," pois: (20% x 50% + 10% x 50% = 5%)."),
+                                      br(),
                                       
+                                      
+                                    
                                       
                                       
                                       
