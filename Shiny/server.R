@@ -580,7 +580,6 @@ shinyServer(function(input, output) {
     })
     
     
-    ##Problema aqui: tive que mudar de plotly para plot
     output$outBoxplotAtivo <- renderPlot({
         boxPlotAtivo <- function(BancoDeDados_Acoes,acao){
 
@@ -600,6 +599,25 @@ shinyServer(function(input, output) {
     
     
     output$outBoxAnual <- renderPlot({
+        if (as.character(input$inBoxAnualAno)=="Todos"){
+            boxPlotAtivo <- function(BancoDeDados_Acoes,acao){
+                
+                
+                BancoDeDados_Acoes %>% 
+                    select(Data,acao) %>% 
+                    melt(id.var = "Data") %>% 
+                    # box <- melt(temp,id.vars = "Data", measure.vars = c("ABEV3.SA"))
+                    ggplot(aes(Data,value)) + geom_boxplot(fill='#56B4E9',color = "blue",outlier.colour = "red") + ggtitle("Boxplot: ") + labs(x = "Data (ano)", y = "Valor da Ação (R$)") + theme_classic()
+                
+                
+                
+            }
+            boxPlotAtivo(BancoDeDados_Acoes,input$inBoxAnualAtivo)
+            
+        }
+        else{
+        
+        
         boxAnual <- function(DF,BancoDeDados_Acoes,ano,acao){
             j = 1
             #dataIni = 2016
@@ -638,7 +656,7 @@ shinyServer(function(input, output) {
         }
         
         boxAnual(DF,BancoDeDados_Acoes,input$inBoxAnualAno,input$inBoxAnualAtivo)
-        
+        } 
         
         
     })

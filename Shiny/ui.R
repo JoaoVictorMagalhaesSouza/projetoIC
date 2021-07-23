@@ -107,17 +107,17 @@ shinyUI(fluidPage(
                                               column(9,
                                                      plotlyOutput("outAtivoCompB3", height = 500)))),
                             
-                            tabPanel("Boxplot Geral", icon = icon("bold"),
-                                     fluidRow(column(3, 
-                                                     selectInput("inAtivoBox", 
-                                                                 strong("Escolha um ativo:"), 
-                                                                 choices=c(names(BancoDeDados_Acoes[-1])))),
-                                              
-                                              ##Problema aqui: tive que mudar de plotly para plot                   
-                                              column(9,
-                                                plotOutput("outBoxplotAtivo", height = 600)))),
+                            # tabPanel("Boxplot Geral", icon = icon("bold"),
+                            #          fluidRow(column(3, 
+                            #                          selectInput("inAtivoBox", 
+                            #                                      strong("Escolha um ativo:"), 
+                            #                                      choices=c(names(BancoDeDados_Acoes[-1])))),
+                            #                   
+                            #                   ##Problema aqui: tive que mudar de plotly para plot                   
+                            #                   column(9,
+                            #                     plotOutput("outBoxplotAtivo", height = 600)))),
                             
-                            tabPanel("Boxplot Anual", icon = icon("bold"),
+                            tabPanel("Boxplot", icon = icon("bold"),
                                      fluidRow(column(3, 
                                                      selectInput("inBoxAnualAtivo", 
                                                                  strong("Escolha um ativo:"), 
@@ -125,7 +125,7 @@ shinyUI(fluidPage(
                                                      
                                                      selectInput("inBoxAnualAno",
                                                                  strong("Escolha um ano:"),
-                                                                 choices = anos)
+                                                                 choices = c("Todos",anos))
                                                      ),
                                               
                                                                 
