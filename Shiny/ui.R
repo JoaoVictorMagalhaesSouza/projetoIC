@@ -56,7 +56,7 @@ shinyUI(fluidPage(
                           
                  ),
                 
-                tabPanel("Ativo Único",
+                tabPanel("Ativos",
                         tabsetPanel(
                             # tabPanel("Série Temporal Geral",icon = icon("chart-line"),
                             #          fluidRow(column(3,
@@ -84,6 +84,7 @@ shinyUI(fluidPage(
                                      fluidRow(column(9,
                                                      selectInput("inAtivoBimestral",
                                                                  strong("Escolha um ativo:"),
+                                                                multiple = TRUE,
                                                                  choices=c(names(BancoDeDados_Acoes[-1]))),
                               
                                                      
@@ -103,6 +104,7 @@ shinyUI(fluidPage(
                                      fluidRow(column(3,
                                                      selectInput("inAtivoCompB3",
                                                                  strong("Escolha um ativo:"),
+                                                                 multiple = TRUE,
                                                                  choices=noB3)),
                                               column(9,
                                                      plotlyOutput("outAtivoCompB3", height = 500)))),

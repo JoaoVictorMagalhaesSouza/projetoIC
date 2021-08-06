@@ -304,49 +304,51 @@ shinyServer(function(input, output) {
         
     })
     
-    output$outAtivoAnual <- renderPlotly({
-        dadosAnual <- function(DF,BancoDeDados_Acoes,ano,acao){
-            j = 1
-            #dataIni = 2016
-            #dataF = as.integer(strsplit(as.character(DF),"-")[[1]][1])
-            #qtdeGraf <- dataF - dataIni #Quantidade de gráficos a serem gerados.
-            dataAtual <- ano
-            # boxers <- list()
-            # print(dataAtual)
-            final <- 1
-            contador <- 0
-            inicial <- 0
-            for (j in 1:nrow(BancoDeDados_Acoes)){
-                #Ano
-                if (strsplit(as.character(BancoDeDados_Acoes$Data[j]),"-")[[1]][1] == dataAtual){
-                    #Bimestre que eu quero
-                    final <- j
-                        #print(BancoDeDados_Acoes$Data[j])
-                        contador <- contador + 1
-                    
-                    inicial <- final-contador+1
-                }
-            }
-            
-            
-            #Plotar aqui
-            ploter <- BancoDeDados_Acoes[inicial:final,] %>%        
-                select(Data,acao) %>% 
-                melt(id.var = "Data") %>% 
-                ggplot(aes(Data,value))+geom_line(aes(colour = variable)) #+  #geom_smooth(method = "loess", se = FALSE)
-            
-            #boxers[[i]] = melt(BancoDeDados_Acoes[inicial:final,],id.vars = "Data", measure.vars = c("B3SA3.SA"))
-            
-            
-            
-            ggplotly(ploter)
-        }
-        
-        dadosAnual(DF,BancoDeDados_Acoes,input$inAnoAnual,input$inAtivoAnual)
-        
-        
-        
-    })
+    
+    # output$outAtivoAnual <- renderPlotly({
+    #     dadosAnual <- function(DF,BancoDeDados_Acoes,ano,acao){
+    #         j = 1
+    #         #dataIni = 2016
+    #         #dataF = as.integer(strsplit(as.character(DF),"-")[[1]][1])
+    #         #qtdeGraf <- dataF - dataIni #Quantidade de gráficos a serem gerados.
+    #         dataAtual <- ano
+    #         # boxers <- list()
+    #         # print(dataAtual)
+    #         final <- 1
+    #         contador <- 0
+    #         inicial <- 0
+    #         for (j in 1:nrow(BancoDeDados_Acoes)){
+    #             #Ano
+    #             if (strsplit(as.character(BancoDeDados_Acoes$Data[j]),"-")[[1]][1] == dataAtual){
+    #                 #Bimestre que eu quero
+    #                 final <- j
+    #                     #print(BancoDeDados_Acoes$Data[j])
+    #                     contador <- contador + 1
+    #                 
+    #                 inicial <- final-contador+1
+    #             }
+    #         }
+    #         
+    #         
+    #         #Plotar aqui
+    #         ploter <- BancoDeDados_Acoes[inicial:final,] %>%        
+    #             select(Data,acao) %>% 
+    #             melt(id.var = "Data") %>% 
+    #             ggplot(aes(Data,value))+geom_line(aes(colour = variable)) #+  #geom_smooth(method = "loess", se = FALSE)
+    #         
+    #         #boxers[[i]] = melt(BancoDeDados_Acoes[inicial:final,],id.vars = "Data", measure.vars = c("B3SA3.SA"))
+    #         
+    #         
+    #         
+    #         ggplotly(ploter)
+    #     }
+    #     
+    #    
+    #     dadosAnual(DF,BancoDeDados_Acoes,input$inAnoAnual,input$inAtivoAnual)
+    #     
+    #     
+    #     
+    # })
     
     
     output$outAno <- renderUI({
@@ -408,8 +410,9 @@ shinyServer(function(input, output) {
                 }
                 #Chamando a funcao acima para ver a serie temporal de um setor.
                 
-                
+                if(length(input$inAtivoBimestral)>0){
                 serieTempAtivo(df_emp,input$inAtivoBimestral)
+                }
             }
             
             else if(as.character(input$inBimestre)=="Todos" && as.character(input$inAno)!="Todos"){
@@ -449,9 +452,9 @@ shinyServer(function(input, output) {
                     
                     ggplotly(ploter)
                 }
-                
+                if(length(input$inAtivoBimestral)>0){
                 dadosAnual(DF,BancoDeDados_Acoes,input$inAno,input$inAtivoBimestral)
-                
+                }
                     
             }
             
@@ -491,9 +494,9 @@ shinyServer(function(input, output) {
                     
                     ggplotly(ploter)
                 }
-                
+                if(length(input$inAtivoBimestral)>0){
                 dadosBimestrais(DF,BancoDeDados_Acoes,input$inBimestre,input$inAtivoBimestral)
-                
+                }
                 
                 
                 }
@@ -551,9 +554,9 @@ shinyServer(function(input, output) {
             ggplotly(ploter)
             }
         }
-        
+        if(length(input$inAtivoBimestral)>0){
         dadosBimestre(DF,BancoDeDados_Acoes,input$inAno,input$inBimestre,input$inAtivoBimestral)
-        
+        }
         
         
         
