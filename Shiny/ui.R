@@ -83,7 +83,7 @@ shinyUI(fluidPage(
                             tabPanel("Série Temporal",icon = icon("chart-line"),
                                      fluidRow(column(9,
                                                      selectInput("inAtivoBimestral",
-                                                                 strong("Escolha um ativo:"),
+                                                                 strong("Escolha um ou mais ativos:"),
                                                                 multiple = TRUE,
                                                                  choices=c(names(BancoDeDados_Acoes[-1]))),
                               
@@ -103,7 +103,7 @@ shinyUI(fluidPage(
                             tabPanel("Comparação com a B3",icon = icon("chart-line"),
                                      fluidRow(column(3,
                                                      selectInput("inAtivoCompB3",
-                                                                 strong("Escolha um ativo:"),
+                                                                 strong("Escolha um ou mais ativos:"),
                                                                  multiple = TRUE,
                                                                  choices=noB3)),
                                               column(9,
