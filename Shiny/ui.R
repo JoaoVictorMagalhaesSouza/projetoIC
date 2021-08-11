@@ -14,39 +14,47 @@ shinyUI(fluidPage(
       navbarPage(title="ANÁLISE DA BOVESPA",
                 
                  tabPanel("Apresentação",
-                          h2("Motivações"),
+                          #h2("Motivações"),
                           sidebarLayout(
                             sidebarPanel(
-                              icon("info"),
-                              p(style = "text-align: justify;","Diante das problemáticas nos diversos âmbitos
-                                sociais presenciados ultimamente e, partindo da premissa de que a educação básica brasileira não promulga boas
-                                práticas de educação financeira, sentimentos a necessidade de promover uma ideia
-                                que fomentasse, auxiliasse e consolidasse o estudo acerca do Mercado Financeiro,
-                                que é de extrema importância e bastante impactante no processo de formação do ser."),
+                              img(src="b3.png",width="100%"),
+                              #icon("info"),
+                              #p(style = "text-align: justify;","Diante das problemáticas nos diversos âmbitos
+                              #  sociais presenciados ultimamente e, partindo da premissa de que a educação básica brasileira não promulga boas
+                              #  práticas de educação financeira, sentimentos a necessidade de promover uma ideia
+                              #  que fomentasse, auxiliasse e consolidasse o estudo acerca do Mercado Financeiro,
+                              #  que é de extrema importância e bastante impactante no processo de formação do ser."),
                               br(),
-                              p(style = "text-align: justify;","Além disso, também agregamos à essa causa o ideal de somar e impulsionar
-                                o campo da Ciência de Dados no Mercado Financeiro Brasileiro, uma vez que os dados são muito incipientes e incompletos, formando assim uma carência
-                                muito grande de Bancos de Dados e ",em("dashboards"),"nacionais nesse setor.
-                                "),
+                              #p(style = "text-align: justify;","Além disso, também agregamos à essa causa o ideal de somar e impulsionar
+                              #  o campo da Ciência de Dados no Mercado Financeiro Brasileiro, uma vez que os dados são muito incipientes e incompletos, formando assim uma carência
+                              #  muito grande de Bancos de Dados e ",em("dashboards"),"nacionais nesse setor.
+                              #  "),
                               
                             ),
                             
                             mainPanel(
-                              h2("Nossa Proposta"),
-                              icon("check"),
+                              h2("Projeto: Análise dos Ativos da B",tags$sup("3")),
+                              #icon("check"),
                               br(),
-                              p(style = "text-align: justify;","Propomos com este trabalho, então, uma maneira mais prática,
-                                intuitiva e em mais alto nível uma forma de visualizar",em("dashboards"),"interativos acerca de pregões
-                                da Bolsa de Valores de São Paulo. Nós reunimos um Banco de Dados contendo os valores do 
-                                Preço Ajustado das ações mais negocidadas da BOVESPA desde Janeiro de 2016 até o dia atual. O Banco de Dados
-                                é atualizado todo dia às 06:00 a.m, no horário de Brasília, de acordo com os dados fornecidos pela API do Yahoo Finance.
-                                "),
+                              p(style = "text-align: justify;", style = "font-size:25px;","Propomos com este trabalho, 
+                              uma maneira prática e objetiva para visualizar de forma interativa 
+                              e comparativa a evolução dos preço de ativos da Bolsa de Valores de 
+                              São Paulo. Este", em("Dashboard"), "foi produzido como resultado do 
+                              trabalho de Iniciação Científica voluntária do aluno de graduação", 
+                                strong("João Victor M. Souza"), "orientado pelo professor", 
+                                strong("Fernando de Souza Bastos"), "(vide aba 'Desenvolvedores')."
+                                #Reunimos um Banco de Dados contendo os valores do 
+                                #  Preço Ajustado das ações mais negocidadas da BOVESPA desde Janeiro de 2016 até o dia atual. O Banco de Dados
+                                #  é atualizado todo dia às 06:00 a.m, no horário de Brasília, de acordo com os dados fornecidos pela API do Yahoo Finance.
+                              ),
                               br(),
-                              p(style = "text-align: justify;","Sendo assim, nós produzimos
-                                séries temporais e",em("boxplots")," de acordo com os filtros que o usuário queira aplicar, de modo a facilitar
-                                e guiar sua busca. Dessa forma, buscamos disseminar a ideia de levar essas métricas que embasam a análise de dados
-                                de forma que os usuários não precisem saber fazê-las via alguma linguagem de programação, bastando apenas possuir o
-                                interesse de analisá-las via ",em("dashboards"),"."),
+                              p(style = "text-align: justify;", style = "font-size:25px;",strong("Observação Importante:"), 
+                                "Este trabalho não tem o objetivo de sugerir a compra de nenhum ativo da bolsa. ")
+                              #p(style = "text-align: justify;","Sendo assim, nós produzimos
+                              #  séries temporais e",em("boxplots")," de acordo com os filtros que o usuário queira aplicar, de modo a facilitar
+                              #  e guiar sua busca. Dessa forma, buscamos disseminar a ideia de levar essas métricas que embasam a análise de dados
+                              #  de forma que os usuários não precisem saber fazê-las via alguma linguagem de programação, bastando apenas possuir o
+                              #  interesse de analisá-las via ",em("dashboards"),"."),
                               
                               
                             )
@@ -324,41 +332,66 @@ shinyUI(fluidPage(
               
                 
                  
-               tabPanel("Sobre os Envolvidos",
-                        titlePanel("Informações"),
-                        sidebarLayout(
-                          sidebarPanel(
-                            h4(strong("Desenvolvedor:")),
-                            img(src = "joao.png", height = 150, width = 150, align = "center"),
-                            em(strong("João Victor M. Souza")),
-                            br(),
-                            p(style = "text-align: justify;","Aluno do curso de Ciência da Computação da Universidade
-                               Federal de Viçosa - Campus Florestal."),
-                            br(),
-                            icon("at"),
-                            em("   JoaoVictorMagalhaesSouza@gmail.com"),
-                            br(),
-                            icon("instagram"),
-                            a(href = "https://www.instagram.com/joaovictormagalhaessouza/",em("joaovictormagalhaessouza")),
-                            br(),
-                            icon("github"),
-                            a(href = "https://github.com/JoaoVictorMagalhaesSouza",em("joaovictormagalhaessouza")),
-                            br(),
-                            icon("briefcase"),
-                            a(href="https://joaovictormagalhaessouza.github.io/", em("https://joaovictormagalhaessouza.github.io/")),
-                            
-                            
-                            ),
-                          
-                          mainPanel(
-                            
-                          )
-                          
-                        )
-                        
-                        
-                        
-               )
+              tabPanel("Desenvolvedores",
+                       titlePanel("Desenvolvedores e Contatos"),
+                       sidebarLayout(
+                         sidebarPanel(
+                           fluidRow(
+                             column(6, 
+                                    #h4(strong("Desenvolvedor:")),
+                                    img(src = "joao.png", height = 150, width = 150, align = "center"),
+                                    br(),
+                                    em(strong("João Victor M. Souza")),
+                                    br(),
+                                    p(style = "text-align: justify;","Graduando em Ciência da Computação."),
+                                    p(style = "text-align: justify;","Universidade
+                               Federal de Viçosa - Campus UFV - Florestal."),
+                                    br(),
+                                    icon("at"),
+                                    #em("   JoaoVictorMagalhaesSouza@gmail.com"),
+                                    a(href = "JoaoVictorMagalhaesSouza@gmail.com",em("E-mail")),
+                                    br(),
+                                    icon("instagram"),
+                                    a(href = "https://www.instagram.com/joaovictormagalhaessouza/",em("Instagram")),
+                                    br(),
+                                    icon("github"),
+                                    a(href = "https://github.com/JoaoVictorMagalhaesSouza",em("GitHub")),
+                                    br(),
+                                    icon("briefcase"),
+                                    a(href="https://joaovictormagalhaessouza.github.io/", em("Página Pessoal"))
+                             ),
+                             column(6, 
+                                    img(src = "Fernando.jpg", height = 150, width = 150, align = "center"),
+                                    br(),
+                                    em(strong("Fernando de Souza Bastos")),
+                                    br(),
+                                    p(style = "text-align: justify;","Doutor em Estatística."),
+                                    p(style = "text-align: justify;","Professor da Universidade
+                               Federal de Viçosa - Campus UFV - Florestal."),
+                                    br(),
+                                    icon("at"),
+                                    a(href = "fernando.bastos@ufv.br",em("E-mail")),
+                                    br(),
+                                    icon("instagram"),
+                                    a(href = "https://www.instagram.com/fsbmat/",em("Instagram")),
+                                    br(),
+                                    icon("github"),
+                                    a(href = "https://github.com/fsbmat-ufv",em("GitHub")),
+                                    br(),
+                                    icon("briefcase"),
+                                    a(href="https://fsbmat-ufv.github.io/", em("Página Pessoal"))
+                             )
+                           ),
+                           
+                           
+                           width = 12),
+                         
+                         mainPanel()
+                       )
+                       
+                       
+                       
+              )
                
                
                
