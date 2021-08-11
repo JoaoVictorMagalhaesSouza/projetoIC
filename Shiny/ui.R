@@ -188,18 +188,19 @@ shinyUI(fluidPage(
               tabPanel("Fronteira de Markowitz",
                        tabsetPanel(
                          tabPanel("O que é", icon = icon("question"),
-                                  
-                                  em(h2("Harry Markowitz")),
                                   sidebarLayout(
                                     sidebarPanel(
+                                  em(h2("Harry Markowitz")),
+                                  
+                                    
                                       icon("info"),
                                       p(style = "text-align: justify;",strong("Harry Max Markowitz")," é um importante economista de origem estadunidense. Formado em Economia
                                         pela Universidade de Chicago, Harry trouxe grandes contribuições para a área, ganhando até mesmo o Prêmio Nobel de Economia de 1990.
                                         Dentre seus longos anos de estudo, elaborou a chamada",strong("Teoria Moderna do Portfólio (1952),"), "um dos principais objetos de interesse deste projeto."),
-                                      br(),
+                                      br()),
                                       
                                       
-                                    ),
+                                    
                                     
                                     mainPanel(
                                       h2("Teoria Moderna do Portfólio"),
@@ -251,6 +252,7 @@ shinyUI(fluidPage(
                                       
                                       
                                     )
+                                  
                                     
                                   )
                                   
