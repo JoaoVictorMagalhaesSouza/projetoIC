@@ -89,16 +89,16 @@ shinyUI(fluidPage(
                             #                          plotlyOutput("outAtivoAnual", height = 500)))),
                             # ##
                             tabPanel("Série Temporal",icon = icon("chart-line"),
-                                     fluidRow(column(9,
+                                     fluidRow(column(3,
                                                      selectInput("inAtivosSerie",
                                                                  strong("Escolha um ou mais ativos:"),
                                                                 multiple = TRUE,
-                                                                 choices=c(names(BancoDeDados_Acoes[-1]))),
+                                                                 choices=c(names(BancoDeDados_Acoes[-1])))),
                                                      column(9,
-                                                            dygraphOutput("outPlotAtivos", height = 500)))),
+                                                            dygraphOutput("outPlotAtivos", height = 500)),
                               
                                                      
-                                                     
+                                     )
                                                      ),
                                               
                             tabPanel("Comparação com a B3",icon = icon("chart-line"),
@@ -110,30 +110,22 @@ shinyUI(fluidPage(
                                               column(9,
                                                      dygraphOutput("outAtivoCompB3", height = 500)))),
                             
-                            # tabPanel("Boxplot Geral", icon = icon("bold"),
-                            #          fluidRow(column(3, 
-                            #                          selectInput("inAtivoBox", 
-                            #                                      strong("Escolha um ativo:"), 
-                            #                                      choices=c(names(BancoDeDados_Acoes[-1])))),
-                            #                   
-                            #                   ##Problema aqui: tive que mudar de plotly para plot                   
-                            #                   column(9,
-                            #                     plotOutput("outBoxplotAtivo", height = 600)))),
                             
                             tabPanel("Boxplot", icon = icon("bold"),
                                      fluidRow(column(3, 
                                                      selectInput("inBoxAnualAtivo", 
-                                                                 strong("Escolha um ativo:"), 
+                                                                 strong("Escolha um ou mais ativos:"), 
+                                                                 multiple = FALSE,
                                                                  choices=c(names(BancoDeDados_Acoes[-1]))),
                                                      
-                                                     selectInput("inBoxAnualAno",
-                                                                 strong("Escolha um ano:"),
-                                                                 choices = c("Todos",anos))
+                                                     # selectInput("inBoxAnualAno",
+                                                     #             strong("Escolha um ano:"),
+                                                     #             choices = c("Todos",anos))
                                                      ),
                                               
                                                                 
                                               column(9,
-                                                     plotOutput("outBoxAnual", height = 600))))
+                                                     plotlyOutput("outBoxplotAtivo", height = 600))))
                             
                             
                             

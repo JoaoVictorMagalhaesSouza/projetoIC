@@ -337,86 +337,92 @@ shinyServer(function(input, output) {
     })
     
     
-    output$outBoxplotAtivo <- renderPlot({
+    output$outBoxplotAtivo <- renderPlotly({
         boxPlotAtivo <- function(BancoDeDados_Acoes,acao){
 
                 
-                BancoDeDados_Acoes %>% 
-                select(Data,acao) %>% 
-                melt(id.var = "Data") %>% 
+                df <- BancoDeDados_Acoes %>% 
+                select(Data,acao)
+                
+                fig <- plot_ly(y=df[,-1],type = "box", name=acao)
+                        
+                
+                
+                fig <- fig %>% layout(title = "BoxPlot do Comportamento do Ativo ao Longo dos Últimos Anos")
+                ggplotly(fig)
                 # box <- melt(temp,id.vars = "Data", measure.vars = c("ABEV3.SA"))
-                ggplot(aes(Data,value)) + geom_boxplot(fill='#56B4E9',color = "blue",outlier.colour = "red") + ggtitle("Boxplot: ") + labs(x = "Data (ano)", y = "Valor da Ação (R$)") + theme_classic()
+                #ggplot(aes(Data,value)) + geom_boxplot(fill='#56B4E9',color = "blue",outlier.colour = "red") + ggtitle("Boxplot: ") + labs(x = "Data (ano)", y = "Valor da Ação (R$)") + theme_classic()
             
             
             
         }
-        boxPlotAtivo(BancoDeDados_Acoes,input$inAtivoBox)
+        boxPlotAtivo(BancoDeDados_Acoes,input$inBoxAnualAtivo)
         
     })
     
-    
-    output$outBoxAnual <- renderPlot({
-        if (as.character(input$inBoxAnualAno)=="Todos"){
-            boxPlotAtivo <- function(BancoDeDados_Acoes,acao){
-                
-                
-                BancoDeDados_Acoes %>% 
-                    select(Data,acao) %>% 
-                    melt(id.var = "Data") %>% 
-                    # box <- melt(temp,id.vars = "Data", measure.vars = c("ABEV3.SA"))
-                    ggplot(aes(Data,value)) + geom_boxplot(fill='#56B4E9',color = "blue",outlier.colour = "red") + ggtitle("Boxplot: ") + labs(x = "Data (ano)", y = "Valor da Ação (R$)") + theme_classic()
-                
-                
-                
-            }
-            boxPlotAtivo(BancoDeDados_Acoes,input$inBoxAnualAtivo)
-            
-        }
-        else{
-        
-        
-        boxAnual <- function(DF,BancoDeDados_Acoes,ano,acao){
-            j = 1
-            #dataIni = 2016
-            #dataF = as.integer(strsplit(as.character(DF),"-")[[1]][1])
-            #qtdeGraf <- dataF - dataIni #Quantidade de gráficos a serem gerados.
-            dataAtual <- ano
-            # boxers <- list()
-            # print(dataAtual)
-            final <- 1
-            contador <- 0
-            inicial <- 0
-            for (j in 1:nrow(BancoDeDados_Acoes)){
-                #Ano
-                if (strsplit(as.character(BancoDeDados_Acoes$Data[j]),"-")[[1]][1] == dataAtual){
-                    #Bimestre que eu quero
-                    final <- j
-                    #print(BancoDeDados_Acoes$Data[j])
-                    contador <- contador + 1
-                    
-                    inicial <- final-contador+1
-                }
-            }
-            
-            
-            #Plotar aqui
-                BancoDeDados_Acoes[inicial:final,] %>%        
-                select(Data,acao) %>% 
-                melt(id.var = "Data") %>% 
-                ggplot(aes(Data,value)) + geom_boxplot(fill='#56B4E9',color = "blue",outlier.colour = "red") + theme_classic()
-            
-            #boxers[[i]] = melt(BancoDeDados_Acoes[inicial:final,],id.vars = "Data", measure.vars = c("B3SA3.SA"))
-            
-            
-            
-           # ggplotly(ploter)
-        }
-        
-        boxAnual(DF,BancoDeDados_Acoes,input$inBoxAnualAno,input$inBoxAnualAtivo)
-        } 
-        
-        
-    })
+    # 
+    # output$outBoxAnual <- renderPlot({
+    #     if (as.character(input$inBoxAnualAno)=="Todos"){
+    #         boxPlotAtivo <- function(BancoDeDados_Acoes,acao){
+    #             
+    #             
+    #             BancoDeDados_Acoes %>% 
+    #                 select(Data,acao) %>% 
+    #                 melt(id.var = "Data") %>% 
+    #                 # box <- melt(temp,id.vars = "Data", measure.vars = c("ABEV3.SA"))
+    #                 ggplot(aes(Data,value)) + geom_boxplot(fill='#56B4E9',color = "blue",outlier.colour = "red") + ggtitle("Boxplot: ") + labs(x = "Data (ano)", y = "Valor da Ação (R$)") + theme_classic()
+    #             
+    #             
+    #             
+    #         }
+    #         boxPlotAtivo(BancoDeDados_Acoes,input$inBoxAnualAtivo)
+    #         
+    #     }
+    #     else{
+    #     
+    #     
+    #     boxAnual <- function(DF,BancoDeDados_Acoes,ano,acao){
+    #         j = 1
+    #         #dataIni = 2016
+    #         #dataF = as.integer(strsplit(as.character(DF),"-")[[1]][1])
+    #         #qtdeGraf <- dataF - dataIni #Quantidade de gráficos a serem gerados.
+    #         dataAtual <- ano
+    #         # boxers <- list()
+    #         # print(dataAtual)
+    #         final <- 1
+    #         contador <- 0
+    #         inicial <- 0
+    #         for (j in 1:nrow(BancoDeDados_Acoes)){
+    #             #Ano
+    #             if (strsplit(as.character(BancoDeDados_Acoes$Data[j]),"-")[[1]][1] == dataAtual){
+    #                 #Bimestre que eu quero
+    #                 final <- j
+    #                 #print(BancoDeDados_Acoes$Data[j])
+    #                 contador <- contador + 1
+    #                 
+    #                 inicial <- final-contador+1
+    #             }
+    #         }
+    #         
+    #         
+    #         #Plotar aqui
+    #             BancoDeDados_Acoes[inicial:final,] %>%        
+    #             select(Data,acao) %>% 
+    #             melt(id.var = "Data") %>% 
+    #             ggplot(aes(Data,value)) + geom_boxplot(fill='#56B4E9',color = "blue",outlier.colour = "red") + theme_classic()
+    #         
+    #         #boxers[[i]] = melt(BancoDeDados_Acoes[inicial:final,],id.vars = "Data", measure.vars = c("B3SA3.SA"))
+    #         
+    #         
+    #         
+    #        # ggplotly(ploter)
+    #     }
+    #     
+    #     boxAnual(DF,BancoDeDados_Acoes,input$inBoxAnualAno,input$inBoxAnualAtivo)
+    #     } 
+    #     
+    #     
+    # })
     
     output$outSetorComp <- renderPlotly({
         serieTempSetor <- function(df_emp,BancoDeDados_Acoes,setorMonitorado){

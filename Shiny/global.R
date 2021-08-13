@@ -28,6 +28,7 @@ library("httr")
 library("dygraphs")
 library("xts")
 library("lubridate")
+library("plotly")
 
 #library("tidyr")
 #library("httr")
