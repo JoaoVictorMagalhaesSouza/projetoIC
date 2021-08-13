@@ -483,7 +483,7 @@ shinyServer(function(input, output) {
         ),
         
         div(fluidRow(column(12, offset = 6, align ="center",
-                        plotlyOutput("outAtivosSetor", height = 600)
+                        dygraphOutput("outAtivosSetor", height = 600)
         )),style = "position:relative; top:-170px;")
         
         ))
@@ -494,7 +494,7 @@ shinyServer(function(input, output) {
     })
     
     
-    output$outAtivosSetor <- renderPlotly({
+    output$outAtivosSetor <- renderDygraph({
         serieTempAlgumasAcoesSetor <- function(df_emp,setorMonitorado,listaAcoes){
             #setores = subset(df_emp, select = c(2))
             #setores = setores[!duplicated(setores),]
@@ -524,11 +524,18 @@ shinyServer(function(input, output) {
                 
             }
             #Plotagem do resultado
-            plott <- df_setor %>%
-                select(Data,listaAcoes) %>%
-                melt(id.var = "Data") %>% 
-                ggplot(aes(Data,value))+geom_line(aes(colour = variable))
-            ggplotly(plott)
+            # plott <- df_setor %>%
+            #     select(Data,listaAcoes) %>%
+            #     melt(id.var = "Data") %>% 
+            #     ggplot(aes(Data,value))+geom_line(aes(colour = variable))
+            # ggplotly(plott)
+            str(df_setor)
+            df_setor <- df_setor %>% select(Data,listaAcoes)
+            don <- xts(order.by = df_setor$Data,x = df_setor[,-1])
+            dygraph(don,main = "Comportamento dos Ativos Selecionados") %>%
+                dyOptions(stackedGraph = FALSE) %>%    
+                dyRangeSelector(height = 20)
+            
         }
         #Passaremos a lista com as acoes que o usuario quer monitorar e o setor tambem.
         listaAcoes <- input$inAtivosSetor    #c("FLRY3.SA","RADL3.SA")
