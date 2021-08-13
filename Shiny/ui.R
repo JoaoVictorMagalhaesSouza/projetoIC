@@ -114,8 +114,7 @@ shinyUI(fluidPage(
                             tabPanel("Boxplot", icon = icon("bold"),
                                      fluidRow(column(3, 
                                                      selectInput("inBoxAnualAtivo", 
-                                                                 strong("Escolha um ou mais ativos:"), 
-                                                                 multiple = FALSE,
+                                                                 strong("Escolha um ativo:"), 
                                                                  choices=c(names(BancoDeDados_Acoes[-1]))),
                                                      
                                                      # selectInput("inBoxAnualAno",
@@ -146,7 +145,7 @@ shinyUI(fluidPage(
                                     div(
                                      fixedRow( 
                                     column(9,
-                                           plotlyOutput("outSetorComp")),
+                                           dygraphOutput("outSetorComp")),
                                   #style = "position:relative; top:-50px ; left: 100px"
                                     ))
                                     

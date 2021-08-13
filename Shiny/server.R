@@ -342,12 +342,8 @@ shinyServer(function(input, output) {
 
                 
                 df <- BancoDeDados_Acoes %>% 
-                select(Data,acao)
-                
+                select(Data,acao) 
                 fig <- plot_ly(y=df[,-1],type = "box", name=acao)
-                        
-                
-                
                 fig <- fig %>% layout(title = "BoxPlot do Comportamento do Ativo ao Longo dos Últimos Anos")
                 ggplotly(fig)
                 # box <- melt(temp,id.vars = "Data", measure.vars = c("ABEV3.SA"))
@@ -424,7 +420,7 @@ shinyServer(function(input, output) {
     #     
     # })
     
-    output$outSetorComp <- renderPlotly({
+    output$outSetorComp <- renderDygraph({
         serieTempSetor <- function(df_emp,BancoDeDados_Acoes,setorMonitorado){
             #aux <- "B3SA3.SA"
             #verificar_coluna(BancoDeDados_Acoes,aux)
@@ -455,10 +451,16 @@ shinyServer(function(input, output) {
                 
             }
             #Plotagem do resultado
-            plott <- df_setor %>%         
-                melt(id.var = "Data") %>% 
-                ggplot(aes(Data,value))+geom_line(aes(colour = variable))
-            ggplotly(plott)
+            # plott <- df_setor %>%         
+            #     melt(id.var = "Data") %>% 
+            #     ggplot(aes(Data,value))+geom_line(aes(colour = variable))
+            # ggplotly(plott)
+            
+            str(df_setor)
+            don <- xts(order.by = df_setor$Data,x = df_setor[,-1])
+            dygraph(don,main = "Comportamento dos Ativos em um Setor Específico") %>%
+                dyOptions(stackedGraph = FALSE) %>%    
+                dyRangeSelector(height = 20)
         }
         #Chamando a funcao acima para ver a serie temporal de um setor.
         #No shiny criaremos uma listBox para o usuario escolher o setor.
