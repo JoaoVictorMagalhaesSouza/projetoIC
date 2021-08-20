@@ -216,18 +216,18 @@ shinyServer(function(input, output) {
                 
                
                
-             e <-  e %>% gather(key = "Stock", value = "Price", -dates) %>%
-                     ggplot(., aes(x = dates , y = Price , color = Stock)) +
-                     geom_line() + 
-                     theme_bw() +
-                     labs(x = 'Date',
-                          y = '',
-                          title = "Performance") +
-                     scale_x_date(date_breaks = "3 month", date_labels = "%b-%y") + 
-                     theme(axis.text.x = element_text(angle = 90),
-                           plot.title  = element_text(color = "black", size = 25, face = "bold"),
-                           panel.border = element_blank()) +
-                     scale_y_continuous(labels = scales::percent)  
+             # e <-  e %>% gather(key = "Stock", value = "Price", -dates) %>%
+             #         ggplot(., aes(x = dates , y = Price , color = Stock)) +
+             #         geom_line() + 
+             #         theme_bw() +
+             #         labs(x = 'Date',
+             #              y = '',
+             #              title = "Performance") +
+             #         scale_x_date(date_breaks = "3 month", date_labels = "%b-%y") + 
+             #         theme(axis.text.x = element_text(angle = 90),
+             #               plot.title  = element_text(color = "black", size = 25, face = "bold"),
+             #               panel.border = element_blank()) +
+             #         scale_y_continuous(labels = scales::percent)  
                 
                 a  <- ggplotly(a, tooltip = "text") 
                 b  <- ggplotly(b)
@@ -237,7 +237,7 @@ shinyServer(function(input, output) {
             
                     labs(title = "Matriz de Correlação dos Ativos")+
                     theme_classic()
-                e  <- ggplotly(e)
+                # e  <- ggplotly(e)
                 
                 # df_aux <- as.timeSeries(BancoDeDados_Acoes)
                 # df <- df_aux[,c(input$inAtivosMark)]
@@ -275,7 +275,7 @@ shinyServer(function(input, output) {
                 output$outMark3 <- renderPlot(d)
                 output$outTabelaMark <- renderTable(tab)
                 output$outTabelaMark2 <- renderTable(tab2)
-                output$outMark4 <- renderPlotly(e)
+                # output$outMark4 <- renderPlotly(e)
                 
             
             }
