@@ -428,7 +428,12 @@ shinyServer(function(input, output) {
         serieTempSetor <- function(df_emp,setorMonitorado){
             #aux <- "B3SA3.SA"
             #verificar_coluna(BancoDeDados_Acoes,aux)
-            BancoDeDados_Acoes = montaBDAcoes(tickersIbov$tickersSA)
+            withProgress(message = 'Gerando dados setoriais', value = 0, {
+                incProgress(1/5,detail = "Reunindo os dados necessários. Essa operação pode demorar alguns segundos ...")
+              
+              BancoDeDados_Acoes = montaBDAcoes(acoesDisponiveis)
+              
+            
             #Escolher um setor específico
             setor = setorMonitorado #setores[[1]][9]    #Saúde
             #Pegar todas as empresas desse setor:
@@ -440,8 +445,9 @@ shinyServer(function(input, output) {
             #Conferir coluna a coluna 
             numcol = ncol(BancoDeDados_Acoes)
             #Pegando a coluna "Data" do BancoDeDados_Acoes
-            
+            incProgress(2/5,detail = "Reunindo os dados necessários ...")
             df_setor <- data.frame(Data=c(BancoDeDados_Acoes[1]))
+            incProgress(3/5,detail = "Obtendo as informações relevantes ...")
             #Vamos conferir quais  os tickers desse BD Auxiliar(no setor escolhido) estao no BD do Yahoo.
             for(i in 1:nlinhas){
                 tickers = strsplit(Acoes_Filtradas_lista[i],";")
@@ -454,18 +460,23 @@ shinyServer(function(input, output) {
                 }
                 
             }
+            
+            incProgress(4/5,detail = "Verificando os resultados ...")
             #Plotagem do resultado
             # plott <- df_setor %>%         
             #     melt(id.var = "Data") %>% 
             #     ggplot(aes(Data,value))+geom_line(aes(colour = variable))
             # ggplotly(plott)
-            
+            incProgress(5/5,detail = "Montando os gráficos ...")
             str(df_setor)
             don <- xts(order.by = df_setor$Data,x = df_setor[,-1])
-            dygraph(don,main = "Comportamento dos Ativos em um Setor Específico") %>%
-                dyOptions(stackedGraph = FALSE) %>%    
+            dygraph(don,main = "Comportamento dos Ativos de um Setor Específico") %>%
+                dyOptions(stackedGraph = FALSE) %>%
                 dyRangeSelector(height = 20)
-        }
+            
+            })
+            }
+      
         #Chamando a funcao acima para ver a serie temporal de um setor.
         #No shiny criaremos uma listBox para o usuario escolher o setor.
         setorMonitorado = input$inSetorComp
@@ -503,7 +514,7 @@ shinyServer(function(input, output) {
             #setores = subset(df_emp, select = c(2))
             #setores = setores[!duplicated(setores),]
             #Escolher um setor específico
-            BancoDeDados_Acoes = montaBDAcoes(tickersIbov$tickersSA)
+            BancoDeDados_Acoes = montaBDAcoes(acoesDisponiveis)
             setor = setorMonitorado #setores[[1]][9]    #Saúde
             #Pegar todas as empresas desse setor:
             Acoes_Filtradas = subset(df_emp,df_emp[2]==setor)
@@ -536,7 +547,7 @@ shinyServer(function(input, output) {
             # ggplotly(plott)
             str(df_setor)
             df_setor <- df_setor %>% select(Data,listaAcoes)
-            don <- xts(order.by = df_setor$Data,x = df_setor[,-1])
+            don <- xts(order.by = df_setor$Data,x = lista)
             dygraph(don,main = "Comportamento dos Ativos Selecionados") %>%
                 dyOptions(stackedGraph = FALSE) %>%    
                 dyRangeSelector(height = 20)

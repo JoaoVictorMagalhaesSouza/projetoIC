@@ -130,45 +130,45 @@ shinyUI(fluidPage(
                             
                         )
                     ),
-              #   tabPanel("Setorial",
-              #            tabsetPanel(
-              #              tabPanel("Setorial Completo",icon = icon("chart-line"),
-              #                       fluidRow(column(9,
-              #                                       selectInput("inSetorComp",
-              #                                                   strong("Escolha o setor que deseja monitorar: "),
-              #                                                   choices = listaSetores,
-              #                                                   selected = NULL,
-              #                                                   multiple = FALSE,
-              #                                       ),
-              #                       ),
-              #                       
-              #                       div(
-              #                        fixedRow( 
-              #                       column(9,
-              #                              dygraphOutput("outSetorComp")),
-              #                     #style = "position:relative; top:-50px ; left: 100px"
-              #                       ))
-              #                       
-              #              )),
-              #              tabPanel("Setorial Filtrado",icon = icon("chart-line"),
-              #                       fluidRow(column(9,
-              #                                       selectInput("inSetorFilt",
-              #                                                   strong("Escolha o setor que deseja monitorar: "),
-              #                                                   choices = listaSetores,
-              #                                                   selected = NULL,
-              #                                                   multiple = FALSE,
-              #                                       ),
-              #                       ),
-              #                       
-              #                       
-              #                       column(9,
-              #                              uiOutput("outSetorFilt"))),
-              #                       
-              #              )
-              #              
-              #            )
-              #            ),
-              #   
+                 tabPanel("Setorial",
+                          tabsetPanel(
+                            tabPanel("Setorial Completo",icon = icon("chart-line"),
+                                     fluidRow(column(9,
+                                                     selectInput("inSetorComp",
+                                                                 strong("Escolha o setor que deseja monitorar: "),
+                                                                 choices = listaSetores,
+                                                                 selected = FALSE,
+                                                                 multiple = FALSE,
+                                                     ),
+                                     ),
+                                     
+                                     div(
+                                      fixedRow( 
+                                     column(9,
+                                            dygraphOutput("outSetorComp")),
+                                   #style = "position:relative; top:-50px ; left: 100px"
+                                     ))
+                                     
+                            )),
+                            tabPanel("Setorial Filtrado",icon = icon("chart-line"),
+                                     fluidRow(column(9,
+                                                     selectInput("inSetorFilt",
+                                                                 strong("Escolha o setor que deseja monitorar: "),
+                                                                 choices = listaSetores,
+                                                                 selected = NULL,
+                                                                 multiple = FALSE,
+                                                     ),
+                                     ),
+                                     
+                                     
+                                     column(9,
+                                            uiOutput("outSetorFilt"))),
+                                     
+                            )
+                            
+                          )
+                          ),
+                 
                tabPanel("Fronteira de Markowitz",
                         tabsetPanel(
                           tabPanel("O que é", icon = icon("question"),

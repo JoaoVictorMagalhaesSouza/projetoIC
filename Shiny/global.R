@@ -32,6 +32,8 @@ library("lubridate")
 library("plotly")
 library("shinydashboard")
 library("shinyWidgets")
+
+i <- 0
 #library("tidyr")
 #library("httr")
 #library("lubridate")
