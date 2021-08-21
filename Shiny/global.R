@@ -30,7 +30,7 @@ library("dygraphs")
 library("xts")
 library("lubridate")
 library("plotly")
-
+#Teste
 #library("tidyr")
 #library("httr")
 #library("lubridate")
