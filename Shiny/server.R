@@ -8,7 +8,7 @@ shinyServer(function(input, output) {
             if (qtdeAtivos > 1){
                 #print("S")
                 n_sim <- 2000
-                df <- select(BancoDeDados_Acoes,Data,input$inAtivosMark)
+                df <- select(montaBDAcoes(input$inAtivosMark),Data,input$inAtivosMark)
                 incProgress(1/5,detail = "Obtendo dados...")
                 
                 #df <- rename(df,Data=Date)
@@ -30,7 +30,7 @@ shinyServer(function(input, output) {
                 }
                 
                 upload_stock <- function(x,max_d){
-                    df <- select(BancoDeDados_Acoes,Data,input$inAtivosMark)
+                    df <- select(montaBDAcoes(input$inAtivosMark),Data,input$inAtivosMark)
                     names(df)[1] <- c("Date")
                     
                     df <- from_day_to_month(df)
@@ -288,8 +288,11 @@ shinyServer(function(input, output) {
     
 
     output$outPlotAtivos <- renderDygraph({
-        serieTempAtivo <- function(df_emp,acao){
+        serieTempAtivo <- function(acao){
             #Plotagem do resultado
+            
+            BancoDeDados_Acoes <- montaBDAcoes(acao)
+            print(BancoDeDados_Acoes)
             df <- BancoDeDados_Acoes %>% 
                 select(Data,acao)   
                 str(df)
@@ -306,7 +309,7 @@ shinyServer(function(input, output) {
         #Chamando a funcao acima para ver a serie temporal de um setor.
         
         if (length(input$inAtivosSerie)>0){
-        serieTempAtivo(df_emp,input$inAtivosSerie)
+        serieTempAtivo(input$inAtivosSerie)
         }
         
     })
@@ -317,7 +320,8 @@ shinyServer(function(input, output) {
     
     
     output$outAtivoCompB3 <- renderDygraph({
-        compB3 <- function(df_emp,BancoDeDados_Acoes,acao){
+        compB3 <- function(df_emp,acao){
+            BancoDeDados_Acoes = montaBDAcoes(acao)
             #Plotagem do resultado
             df <- BancoDeDados_Acoes %>% 
                 select(Data,acao)
@@ -331,16 +335,16 @@ shinyServer(function(input, output) {
         }
         
         if (length(input$inAtivoCompB3)>0){
-        compB3(df_emp,BancoDeDados_Acoes,c(input$inAtivoCompB3,"B3SA3.SA"))
+        compB3(df_emp,c(input$inAtivoCompB3,"B3SA3.SA"))
         }
         
     })
     
     
     output$outBoxplotAtivo <- renderPlotly({
-        boxPlotAtivo <- function(BancoDeDados_Acoes,acao){
+        boxPlotAtivo <- function(acao){
 
-                
+                BancoDeDados_Acoes = montaBDAcoes(acao)
                 df <- BancoDeDados_Acoes %>% 
                 select(Data,acao) 
                 fig <- plot_ly(y=df[,-1],type = "box", name=acao)
@@ -352,7 +356,7 @@ shinyServer(function(input, output) {
             
             
         }
-        boxPlotAtivo(BancoDeDados_Acoes,input$inBoxAnualAtivo)
+        boxPlotAtivo(input$inBoxAnualAtivo)
         
     })
     
@@ -421,10 +425,10 @@ shinyServer(function(input, output) {
     # })
     
     output$outSetorComp <- renderDygraph({
-        serieTempSetor <- function(df_emp,BancoDeDados_Acoes,setorMonitorado){
+        serieTempSetor <- function(df_emp,setorMonitorado){
             #aux <- "B3SA3.SA"
             #verificar_coluna(BancoDeDados_Acoes,aux)
-            
+            BancoDeDados_Acoes = montaBDAcoes(tickersIbov$tickersSA)
             #Escolher um setor específico
             setor = setorMonitorado #setores[[1]][9]    #Saúde
             #Pegar todas as empresas desse setor:
@@ -465,7 +469,7 @@ shinyServer(function(input, output) {
         #Chamando a funcao acima para ver a serie temporal de um setor.
         #No shiny criaremos uma listBox para o usuario escolher o setor.
         setorMonitorado = input$inSetorComp
-        serieTempSetor(df_emp,BancoDeDados_Acoes,setorMonitorado)
+        serieTempSetor(df_emp,setorMonitorado)
         
         
     })
@@ -475,7 +479,7 @@ shinyServer(function(input, output) {
     fluidRow(column(10,
         selectizeInput("inAtivosSetor",
                      strong("Escolha os ativos que deseja monitorar (máx. 5): "),
-                     choices = listaAcoesUmSetor(df_emp,BancoDeDados_Acoes,input$inSetorFilt)[-1],
+                     choices = listaAcoesUmSetor(df_emp,montaBDAcoes(tickersIbov$tickersSA),input$inSetorFilt)[-1],
                      multiple = TRUE,
                     options = list(maxItems = 5),
                     
@@ -499,6 +503,7 @@ shinyServer(function(input, output) {
             #setores = subset(df_emp, select = c(2))
             #setores = setores[!duplicated(setores),]
             #Escolher um setor específico
+            BancoDeDados_Acoes = montaBDAcoes(tickersIbov$tickersSA)
             setor = setorMonitorado #setores[[1]][9]    #Saúde
             #Pegar todas as empresas desse setor:
             Acoes_Filtradas = subset(df_emp,df_emp[2]==setor)

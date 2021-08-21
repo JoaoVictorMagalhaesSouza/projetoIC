@@ -30,7 +30,8 @@ library("dygraphs")
 library("xts")
 library("lubridate")
 library("plotly")
-#Teste
+library("shinydashboard")
+library("shinyWidgets")
 #library("tidyr")
 #library("httr")
 #library("lubridate")
@@ -52,8 +53,7 @@ library("plotly")
 options(DT.options = list(scrollY="300px",scrollX="300px", 
                           pageLength = 100, 
                           columnDefs = list(list(className = 'dt-center', targets = "_all"))))
-library("shinydashboard")
-library("shinyWidgets") # nicer inputs
+
 ##############################################################################
 
 ## Define font to be used later
@@ -68,34 +68,34 @@ f1 = list(family = "Arial", size = 10, color = "rgb(30,30,30)")
 
 
 #BancoDeDados_Acoes <- readRDS("BancoDeDados_Acoes.rds")
-##############################################################################
-horas <- strsplit(as.character(Sys.time())," ")
-horas <- horas[[1]][2]
-horas <- strsplit(horas,":")
-hora <- horas[[1]][1]
-minuto <- horas[[1]][2]
-#
+###############################################################################
 #dados <- readRDS("LeidenRanking.Rds")
-DI = '2015-01-01' #Data de inicio
-DF = Sys.Date() #Data de fim(hoje)
-benchmark = '^BVSP' #índice da bolsa
+
 tickersIbov = GetIbovStocks() #Retorna as ações negociadas do Brasil, dados completos.
 tickersIbov$tickersSA = paste(tickersIbov$tickers,".SA",sep='') #Criar uma coluna e adicionar o .SA nos tickers
 #saveRDS(df_emp,"teste.rds")
+
+
+montaBDAcoes <- function(acao){
+ DI = '2015-01-01' #Data de inicio
+  DF = Sys.Date() #Data de fim(hoje)
+  benchmark = '^BVSP' #índice da bolsa
 IBOVdatabase = BatchGetSymbols(
-  tickers = tickersIbov$tickersSA, #Especificando as ações
+  tickers = acao, #Especificando as ações
   first.date = DI,
   last.date= DF,
   bench.ticker = benchmark)
 
+
 #Pegando o segundo elemento da lista retornada, que e o que contem os dados.
 IBOVdatabase = IBOVdatabase$df.tickers
+
 #Selecao de colunas de interesse
 IBOVdatabase <- IBOVdatabase %>% 
   select(-c(5,9,10))
 #Estrutura do banco de dados
 str(IBOVdatabase)
-rm(tickersIbov)
+#rm(tickersIbov)
 #Lista com varios dataframes de acordo com as acoes presentes em IBOVdatabase
 IBOVdatabase = dlply(IBOVdatabase,.(ticker),function(x){rownames(x)=x$row;x$row=NULL;x}) 
 #Resumir o Banco de Dados
@@ -103,16 +103,33 @@ IBOVdatabase = dlply(IBOVdatabase,.(ticker),function(x){rownames(x)=x$row;x$row=
 BancoDeDados_Acoes = IBOVdatabase[[1]][,c(6,5)] #Extrair as colunas 7 e 6 do dataframe 1
 colnames(BancoDeDados_Acoes) = c("Data",paste(IBOVdatabase[[1]][1,7])) #Renomeando as colunas
 #teste <- IBOVdatabase[[1]]
+print(length(acao))
+if(length(acao)>1){
 for(i in 2:length(IBOVdatabase)){
   
   itera_BancoDeDados_Acoes = IBOVdatabase[[i]][,c(6,5)] 
   colnames(itera_BancoDeDados_Acoes) = c("Data",paste(IBOVdatabase[[i]][1,7])) #Renomeando as colunas
   BancoDeDados_Acoes = merge(BancoDeDados_Acoes,itera_BancoDeDados_Acoes, by = "Data") #Juntando os dataframes usando a Data como coluna chave para fazer os joins.
 }
+  rm(itera_BancoDeDados_Acoes)
+}
 
-rm(itera_BancoDeDados_Acoes)
+
 #Tratamento para comecar a partir de 2016
 BancoDeDados_Acoes = BancoDeDados_Acoes[-(1:184),]
+}
+acoesDisponiveis <- c("ABEV3.SA" , "B3SA3.SA" , "BBAS3.SA",  "BBDC3.SA"  ,"BBDC4.SA" , "BBSE3.SA", 
+           "BEEF3.SA"  ,"BRAP4.SA"  ,"BRFS3.SA" , "BRKM5.SA"  ,"BRML3.SA" , "BTOW3.SA" , "CCRO3.SA" ,
+            "CIEL3.SA"  ,"CMIG4.SA"  ,"COGN3.SA" , "CPFE3.SA" , "CPLE6.SA",  "CSAN3.SA",  "CSNA3.SA", 
+            "CVCB3.SA"  ,"CYRE3.SA"  ,"ECOR3.SA"  ,"EGIE3.SA" , "ELET3.SA",  "ELET6.SA",  "EMBR3.SA", 
+            "ENBR3.SA"  ,"ENEV3.SA"  ,"ENGI11.SA" ,"EQTL3.SA" , "EZTC3.SA",  "FLRY3.SA",  "GGBR4.SA", 
+            "GOAU4.SA"  ,"GOLL4.SA"  ,"HGTX3.SA"  ,"HYPE3.SA" , "IGTA3.SA",  "ITSA4.SA",  "ITUB4.SA", 
+            "JBSS3.SA"  ,"JHSF3.SA"  ,"KLBN11.SA" ,"LAME4.SA"  ,"LCAM3.SA",  "LREN3.SA",  "MGLU3.SA", 
+            "MRFG3.SA"  ,"MRVE3.SA"  ,"MULT3.SA"  ,"PCAR3.SA"  ,"PETR3.SA",  "PETR4.SA",  "PRIO3.SA", 
+            "QUAL3.SA"  ,"RADL3.SA"  ,"RAIL3.SA"  ,"RENT3.SA"  ,"SANB11.SA", "SBSP3.SA",  "SULA11.SA",
+            "SUZB3.SA"  ,"TAEE11.SA" ,"TIMS3.SA"  ,"TOTS3.SA"  ,"UGPA3.SA",  "USIM5.SA",  "VALE3.SA" ,
+            "VIVT3.SA"  ,"VVAR3.SA"  ,"WEGE3.SA"  ,"YDUQ3.SA" )
+
 
 ##
 
@@ -190,9 +207,7 @@ listaAcoesUmSetor <- function(df_emp,BancoDeDados_Acoes,setorMonitorado){
 }
 
 listaSemB3 <- function(){
-  acoes <- BancoDeDados_Acoes
-  acoes$B3SA3.SA <- NULL
-  acoes <- names(acoes)[-1]
+  acoes <- acoesDisponiveis[acoesDisponiveis!="B3SA3.SA"]
   return(acoes)
 }
 noB3 <- listaSemB3()
