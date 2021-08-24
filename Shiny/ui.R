@@ -132,24 +132,24 @@ shinyUI(fluidPage(
                     ),
                  tabPanel("Setorial",
                           tabsetPanel(
-                            tabPanel("Setorial Completo",icon = icon("chart-line"),
-                                     fluidRow(column(9,
-                                                     selectInput("inSetorComp",
-                                                                 strong("Escolha o setor que deseja monitorar: "),
-                                                                 choices = listaSetores,
-                                                                 selected = FALSE,
-                                                                 multiple = FALSE,
-                                                     ),
-                                     ),
-                                     
-                                     div(
-                                      fixedRow( 
-                                     column(9,
-                                            dygraphOutput("outSetorComp")),
-                                   #style = "position:relative; top:-50px ; left: 100px"
-                                     ))
-                                     
-                            )),
+                            # tabPanel("Setorial Completo",icon = icon("chart-line"),
+                            #          fluidRow(column(9,
+                            #                          selectInput("inSetorComp",
+                            #                                      strong("Escolha o setor que deseja monitorar: "),
+                            #                                      choices = listaSetores,
+                            #                                      selected = FALSE,
+                            #                                      multiple = FALSE,
+                            #                          ),
+                            #          ),
+                            #          
+                            #          div(
+                            #           fixedRow( 
+                            #          column(9,
+                            #                 dygraphOutput("outSetorComp")),
+                            #        #style = "position:relative; top:-50px ; left: 100px"
+                            #          ))
+                            #          
+                            # )),
                             tabPanel("Setorial Filtrado",icon = icon("chart-line"),
                                      fluidRow(column(9,
                                                      selectInput("inSetorFilt",

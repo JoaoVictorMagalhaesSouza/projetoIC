@@ -490,7 +490,7 @@ shinyServer(function(input, output) {
     fluidRow(column(10,
         selectizeInput("inAtivosSetor",
                      strong("Escolha os ativos que deseja monitorar (máx. 5): "),
-                     choices = listaAcoesUmSetor(df_emp,montaBDAcoes(tickersIbov$tickersSA),input$inSetorFilt)[-1],
+                     choices = listaAcoesUmSetor(df_emp,input$inSetorFilt)[-1],
                      multiple = TRUE,
                     options = list(maxItems = 5),
                     
@@ -514,40 +514,11 @@ shinyServer(function(input, output) {
             #setores = subset(df_emp, select = c(2))
             #setores = setores[!duplicated(setores),]
             #Escolher um setor específico
-            BancoDeDados_Acoes = montaBDAcoes(acoesDisponiveis)
-            setor = setorMonitorado #setores[[1]][9]    #Saúde
-            #Pegar todas as empresas desse setor:
-            Acoes_Filtradas = subset(df_emp,df_emp[2]==setor)
-            #Pegar todos os tickers dessas empresas desse setor:
-            Acoes_Filtradas_lista = Acoes_Filtradas$Tickers
-            #Obter o numero de linhas do BD das acoes do setor especificado
-            nlinhas <- nrow(Acoes_Filtradas)
-            #Conferir coluna a coluna 
-            numcol = ncol(BancoDeDados_Acoes)
-            #Pegando a coluna "Data" do BancoDeDados_Acoes
+            df_setor = montaBDAcoes(listaAcoes)
             
-            df_setor <- data.frame(Data=c(BancoDeDados_Acoes[1]))
-            #Vamos conferir quais  os tickers desse BD Auxiliar(no setor escolhido) estao no BD do Yahoo.
-            for(i in 1:nlinhas){
-                tickers = strsplit(Acoes_Filtradas_lista[i],";")
-                for (j in 1:length(tickers[[1]])){
-                    aux <- paste(tickers[[1]][j],"SA",sep=".")
-                    if (verificar_coluna(BancoDeDados_Acoes,aux)){
-                        df_setor[aux] =  select(BancoDeDados_Acoes,aux)
-                    }
-                    
-                }
-                
-            }
-            #Plotagem do resultado
-            # plott <- df_setor %>%
-            #     select(Data,listaAcoes) %>%
-            #     melt(id.var = "Data") %>% 
-            #     ggplot(aes(Data,value))+geom_line(aes(colour = variable))
-            # ggplotly(plott)
             str(df_setor)
             df_setor <- df_setor %>% select(Data,listaAcoes)
-            don <- xts(order.by = df_setor$Data,x = lista)
+            don <- xts(order.by = df_setor$Data,x = df_setor[,-1])
             dygraph(don,main = "Comportamento dos Ativos Selecionados") %>%
                 dyOptions(stackedGraph = FALSE) %>%    
                 dyRangeSelector(height = 20)

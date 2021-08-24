@@ -178,35 +178,38 @@ listaSetores  <- listaTodosSetores(df_emp)
 
 verificar_coluna <- function(data, coluna){
   retorno <- coluna
-  retorno %in% names(data)
+  retorno %in% data
 }
 
-listaAcoesUmSetor <- function(df_emp,BancoDeDados_Acoes,setorMonitorado){
+listaAcoesUmSetor <- function(df_emp,setorMonitorado){
   setor = setorMonitorado
   #Pegar todas as empresas desse setor
   Acoes_Filtradas = subset(df_emp,df_emp[2]==setor)
   #Pegar todos os tickers dessas empresas desse setor
   Acoes_Filtradas_lista = Acoes_Filtradas$Tickers
   nlinhas <- nrow(Acoes_Filtradas)
-  numcol = ncol(BancoDeDados_Acoes)
+  lista <- ""
+  pos <- 1L
   #Pegando a coluna "Data" do BancoDeDados_Acoes para fazer um join depois
-  df_setor <- data.frame(Data=c(BancoDeDados_Acoes[1]))
   #Vamos conferir quais  os tickers desse BD Auxiliar(no setor escolhido) estao no BD do Yahoo.
   for(i in 1:nlinhas){
     tickers = strsplit(Acoes_Filtradas_lista[i],";")
     for (j in 1:length(tickers[[1]])){
       aux <- paste(tickers[[1]][j],"SA",sep=".")
-      if (verificar_coluna(BancoDeDados_Acoes,aux)){
-        df_setor[aux] =  select(BancoDeDados_Acoes,aux)
+      if (verificar_coluna(acoesDisponiveis,aux)){
+        #df_setor[aux] =  select(BancoDeDados_Acoes,aux)
+        lista[pos] <- aux
+        pos = pos+1
       }
       
     }
     
   }
-  acoesDoSetor <- colnames(df_setor)
-  return(acoesDoSetor)
+ 
+  return(lista)
   
 }
+#listaAcoesUmSetor(df_emp,"SAÚDE")
 
 listaSemB3 <- function(){
   acoes <- acoesDisponiveis[acoesDisponiveis!="B3SA3.SA"]
