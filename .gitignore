@@ -12,3 +12,4 @@
 *.anotations
 *.DFP Cache Folder
 *.httr-oauth
+.*RData
