@@ -1,0 +1,13 @@
+name: Analise_BOVESPA_2
+title: Analise_BOVESPA_2
+username:
+account: joaovictormsouza
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4519772
+bundleId: 4957809
+url: https://joaovictormsouza.shinyapps.io/Analise_BOVESPA_2/
+when: 1629805522.07969
+lastSyncTime: 1629805522.07973
+asMultiple: FALSE
+asStatic: FALSE
