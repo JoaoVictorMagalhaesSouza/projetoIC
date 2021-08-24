@@ -290,14 +290,16 @@ shinyServer(function(input, output) {
     output$outPlotAtivos <- renderDygraph({
         serieTempAtivo <- function(df_emp,acao){
             #Plotagem do resultado
+          print(length(acao))
             df <- BancoDeDados_Acoes %>% 
                 select(Data,acao)   
                 str(df)
                 don <- xts(order.by = df$Data,x = df[,-1])
-                dygraph(don) %>%
+                dygraph(don,main = "Comportamento temporal do(s) ativo(s)") %>%
                 dyOptions(stackedGraph = TRUE) %>%    
-                dyRangeSelector(height = 20)
-            
+                dyRangeSelector(height = 20) #%>% 
+                #dyShading(from = "2020-3-1",to = "2020-5-1",color="#FFD700")
+                
                 #melt(id.var = "Data") %>% 
                 #ggplot(aes(Data,value))+geom_line(aes(colour = variable)) + ggtitle("Série Temporal: ") + theme_light() +labs(x = "Data (ano)", y = "Valor da Ação (R$)", colour = "Ativo:") + scale_x_date(date_breaks = "9 months", date_labels = "%b/%Y")
             

@@ -69,12 +69,7 @@ f1 = list(family = "Arial", size = 10, color = "rgb(30,30,30)")
 
 #BancoDeDados_Acoes <- readRDS("BancoDeDados_Acoes.rds")
 ##############################################################################
-horas <- strsplit(as.character(Sys.time())," ")
-horas <- horas[[1]][2]
-horas <- strsplit(horas,":")
-hora <- horas[[1]][1]
-minuto <- horas[[1]][2]
-#
+
 #dados <- readRDS("LeidenRanking.Rds")
 DI = '2015-01-01' #Data de inicio
 DF = Sys.Date() #Data de fim(hoje)
