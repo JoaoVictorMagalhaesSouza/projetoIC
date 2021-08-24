@@ -197,7 +197,7 @@ shinyServer(function(input, output) {
                 min_risk_long  <-  gather(min_risk,"stock","weight",-c("return","risk_yld","sharpe_ratio","W"))
                 colnames(min_risk_long)[5] <- "Ativo"
                 colnames(min_risk_long)[6] <- "Percentual"
-                print(min_risk_long)
+                #print(min_risk_long)
                 c <- ggplot(min_risk_long,aes(x="",y=Percentual, fill=Ativo)) +
                     geom_bar(stat="identity", width=1, color="white")+
                     labs(x = '',
@@ -514,8 +514,10 @@ shinyServer(function(input, output) {
             #setores = subset(df_emp, select = c(2))
             #setores = setores[!duplicated(setores),]
             #Escolher um setor específico
+          withProgress(message = 'Dados setoriais', value = 0, {
+            incProgress(1/2,detail = "Obtendo os dados... ")
             df_setor = montaBDAcoes(listaAcoes)
-            
+            incProgress(2/2,detail = "Plotando resultados... ")
             str(df_setor)
             df_setor <- df_setor %>% select(Data,listaAcoes)
             don <- xts(order.by = df_setor$Data,x = df_setor[,-1])
@@ -523,6 +525,7 @@ shinyServer(function(input, output) {
                 dyOptions(stackedGraph = FALSE) %>%    
                 dyRangeSelector(height = 20)
             
+          })
         }
         #Passaremos a lista com as acoes que o usuario quer monitorar e o setor tambem.
         listaAcoes <- input$inAtivosSetor    #c("FLRY3.SA","RADL3.SA")
