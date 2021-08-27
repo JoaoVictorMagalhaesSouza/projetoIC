@@ -314,71 +314,71 @@ shinyUI(fluidPage(
                         )
                         )
                  
-               )
+               ),
               # 
               #   
               #    
-              # tabPanel("Desenvolvedores",
-              #          titlePanel("Desenvolvedores e Contatos"),
-              #          sidebarLayout(
-              #            sidebarPanel(
-              #              fluidRow(
-              #                column(6, 
-              #                       #h4(strong("Desenvolvedor:")),
-              #                       img(src = "joao.png", height = 150, width = 150, align = "center"),
-              #                       br(),
-              #                       em(strong("João Victor M. Souza")),
-              #                       br(),
-              #                       p(style = "text-align: justify;","Graduando em Ciência da Computação."),
-              #                       p(style = "text-align: justify;","Universidade
-              #                  Federal de Viçosa - Campus UFV - Florestal."),
-              #                       br(),
-              #                       icon("at"),
-              #                       #em("   JoaoVictorMagalhaesSouza@gmail.com"),
-              #                       a(href = "JoaoVictorMagalhaesSouza@gmail.com",em("E-mail")),
-              #                       br(),
-              #                       icon("instagram"),
-              #                       a(href = "https://www.instagram.com/joaovictormagalhaessouza/",em("Instagram")),
-              #                       br(),
-              #                       icon("github"),
-              #                       a(href = "https://github.com/JoaoVictorMagalhaesSouza",em("GitHub")),
-              #                       br(),
-              #                       icon("briefcase"),
-              #                       a(href="https://joaovictormagalhaessouza.github.io/", em("Página Pessoal"))
-              #                ),
-              #                column(6, 
-              #                       img(src = "Fernando.jpg", height = 150, width = 150, align = "center"),
-              #                       br(),
-              #                       em(strong("Fernando de Souza Bastos")),
-              #                       br(),
-              #                       p(style = "text-align: justify;","Doutor em Estatística."),
-              #                       p(style = "text-align: justify;","Professor da Universidade
-              #                  Federal de Viçosa - Campus UFV - Florestal."),
-              #                       br(),
-              #                       icon("at"),
-              #                       a(href = "fernando.bastos@ufv.br",em("E-mail")),
-              #                       br(),
-              #                       icon("instagram"),
-              #                       a(href = "https://www.instagram.com/fsbmat/",em("Instagram")),
-              #                       br(),
-              #                       icon("github"),
-              #                       a(href = "https://github.com/fsbmat-ufv",em("GitHub")),
-              #                       br(),
-              #                       icon("briefcase"),
-              #                       a(href="https://fsbmat-ufv.github.io/", em("Página Pessoal"))
-              #                )
-              #              ),
-              #              
-              #              
-              #              width = 12),
-              #            
-              #            mainPanel()
-              #          )
-              #          
-              #          
-              #          
-              # )
-               
+               tabPanel("Desenvolvedores",
+                        titlePanel("Desenvolvedores e Contatos"),
+                        sidebarLayout(
+                          sidebarPanel(
+                            fluidRow(
+                              column(6, 
+                                     #h4(strong("Desenvolvedor:")),
+                                     img(src = "joao.png", height = 150, width = 150, align = "center",style = "border-radius:50%"),
+                                     br(),
+                                     em(strong("João Victor M. Souza")),
+                                     br(),
+                                     p(style = "text-align: justify;","Graduando em Ciência da Computação."),
+                                     p(style = "text-align: justify;","Universidade
+                                Federal de Viçosa - Campus UFV - Florestal."),
+                                     br(),
+                                     icon("at"),
+                                     #em("   JoaoVictorMagalhaesSouza@gmail.com"),
+                                     a(href = "JoaoVictorMagalhaesSouza@gmail.com",em("E-mail")),
+                                     br(),
+                                     icon("instagram"),
+                                     a(href = "https://www.instagram.com/joaovictormagalhaessouza/",em("Instagram")),
+                                     br(),
+                                     icon("github"),
+                                     a(href = "https://github.com/JoaoVictorMagalhaesSouza",em("GitHub")),
+                                     br(),
+                                     icon("briefcase"),
+                                     a(href="https://joaovictormagalhaessouza.github.io/", em("Página Pessoal"))
+                              ),
+                              column(6, 
+                                     img(src = "Fernando.jpg", height = 150, width = 150, align = "center",style = "border-radius:50%"),
+                                     br(),
+                                     em(strong("Fernando de Souza Bastos")),
+                                     br(),
+                                     p(style = "text-align: justify;","Doutor em Estatística."),
+                                     p(style = "text-align: justify;","Professor da Universidade
+                                Federal de Viçosa - Campus UFV - Florestal."),
+                                     br(),
+                                     icon("at"),
+                                     a(href = "fernando.bastos@ufv.br",em("E-mail")),
+                                     br(),
+                                     icon("instagram"),
+                                     a(href = "https://www.instagram.com/fsbmat/",em("Instagram")),
+                                     br(),
+                                     icon("github"),
+                                     a(href = "https://github.com/fsbmat-ufv",em("GitHub")),
+                                     br(),
+                                     icon("briefcase"),
+                                     a(href="https://fsbmat-ufv.github.io/", em("Página Pessoal"))
+                              )
+                            ),
+                            
+                            
+                            width = 12),
+                          
+                          mainPanel()
+                        )
+                        
+                        
+                        
+               )
+              
                
                
                
