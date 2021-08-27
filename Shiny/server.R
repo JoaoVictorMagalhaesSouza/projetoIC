@@ -292,12 +292,12 @@ shinyServer(function(input, output) {
             #Plotagem do resultado
             
             BancoDeDados_Acoes <- montaBDAcoes(acao)
-            print(BancoDeDados_Acoes)
+            #print(BancoDeDados_Acoes)
             df <- BancoDeDados_Acoes %>% 
                 select(Data,acao)   
                 str(df)
                 don <- xts(order.by = df$Data,x = df[,-1])
-                dygraph(don) %>%
+                dygraph(don,main="Comportamento do(s) ativo(s)",xlab = "Data",,ylab = "Valor(R$)") %>%
                 dyOptions(stackedGraph = TRUE) %>%    
                 dyRangeSelector(height = 20)
             
@@ -327,7 +327,7 @@ shinyServer(function(input, output) {
                 select(Data,acao)
                  str(df)
                 don <- xts(order.by = df$Data,x = df[,-1])
-                dygraph(don) %>%
+                dygraph(don,main="Comportamento do(s) ativo(s)",xlab = "Data",ylab = "Valor(R$)") %>%
                 dyOptions(stackedGraph = TRUE) %>%    
                 dyRangeSelector(height = 20)
             
@@ -470,8 +470,8 @@ shinyServer(function(input, output) {
             incProgress(5/5,detail = "Montando os gráficos ...")
             str(df_setor)
             don <- xts(order.by = df_setor$Data,x = df_setor[,-1])
-            dygraph(don,main = "Comportamento dos Ativos de um Setor Específico") %>%
-                dyOptions(stackedGraph = FALSE) %>%
+            dygraph(don,main = "Comportamento do(s) ativo(s) de um setor",xlab = "Data",ylab = "Valor(R$)") %>%
+                dyOptions(stackedGraph = TRUE) %>%
                 dyRangeSelector(height = 20)
             
             })
@@ -498,7 +498,7 @@ shinyServer(function(input, output) {
         ),
         
         div(fluidRow(column(12, offset = 6, align ="center",
-                        dygraphOutput("outAtivosSetor", height = 600)
+                        dygraphOutput("outAtivosSetor", height = 500)
         )),style = "position:relative; top:-170px;")
         
         ))
@@ -521,8 +521,8 @@ shinyServer(function(input, output) {
             str(df_setor)
             df_setor <- df_setor %>% select(Data,listaAcoes)
             don <- xts(order.by = df_setor$Data,x = df_setor[,-1])
-            dygraph(don,main = "Comportamento dos Ativos Selecionados") %>%
-                dyOptions(stackedGraph = FALSE) %>%    
+            dygraph(don,main = "Comportamento do(s) ativo(s)",xlab = "Data",ylab = "Valor(R$)") %>%
+                dyOptions(stackedGraph = TRUE) %>%    
                 dyRangeSelector(height = 20)
             
           })

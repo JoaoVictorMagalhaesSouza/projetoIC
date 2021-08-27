@@ -105,7 +105,7 @@ IBOVdatabase = dlply(IBOVdatabase,.(ticker),function(x){rownames(x)=x$row;x$row=
 BancoDeDados_Acoes = IBOVdatabase[[1]][,c(6,5)] #Extrair as colunas 7 e 6 do dataframe 1
 colnames(BancoDeDados_Acoes) = c("Data",paste(IBOVdatabase[[1]][1,7])) #Renomeando as colunas
 #teste <- IBOVdatabase[[1]]
-print(length(acao))
+#print(length(acao))
 if(length(acao)>1){
 for(i in 2:length(IBOVdatabase)){
   
