@@ -25,7 +25,7 @@ library("fPortfolio")
 library("timeSeries")
 library("dplyr")
 library("plotrix")
-library("httr")
+#library("httr")
 library("dygraphs")
 library("xts")
 library("lubridate")
@@ -73,15 +73,60 @@ f1 = list(family = "Arial", size = 10, color = "rgb(30,30,30)")
 ###############################################################################
 #dados <- readRDS("LeidenRanking.Rds")
 
-tickersIbov = GetIbovStocks() #Retorna as ações negociadas do Brasil, dados completos.
+tickersIbov = GetIbovStocks() #Retorna as acoes negociadas do Brasil, dados completos.
 tickersIbov$tickersSA = paste(tickersIbov$tickers,".SA",sep='') #Criar uma coluna e adicionar o .SA nos tickers
 #saveRDS(df_emp,"teste.rds")
+DI = '2015-01-01' #Data de inicio
+DF = Sys.Date() #Data de fim(hoje)
+benchmark = '^BVSP' #indice da bolsa
 
+montaCandles <- function(acao){
+candlesDB = BatchGetSymbols(
+  tickers = acao, #Especificando as ações
+  first.date = DI,
+  last.date= DF,
+  bench.ticker = benchmark)
+#Pegando o segundo elemento da lista retornada, que e o que contem os dados.
+candlesDB = candlesDB$df.tickers
+i <- list(line = list(color = '#17BECF'))
+d <- list(line = list(color = '#7F7F7F'))
+#Selecao de colunas de interesse
+candlesDB <- candlesDB %>% select(c(1,2,3,4,7,8))
+candlesDB$variation <- abs(candlesDB$price.high-candlesDB$price.low)
+candlesDB <- tail(candlesDB, 30)
+
+rs <- list(visible = TRUE, x = 0.5, y = -0.055,
+           xanchor = 'center', yref = 'paper',
+           font = list(size = 9),
+           buttons = list(
+             list(count=1,
+                  label='RESET',
+                  step='all'),
+             list (count=1,
+                   label="1 SEMANA",
+                   step="week",
+                   stepmode="backward"),
+             list (count=3,
+                   label = "3 DIAS",
+                   step="day",
+                   stepmode="backward")
+           ))
+fig <- candlesDB %>% plot_ly(x = ~ref.date, type="candlestick",
+                             open = ~price.open, close = ~price.close,
+                             high = ~price.high, low = ~price.low, increasing = i, decreasing = d) 
+fig <- fig %>% layout(title = "Basic Candlestick Chart",xaxis = list(rangeselector = rs),legend = list(orientation = 'h', x = 0.5, y = 1,
+                                                                                                       xanchor = 'center', yref = 'paper',
+                                                                                                       font = list(size = 10),
+                                                                                                       bgcolor = 'transparent'))
+
+
+fig
+  
+}
+montaCandles("B3SA3.SA")
 
 montaBDAcoes <- function(acao){
- DI = '2015-01-01' #Data de inicio
-  DF = Sys.Date() #Data de fim(hoje)
-  benchmark = '^BVSP' #índice da bolsa
+ 
 IBOVdatabase = BatchGetSymbols(
   tickers = acao, #Especificando as ações
   first.date = DI,
@@ -97,12 +142,11 @@ IBOVdatabase <- IBOVdatabase %>%
   select(-c(5,9,10))
 #Estrutura do banco de dados
 str(IBOVdatabase)
-#rm(tickersIbov)
 #Lista com varios dataframes de acordo com as acoes presentes em IBOVdatabase
 IBOVdatabase = dlply(IBOVdatabase,.(ticker),function(x){rownames(x)=x$row;x$row=NULL;x}) 
 #Resumir o Banco de Dados
-
 BancoDeDados_Acoes = IBOVdatabase[[1]][,c(6,5)] #Extrair as colunas 7 e 6 do dataframe 1
+
 colnames(BancoDeDados_Acoes) = c("Data",paste(IBOVdatabase[[1]][1,7])) #Renomeando as colunas
 #teste <- IBOVdatabase[[1]]
 #print(length(acao))

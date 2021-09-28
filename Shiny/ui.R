@@ -321,6 +321,7 @@ shinyUI(fluidPage(
                tabPanel("Desenvolvedores",
                         titlePanel("Desenvolvedores e Contatos"),
                         sidebarLayout(
+                          
                           sidebarPanel(
                             fluidRow(
                               column(6, 
