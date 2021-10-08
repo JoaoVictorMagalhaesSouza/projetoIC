@@ -485,6 +485,11 @@ shinyServer(function(input, output) {
         
     })
     
+    output$outCandles <- renderPlotly({
+      montaCandles(input$inCandles)
+      
+    })
+    
     
     output$outSetorFilt <- renderUI ({
     fluidRow(column(10,

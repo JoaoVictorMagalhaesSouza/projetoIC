@@ -114,7 +114,7 @@ rs <- list(visible = TRUE, x = 0.5, y = -0.055,
 fig <- candlesDB %>% plot_ly(x = ~ref.date, type="candlestick",
                              open = ~price.open, close = ~price.close,
                              high = ~price.high, low = ~price.low, increasing = i, decreasing = d) 
-fig <- fig %>% layout(title = "Basic Candlestick Chart",xaxis = list(rangeselector = rs),legend = list(orientation = 'h', x = 0.5, y = 1,
+fig <- fig %>% layout(title = "Gráfico de Candles",xaxis = list(rangeselector = rs),legend = list(orientation = 'h', x = 0.5, y = 1,
                                                                                                        xanchor = 'center', yref = 'paper',
                                                                                                        font = list(size = 10),
                                                                                                        bgcolor = 'transparent'))

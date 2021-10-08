@@ -168,6 +168,30 @@ shinyUI(fluidPage(
                             
                           )
                           ),
+                tabPanel("Candlesticks",
+                         tabsetPanel(
+                           tabPanel("Candles",icon = icon("chart-line"),
+                                    fluidRow(column(9,
+                                                    selectizeInput("inCandles",
+                                                                strong("Escolha os ativos que deseja monitorar: "),
+                                                                choices = c(acoesDisponiveis),
+                                                                selected = "B3SA3.SA",
+                                                                multiple = FALSE,
+                                                                
+                                                    ),
+                                    ),
+                                    
+                                    
+                                    column(9,
+                                           plotlyOutput("outCandles"))),
+                                    
+                           )
+                           
+                         )
+                ),
+                
+                
+                
                  
                tabPanel("Fronteira de Markowitz",
                         tabsetPanel(
