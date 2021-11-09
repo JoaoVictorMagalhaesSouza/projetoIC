@@ -8,6 +8,7 @@ library("shinycssloaders")
 library("RColorBrewer")
 library("data.table")
 library("tidyverse")
+library("readr")
 library("stringr")
 library("leaflet")
 library("BatchGetSymbols")
@@ -88,33 +89,35 @@ candlesDB = BatchGetSymbols(
   bench.ticker = benchmark)
 #Pegando o segundo elemento da lista retornada, que e o que contem os dados.
 candlesDB = candlesDB$df.tickers
-i <- list(line = list(color = '#17BECF'))
-d <- list(line = list(color = '#7F7F7F'))
+i <- list(line = list(color = '#00FF00'))
+d <- list(line = list(color = '#FF0000'))
 #Selecao de colunas de interesse
 candlesDB <- candlesDB %>% select(c(1,2,3,4,7,8))
 candlesDB$variation <- abs(candlesDB$price.high-candlesDB$price.low)
-candlesDB <- tail(candlesDB, 30)
-
-rs <- list(visible = TRUE, x = 0.5, y = -0.055,
-           xanchor = 'center', yref = 'paper',
-           font = list(size = 9),
-           buttons = list(
-             list(count=1,
-                  label='RESET',
-                  step='all'),
-             list (count=1,
-                   label="1 SEMANA",
-                   step="week",
-                   stepmode="backward"),
-             list (count=3,
-                   label = "3 DIAS",
-                   step="day",
-                   stepmode="backward")
-           ))
-fig <- candlesDB %>% plot_ly(x = ~ref.date, type="candlestick",
+candlesDB <- tail(candlesDB, 30) #Ultimos 30 dias
+# 
+# rs <- list(visible = TRUE, x = 0.5, y = -0.055,
+#            xanchor = 'center', yref = 'paper',
+#            font = list(size = 9),
+#            buttons = list(
+#              list(count=1,
+#                   label='RESET',
+#                   step='all'),
+#              list (count=1,
+#                    label="1 SEMANA",
+#                    step="week",
+#                    stepmode="backward"),
+#              list (count=3,
+#                    label = "3 DIAS",
+#                    step="day",
+#                    stepmode="backward")
+#            ))
+names(candlesDB)[5] <- c("Data")
+fig <- candlesDB %>% plot_ly(x = ~Data, type="candlestick",
                              open = ~price.open, close = ~price.close,
-                             high = ~price.high, low = ~price.low, increasing = i, decreasing = d) 
-fig <- fig %>% layout(title = "Gráfico de Candles",xaxis = list(rangeselector = rs),legend = list(orientation = 'h', x = 0.5, y = 1,
+                             high = ~price.high, low = ~price.low, increasing = i, decreasing = d
+                             ) 
+fig <- fig %>% layout(title = "Gráfico de Candles",yaxis = list(title = "Preço"),legend = list(orientation = 'h', x = 0.5, y = 1,
                                                                                                        xanchor = 'center', yref = 'paper',
                                                                                                        font = list(size = 10),
                                                                                                        bgcolor = 'transparent'))
