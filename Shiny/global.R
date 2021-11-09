@@ -32,8 +32,6 @@ library("xts")
 library("lubridate")
 library("plotly")
 library("shinydashboard")
-library("shinyWidgets")
-
 i <- 0
 #library("tidyr")
 #library("httr")
@@ -72,7 +70,7 @@ f1 = list(family = "Arial", size = 10, color = "rgb(30,30,30)")
 
 #BancoDeDados_Acoes <- readRDS("BancoDeDados_Acoes.rds")
 ###############################################################################
-#dados <- readRDS("LeidenRanking.Rds")
+
 
 tickersIbov = GetIbovStocks() #Retorna as acoes negociadas do Brasil, dados completos.
 tickersIbov$tickersSA = paste(tickersIbov$tickers,".SA",sep='') #Criar uma coluna e adicionar o .SA nos tickers
@@ -117,7 +115,7 @@ fig <- candlesDB %>% plot_ly(x = ~Data, type="candlestick",
                              open = ~price.open, close = ~price.close,
                              high = ~price.high, low = ~price.low, increasing = i, decreasing = d
                              ) 
-fig <- fig %>% layout(title = "Gráfico de Candles",yaxis = list(title = "Preço"),legend = list(orientation = 'h', x = 0.5, y = 1,
+fig <- fig %>% layout(title = "Gráfico de Candles dos Últimos 30 Dias",yaxis = list(title = "Preço"),legend = list(orientation = 'h', x = 0.5, y = 1,
                                                                                                        xanchor = 'center', yref = 'paper',
                                                                                                        font = list(size = 10),
                                                                                                        bgcolor = 'transparent'))
