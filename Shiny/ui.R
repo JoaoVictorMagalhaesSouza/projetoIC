@@ -181,9 +181,9 @@ shinyUI(fluidPage(
                                                     )
                                     ),
                                     
-                                    
+                                    br(),
                                     column(9,
-                                           plotlyOutput("outCandles")))),
+                                           plotlyOutput("outCandles",height = 500)))),
                                     
                            
                            
