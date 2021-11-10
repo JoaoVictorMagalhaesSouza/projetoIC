@@ -5,9 +5,9 @@ account: joaovictormsouza
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 5080032
-bundleId: 5232381
+bundleId: 5232429
 url: https://joaovictormsouza.shinyapps.io/Analise_BOVESPA/
-when: 1636473173.48513
-lastSyncTime: 1636473173.48513
+when: 1636473734.52743
+lastSyncTime: 1636473734.52743
 asMultiple: FALSE
 asStatic: FALSE
