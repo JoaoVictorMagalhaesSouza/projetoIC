@@ -297,7 +297,7 @@ shinyServer(function(input, output) {
                 select(Data,acao)   
                 str(df)
                 don <- xts(order.by = df$Data,x = df[,-1])
-                dygraph(don,main="Comportamento do(s) ativo(s)",xlab = "Data",,ylab = "Valor(R$)") %>%
+                dygraph(don,main="Comportamento do(s) ativo(s)",xlab = "Data",ylab = "Preço Ajustado(R$)") %>%
                 dyOptions(stackedGraph = TRUE) %>%    
                 dyRangeSelector(height = 20)
             
@@ -327,7 +327,7 @@ shinyServer(function(input, output) {
                 select(Data,acao)
                  str(df)
                 don <- xts(order.by = df$Data,x = df[,-1])
-                dygraph(don,main="Comportamento do(s) ativo(s)",xlab = "Data",ylab = "Valor(R$)") %>%
+                dygraph(don,main="Comportamento do(s) ativo(s)",xlab = "Data",ylab = "Preço Ajustado(R$)") %>%
                 dyOptions(stackedGraph = TRUE) %>%    
                 dyRangeSelector(height = 20)
             
@@ -470,7 +470,7 @@ shinyServer(function(input, output) {
             incProgress(5/5,detail = "Montando os gráficos ...")
             str(df_setor)
             don <- xts(order.by = df_setor$Data,x = df_setor[,-1])
-            dygraph(don,main = "Comportamento do(s) ativo(s) de um setor",xlab = "Data",ylab = "Valor(R$)") %>%
+            dygraph(don,main = "Comportamento do(s) ativo(s) de um setor",xlab = "Data",ylab = "Preço Ajustado(R$)") %>%
                 dyOptions(stackedGraph = TRUE) %>%
                 dyRangeSelector(height = 20)
             
@@ -526,7 +526,7 @@ shinyServer(function(input, output) {
             str(df_setor)
             df_setor <- df_setor %>% select(Data,listaAcoes)
             don <- xts(order.by = df_setor$Data,x = df_setor[,-1])
-            dygraph(don,main = "Comportamento do(s) ativo(s)",xlab = "Data",ylab = "Valor(R$)") %>%
+            dygraph(don,main = "Comportamento do(s) ativo(s)",xlab = "Data",ylab = "Preço Ajustado(R$)") %>%
                 dyOptions(stackedGraph = TRUE) %>%    
                 dyRangeSelector(height = 20)
             

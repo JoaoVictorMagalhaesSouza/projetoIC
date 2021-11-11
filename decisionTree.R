@@ -1,10 +1,7 @@
-library("neuralnet")
-library("keras")
-library("mlbench")
-library("dplyr")
-library("magrittr")
 library("BatchGetSymbols")
 library("data.table")
+library("rpart")
+library("rpart.plot")
 createDataSet <- function(acao){
   DI = '2015-01-01' #Data de inicio
   DF = Sys.Date() #Data de fim(hoje)
@@ -55,21 +52,28 @@ createMetrics <- function (DataSet){
   
   
 }
-df = createDataSet("B3SA3.SA")
+df = createDataSet("ABEV3.SA")
 
-teste = df[-(1:1698),]
-df = df[-(1699),]
-nn=neuralnet(target~price.open+price.high+price.low+price.close+volume+price.adjusted+ret.adjusted.prices+
-               price.highLow+price.hype,data=df,hidden=c(10,5),
-             act.fct = "logistic",linear.output = FALSE)
 
-plot(nn,col.hidden = 'darkgreen',     
-     col.hidden.synapse = 'darkgreen',
-     show.weights = F,
-     information = F,
-     fill = 'lightblue')
-install_tensorflow(version = "2.0.0")
-model <- keras_model_sequential()
-model %>%
-  layer_dense(units = 5, activation = 'relu', input_shape = c(13)) %>%
-  layer_dense(units = 1)
+create_train_test <- function(data, size = 0.8, train = TRUE) {
+  n_row = nrow(data)
+  total_row = size * n_row
+  train_sample <- 1: total_row
+  if (train == TRUE) {
+    return (data[train_sample, ])
+  } else {
+    return (data[-train_sample, ])
+  }
+}
+
+data_train <- create_train_test(df, 0.8, train = TRUE)
+data_test <- create_train_test(df, 0.8, train = FALSE)
+dim(data_train)
+
+fit <- rpart(target~price.open+price.high+price.low+price.close+volume+price.adjusted+ret.adjusted.prices+
+               price.highLow+price.hype, data = data_train, method = 'class')
+rpart.plot(fit, extra = 106)
+predict_unseen <- predict(fit, data_test, type = 'class')
+table_mat <- table(data_test$target, predict_unseen)
+table_mat
+accuracy_Test <- sum(diag(table_mat)) / sum(table_mat)
