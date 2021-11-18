@@ -1,4 +1,5 @@
 ## Load packages
+library("rJava")
 library("shiny")
 library("shinyjs")
 library("shinyBS")
