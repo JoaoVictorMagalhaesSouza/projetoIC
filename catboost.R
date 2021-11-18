@@ -123,6 +123,6 @@ names(prediction)[1] = c("Preço Previsto")
 plott <- prediction %>% 
   select(Data,`Preço Real`, `Preço Previsto`)  %>% 
   melt(id.var = "Data") %>% 
-  ggplot(aes(Data,value))+geom_line(aes(colour = variable)) + ggtitle("Preço Real x Preço Previsto: ") + theme_light() +labs(x = "Data (ano)", y = "Valor da Ação (R$)", colour = "Ativo:") + scale_x_date(date_breaks = "9 months", date_labels = "%b/%Y")
+  ggplot(aes(Data,value))+geom_line(aes(colour = variable)) + ggtitle("Preço Real x Preço Previsto: ") + theme_light() +labs(x = "Data", y = "Valor da Ação (R$)", colour = "Ativo:") + scale_x_date(date_breaks = "3 weeks", date_labels = "%b/%d")
 
 ggplotly(plott)
