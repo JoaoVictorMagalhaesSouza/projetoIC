@@ -58,7 +58,7 @@ createMetrics <- function (DataSet){
   
 }
 
-df = createDataSet("B3SA3.SA")
+df = createDataSet("LAME4.SA")
 datas <- df$ref.date
 df <- df[,-c("ret.closing.prices","ticker","ref.date","price.low","price.high")]
 mat_corr <- ggcorr(df)
@@ -126,3 +126,9 @@ plott <- prediction %>%
   ggplot(aes(Data,value))+geom_line(aes(colour = variable)) + ggtitle("Preço Real x Preço Previsto: ") + theme_light() +labs(x = "Data", y = "Valor da Ação (R$)", colour = "Ativo:") + scale_x_date(date_breaks = "3 weeks", date_labels = "%b/%d")
 
 ggplotly(plott)
+
+mse = mean((prediction$`Preço Real` - prediction$`Preço Previsto`)^2)
+mae = caret::MAE(prediction$`Preço Real`, prediction$`Preço Previsto`)
+rmse = caret::RMSE(prediction$`Preço Real`, prediction$`Preço Previsto`)
+
+cat("MSE: ", mse, "MAE: ", mae, " RMSE: ", rmse)
