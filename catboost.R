@@ -58,7 +58,7 @@ createMetrics <- function (DataSet){
   
 }
 
-df = createDataSet("CIEL3.SA")
+df = createDataSet("B3SA3.SA")
 datas <- df$ref.date
 df <- df[,-c("ret.closing.prices","ticker","ref.date","price.low","price.high")]
 mat_corr <- ggcorr(df)
@@ -69,20 +69,25 @@ normalize <- function(x) {
 }
 maxmindf <- as.data.frame(lapply(df, normalize))
 #write.csv(df,"b3normalized.csv", row.names = FALSE)
+n <- nrow(df)
+data_train <- maxmindf[1:(n-200), ]
+data_test <- maxmindf[(n-199):n, ]
+#data_train <- maxmindf
 
-data_train <- maxmindf[1:1200, ]
-data_test <- maxmindf[1201:1695, ]
 
 train_pool <- catboost.load_pool(data=data_train,label=data_train[,c("price.close")])
 test_pool <- catboost.load_pool(data=data_test,label=data_test[,c("price.close")])
-model <- catboost.train(train_pool,  test_pool,
+model <- catboost.train(train_pool,  NULL,
                         params = list(
-                                      iterations = 100, metric_period=10))
+                                      iterations = 1000, metric_period=10))
 
 real_pool <- catboost.load_pool(data=maxmindf,label=maxmindf[,c("price.close")])
-prediction <- catboost.predict(model, real_pool,verbose = TRUE,thread_count=4)
+prediction <- catboost.predict(model, test_pool,verbose = TRUE,thread_count=4)
 print(prediction)
 prediction <- data.frame(prediction)
+prediction$`Preço Real` <- data_test$price.close
+prediction$Data <- datas[(n-199):n]
+names(prediction)[1] = c("Preço Previsto")
 
 # p = ggplot() +
 # 
@@ -93,22 +98,31 @@ prediction <- data.frame(prediction)
 # 
 # 
 # print(p)
-maxmindf$data = datas
-prediction$data = datas
-maxmindf <- maxmindf[,c("data","price.close")]
-names(maxmindf)[2] <- c("Preço Real")
-names(prediction)[1] <- c("Preço previsto")
-prescription = merge(prediction, maxmindf, by="data")
-prescriptionMelted <- reshape2::melt(prescription, id.var='data')
-ggplot(prescriptionMelted, aes(x=data, y=value, col=variable)) + geom_line()
 
-bd = data.table()
-bd$Data = datas
-bd$`Preço Real` = maxmindf$`Preço Real`
-bd$`Preço Previsto` = prediction$`Preço previsto`
-df <- bd %>% 
-  select(Data,`Preço Real`, `Preço Previsto`)   
-don <- xts(order.by = bd$Data,x = bd[,-1])
-dygraph(don,main="Preço Real x Preço Previsto",xlab = "Data",ylab = "Preço de Fechamento(R$)") %>%
-  dyOptions(stackedGraph = TRUE) %>%    
-  dyRangeSelector(height = 20)
+  #Plot da comparação
+# maxmindf$data = datas
+# prediction$data = datas
+# maxmindf <- maxmindf[,c("data","price.close")]
+# names(maxmindf)[2] <- c("Preço Real")
+# names(prediction)[1] <- c("Preço previsto")
+# prescription = merge(prediction, maxmindf, by="data")
+# prescriptionMelted <- reshape2::melt(prescription, id.var='data')
+# ggplot(prescriptionMelted, aes(x=data, y=value, col=variable)) + geom_line()
+
+#Ok:
+# 
+# df <- prediction %>% 
+#   select(Data,`Preço Real`, `Preço Previsto`)   
+# don <- xts(order.by = df$Data,x = df[,-1])
+# dygraph(don,main="Preço Real x Preço Previsto",xlab = "Data",ylab = "Preço de Fechamento(R$)") %>%
+#   dyOptions(stackedGraph = TRUE) %>%    
+#   dyRangeSelector(height = 20)
+# 
+# proporcao = sum(prediction$`Preço Previsto`)/sum(prediction$`Preço Real`)
+
+plott <- prediction %>% 
+  select(Data,`Preço Real`, `Preço Previsto`)  %>% 
+  melt(id.var = "Data") %>% 
+  ggplot(aes(Data,value))+geom_line(aes(colour = variable)) + ggtitle("Preço Real x Preço Previsto: ") + theme_light() +labs(x = "Data (ano)", y = "Valor da Ação (R$)", colour = "Ativo:") + scale_x_date(date_breaks = "9 months", date_labels = "%b/%Y")
+
+ggplotly(plott)
