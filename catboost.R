@@ -58,9 +58,11 @@ createMetrics <- function (DataSet){
   
 }
 
-df = createDataSet("LAME4.SA")
+df = createDataSet("TOTS3.SA") 
+#df = createDataSet("PETR4.SA")
 datas <- df$ref.date
 df <- df[,-c("ret.closing.prices","ticker","ref.date","price.low","price.high")]
+#df <- df[,-c("ret.closing.prices","ticker","ref.date","price.adjusted")]
 mat_corr <- ggcorr(df)
 mat_corr
 #write.csv(df,"b3unormalized.csv", row.names = FALSE)
@@ -132,3 +134,4 @@ mae = caret::MAE(prediction$`Preço Real`, prediction$`Preço Previsto`)
 rmse = caret::RMSE(prediction$`Preço Real`, prediction$`Preço Previsto`)
 
 cat("MSE: ", mse, "MAE: ", mae, " RMSE: ", rmse)
+mat_corr
