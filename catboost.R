@@ -91,37 +91,6 @@ prediction$`Preço Real` <- data_test$price.close
 prediction$Data <- datas[(n-199):n]
 names(prediction)[1] = c("Preço Previsto")
 
-# p = ggplot() +
-# 
-#   geom_line(data = prediction, aes (x= datas,y=prediction), color = "blue") +
-#   geom_line(data = maxmindf, aes(x=datas,y=price.close),color="red",) +
-#   xlab('Dates') +
-#   ylab('percent.change')+
-# 
-# 
-# print(p)
-
-  #Plot da comparação
-# maxmindf$data = datas
-# prediction$data = datas
-# maxmindf <- maxmindf[,c("data","price.close")]
-# names(maxmindf)[2] <- c("Preço Real")
-# names(prediction)[1] <- c("Preço previsto")
-# prescription = merge(prediction, maxmindf, by="data")
-# prescriptionMelted <- reshape2::melt(prescription, id.var='data')
-# ggplot(prescriptionMelted, aes(x=data, y=value, col=variable)) + geom_line()
-
-#Ok:
-# 
-# df <- prediction %>% 
-#   select(Data,`Preço Real`, `Preço Previsto`)   
-# don <- xts(order.by = df$Data,x = df[,-1])
-# dygraph(don,main="Preço Real x Preço Previsto",xlab = "Data",ylab = "Preço de Fechamento(R$)") %>%
-#   dyOptions(stackedGraph = TRUE) %>%    
-#   dyRangeSelector(height = 20)
-# 
-# proporcao = sum(prediction$`Preço Previsto`)/sum(prediction$`Preço Real`)
-
 plott <- prediction %>% 
   select(Data,`Preço Real`, `Preço Previsto`)  %>% 
   melt(id.var = "Data") %>% 
