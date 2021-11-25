@@ -26,12 +26,15 @@ library("fPortfolio")
 library("timeSeries")
 library("dplyr")
 library("plotrix")
-#library("httr")
+library("httr")
 library("dygraphs")
 library("xts")
 library("lubridate")
 library("plotly")
 library("shinydashboard")
+library("xml2")
+library("rvest")
+library("XML")
 i <- 0
 #library("tidyr")
 #library("httr")
@@ -72,8 +75,9 @@ f1 = list(family = "Arial", size = 10, color = "rgb(30,30,30)")
 ###############################################################################
 
 
-tickersIbov = GetIbovStocks() #Retorna as acoes negociadas do Brasil, dados completos.
-tickersIbov$tickersSA = paste(tickersIbov$tickers,".SA",sep='') #Criar uma coluna e adicionar o .SA nos tickers
+##API com problema:
+#tickersIbov = BatchGetSymbols::GetIbovStocks() #Retorna as acoes negociadas do Brasil, dados completos.
+#tickersIbov$tickersSA = paste(tickersIbov$tickers,".SA",sep='') #Criar uma coluna e adicionar o .SA nos tickers
 #saveRDS(df_emp,"teste.rds")
 DI = '2015-01-01' #Data de inicio
 DF = Sys.Date() #Data de fim(hoje)
