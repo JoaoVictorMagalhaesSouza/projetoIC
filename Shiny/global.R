@@ -73,8 +73,8 @@ f1 = list(family = "Arial", size = 10, color = "rgb(30,30,30)")
 ###############################################################################
 
 
-tickersIbov = GetIbovStocks() #Retorna as acoes negociadas do Brasil, dados completos.
-tickersIbov$tickersSA = paste(tickersIbov$tickers,".SA",sep='') #Criar uma coluna e adicionar o .SA nos tickers
+#tickersIbov = GetIbovStocks() #Retorna as acoes negociadas do Brasil, dados completos.
+#tickersIbov$tickersSA = paste(tickersIbov$tickers,".SA",sep='') #Criar uma coluna e adicionar o .SA nos tickers
 #saveRDS(df_emp,"teste.rds")
 DI = '2015-01-01' #Data de inicio
 DF = Sys.Date() #Data de fim(hoje)
