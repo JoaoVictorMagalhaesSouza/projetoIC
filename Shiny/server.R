@@ -541,6 +541,76 @@ shinyServer(function(input, output) {
         
     })
     
+    output$outPlotPredict <- renderPlotly({
+      df = createDataSet(input$inAtivoPredict) 
+      #df = createDataSet("PETR4.SA")
+      datas <- df$ref.date
+      df <- df[,-c("ret.closing.prices","ticker","ref.date","price.low","price.high")]
+      #df <- df[,-c("ret.closing.prices","ticker","ref.date","price.adjusted")]
+      mat_corr <- ggcorr(df)
+      mat_corr
+      #write.csv(df,"b3unormalized.csv", row.names = FALSE)
+      maxmindf <- as.data.frame(lapply(df, normalize))
+      #write.csv(df,"b3normalized.csv", row.names = FALSE)
+      n <- nrow(df)
+      data_train <- maxmindf[1:(n-200), ]
+      data_test <- maxmindf[(n-199):n, ]
+      #data_train <- maxmindf
+      
+      
+      train_pool <- catboost.load_pool(data=data_train,label=data_train[,c("price.close")])
+      test_pool <- catboost.load_pool(data=data_test,label=data_test[,c("price.close")])
+      model <- catboost.train(train_pool,  NULL,
+                              params = list(
+                                iterations = 1000, metric_period=10))
+      
+      real_pool <- catboost.load_pool(data=maxmindf,label=maxmindf[,c("price.close")])
+      prediction <- catboost.predict(model, test_pool,verbose = TRUE,thread_count=4)
+      print(prediction)
+      prediction <- data.frame(prediction)
+      prediction$`Preço Real` <- data_test$price.close
+      prediction$Data <- datas[(n-199):n]
+      names(prediction)[1] = c("Preço Previsto")
+      
+      plott <- prediction %>% 
+        select(Data,`Preço Real`, `Preço Previsto`)  %>% 
+        melt(id.var = "Data") %>% 
+        ggplot(aes(Data,value))+geom_line(aes(colour = variable)) + ggtitle("Preço Real x Preço Previsto: ") + theme_light() +labs(x = "Data", y = "Valor da Ação (R$)", colour = "Ativo:") + scale_x_date(date_breaks = "3 weeks", date_labels = "%b/%d")
+      
+      mse = mean((prediction$`Preço Real` - prediction$`Preço Previsto`)^2)
+      mae = caret::MAE(prediction$`Preço Real`, prediction$`Preço Previsto`)
+      rmse = caret::RMSE(prediction$`Preço Real`, prediction$`Preço Previsto`)
+      ggplotly(plott)
+      
+      
+      
+      #cat("MSE: ", mse, "MAE: ", mae, " RMSE: ", rmse)
+      
+      
+    })
+    
+    output$outMAE <- renderValueBox({
+      
+      valueBox(subtitle = mae,value = "Mean Absolute Error",color = "yellow",icon = icon("fingerprint")
+        
+        
+      )
+    })
+    output$outMSE <- renderValueBox({
+      
+      valueBox(subtitle = mse,value = "Mean Squared Error",color = "green",icon = icon("fingerprint")
+               
+               
+      )
+    })
+    output$outRMSE <- renderValueBox({
+      
+      valueBox(subtitle = rmse,value = "Root Mean Squared Error",color = "purple",icon = icon("fingerprint")
+               
+               
+      )
+    })
+    
     
         
         

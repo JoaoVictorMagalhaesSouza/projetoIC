@@ -30,9 +30,15 @@ library("plotrix")
 #library("httr")
 library("dygraphs")
 library("xts")
-library("lubridate")
-library("plotly")
+
 library("shinydashboard")
+
+
+library("catboost")
+
+
+library("caret")
+library("rpart.plot")
 i <- 0
 #library("tidyr")
 #library("httr")
@@ -268,4 +274,54 @@ bimestres <- c(1,2,3,4,5,6)
 anoAtual <- strsplit(as.character(Sys.Date()),"-")[[1]][1]
 anos <- 2016:anoAtual
 secoes <- c("Apresentação","Ativo Único", "Setorial Completo", "Setorial Filtrado", "Sobre os Envolvidos")
+
+createDataSet <- function(acao){
+  DI = '2015-01-01' #Data de inicio
+  DF = Sys.Date() #Data de fim(hoje)
+  benchmark = '^BVSP' #indice da bolsa
+  DataSet = BatchGetSymbols(
+    tickers = acao, #Especificando as ações
+    first.date = DI,
+    last.date= DF,
+    bench.ticker = benchmark)
+  
+  
+  #Pegando o segundo elemento da lista retornada, que e o que contem os dados.
+  DataSet = DataSet$df.tickers
+  
+  #Selecao de colunas de interesse
+  # DataSet <- DataSet %>% 
+  #    select(c(1,2,3,4,7,8))
+  
+  
+  
+  DataSet <- createMetrics(DataSet)
+  
+  return (DataSet)
+}
+
+createMetrics <- function (DataSet){
+  DataSet$price.highLow <- DataSet$price.high - DataSet$price.low
+  DataSet <- data.table(DataSet)
+  DataSet[ , `:=`(
+    ret.adjusted.prices = fcase(
+      is.na(ret.adjusted.prices),0,
+      ret.adjusted.prices=!is.na(ret.adjusted.prices),ret.adjusted.prices
+    ),
+    ret.closing.prices = fcase(
+      is.na(ret.closing.prices),0,
+      ret.closing.prices != is.na(ret.closing.prices),ret.closing.prices
+    )
+  )
+  
+  ]
+  DataSet$price.hype <- DataSet$price.high - DataSet$price.open
+  return (DataSet)
+  
+  
+}
+
+normalize <- function(x) {
+  return ((x - min(x)) / (max(x) - min(x)))
+}
 

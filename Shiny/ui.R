@@ -66,28 +66,7 @@ shinyUI(fluidPage(
                 
                 tabPanel("Ativos",
                         tabsetPanel(
-                            # tabPanel("Série Temporal Geral",icon = icon("chart-line"),
-                            #          fluidRow(column(3,
-                            #                          selectInput("inAtivoSerie",
-                            #                                      strong("Escolha um ativo:"),
-                            #                                      choices=c(names(BancoDeDados_Acoes[-1])))),
-                            #              column(9,
-                            #                     plotlyOutput("outPlotAtivo", height = 500)))),
-                            # 
-                            # tabPanel("Série Temporal Anual",icon = icon("chart-line"),
-                            #          fluidRow(column(3,
-                            #                          selectInput("inAtivoAnual",
-                            #                                      strong("Escolha um ativo:"),
-                            #                                      choices=c(names(BancoDeDados_Acoes[-1]))),
-                            #                          
-                            #                          selectInput("inAnoAnual",
-                            #                                      strong("Escolha um ano:"),
-                            #                                      choices = anos
-                            #                                      )
-                            #                          ),
-                            #                   column(9,
-                            #                          plotlyOutput("outAtivoAnual", height = 500)))),
-                            # ##
+
                             tabPanel("Série Temporal",icon = icon("chart-line"),
                                      fluidRow(column(3,
                                                      selectInput("inAtivosSerie",
@@ -339,6 +318,30 @@ shinyUI(fluidPage(
                         )
                  
                ),
+               
+               tabPanel("Predição de Valores",
+                        tabsetPanel(
+                          
+                          tabPanel("Catboost predictor",icon = icon("chart-line"),
+                                   fluidRow(column(3,
+                                                   selectInput("inAtivoPredict",
+                                                               strong("Escolha um ativo:"),
+                                                               multiple = FALSE,
+                                                               choices=c(acoesDisponiveis))),
+                                            column(9,
+                                                   plotlyOutput("outPlotPredict", height = 500)),
+                                            
+                                            
+                                            
+                                   ),
+                                   column(9,
+                                   fluidRow(
+                                          valueBoxOutput("outMSE"),
+                                   
+                                          valueBoxOutput("outMAE"),
+                                   
+                                          valueBoxOutput("outRMSE"))),
+                          ))),
               # 
               #   
               #    
