@@ -18,10 +18,10 @@ pd.set_option('display.max_columns', None)
 df = df.drop(columns=['ref.date','ticker','Unnamed: 0'])
 df = df.fillna(0)
 #%% Test Feature Engineering
-# class_fe = fe.FeatureEngineeringFactory(df)
-# dados_fe, cols_fe = class_fe.cria_feature_engineering(['derivada', 'momentos_estatisticos', 'integral'], [['price.close'],['price.high'],['price.low']], janela_momentos=5, janela_integral=5)
-# df = df.merge(dados_fe, left_index=True, right_index=True)
-# df = df.fillna(0)
+class_fe = fe.FeatureEngineeringFactory(df)
+dados_fe, cols_fe = class_fe.cria_feature_engineering(['derivada', 'momentos_estatisticos', 'integral'], [['price.close'],['price.high'],['price.low']], janela_momentos=5, janela_integral=5)
+df = df.merge(dados_fe, left_index=True, right_index=True)
+df = df.fillna(0)
 # %% Separing train and test
 #80% for training and 20% for testing
 percent_train = int(0.8 * df.shape[0])
