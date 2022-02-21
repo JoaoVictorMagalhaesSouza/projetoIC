@@ -9,14 +9,24 @@ import base64
 import functions as f
 import sys
 
+#Sidebar reference:https://github.com/Coding-with-Adam/Dash-by-Plotly/blob/master/Bootstrap/Side-Bar/side_bar.py
 
 # data source: https://www.kaggle.com/chubak/iranian-students-from-1968-to-2017
 # data owner: Chubak Bidpaa
 df = pd.read_csv('https://raw.githubusercontent.com/Coding-with-Adam/Dash-by-Plotly/master/Bootstrap/Side-Bar/iranian_students.csv')
 
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
-
-
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.CERULEAN])
+predicted_value = 0.00
+card_content = [
+    
+    dbc.CardHeader(html.H5("Previsão do preço de fechamento")),
+    dbc.CardBody(
+        [
+            html.H5(f"R$ {predicted_value}", className="card-title"),
+            
+        ]
+    ),
+]
 # styling the sidebar
 SIDEBAR_STYLE = {
     "position": "fixed",
@@ -115,6 +125,22 @@ def render_page_content(pathname):
                 html.Br(),
                 dcc.Input(id='volume_ativo', value='00000000', type='text'),
                 
+                html.Br(),
+                html.Br(),
+                html.Button(id='calcular', n_clicks=0, children='Realizar Previsão'),
+
+
+                html.Br(),
+                html.Br(),
+    
+                
+                dbc.Row(
+            [
+                dbc.Col(dbc.Card(card_content, color="dark", inverse=True)),
+            ]
+        ),
+        
+
                 
                 
                 

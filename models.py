@@ -126,4 +126,25 @@ class CatBoost():
         df_plot['predicoes'] = self.y_pred
         fig = px.line(df_plot)
         fig.show()
-        
+
+class MLP_real_time():
+    def __init__(self, X_train, x_test, y_train):
+        self.X_train = X_train
+        self.x_test = x_test
+        self.y_train = y_train
+        #self.model = load_model('model.h5')
+        self.model = tf.keras.Sequential([
+        tf.keras.layers.Dense(self.X_train.shape[1]),
+        tf.keras.layers.Dense(4,activation='relu'),
+        tf.keras.layers.Dense(1)
+        ])
+        optimizer = tf.keras.optimizers.RMSprop(0.001)
+        self.model.compile(optimizer=optimizer, loss="mse", metrics=['mae',"mse"])
+    
+    def fit(self):
+        self.model.fit(self.X_train, self.y_train, epochs=200)
+    
+    def predict(self):
+        self.y_pred = self.model.predict(self.x_test).flatten()
+        return self.y_pred
+    
