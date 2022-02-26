@@ -498,7 +498,7 @@ shinyServer(function(input, output) {
                      strong("Escolha os ativos que deseja monitorar (máx. 5): "),
                      choices = listaAcoesUmSetor(df_emp,input$inSetorFilt)[-1],
                      multiple = TRUE,
-                    options = list(maxItems = 5),
+                    options = list(maxItems = 5)
                     
                      
         ),
