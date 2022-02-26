@@ -292,6 +292,7 @@ shinyServer(function(input, output) {
             #Plotagem do resultado
             
             BancoDeDados_Acoes <- montaBDAcoes(acao)
+            print(BancoDeDados_Acoes)
             #print(BancoDeDados_Acoes)
             df <- BancoDeDados_Acoes %>% 
                 select(Data,acao)   
@@ -541,75 +542,41 @@ shinyServer(function(input, output) {
         
     })
     
-    output$outPlotPredict <- renderPlotly({
-      df = createDataSet(input$inAtivoPredict) 
-      #df = createDataSet("PETR4.SA")
-      datas <- df$ref.date
-      df <- df[,-c("ret.closing.prices","ticker","ref.date","price.low","price.high")]
-      #df <- df[,-c("ret.closing.prices","ticker","ref.date","price.adjusted")]
-      mat_corr <- ggcorr(df)
-      mat_corr
-      #write.csv(df,"b3unormalized.csv", row.names = FALSE)
-      maxmindf <- as.data.frame(lapply(df, normalize))
-      #write.csv(df,"b3normalized.csv", row.names = FALSE)
-      n <- nrow(df)
-      data_train <- maxmindf[1:(n-200), ]
-      data_test <- maxmindf[(n-199):n, ]
-      #data_train <- maxmindf
+    
+    
+    output$outPredicao <- renderValueBox({
+      DI = '2015-01-01' #Data de inicio
+      DF = Sys.Date() #Data de fim(hoje)
+      benchmark = '^BVSP' #indice da bolsa
+      DataSet = BatchGetSymbols(
+        tickers = input$inAtivoPredict, #Especificando as ações
+        first.date = DI,
+        last.date= DF,
+        bench.ticker = benchmark)
       
       
-      train_pool <- catboost.load_pool(data=data_train,label=data_train[,c("price.close")])
-      test_pool <- catboost.load_pool(data=data_test,label=data_test[,c("price.close")])
-      model <- catboost.train(train_pool,  NULL,
-                              params = list(
-                                iterations = 1000, metric_period=10))
+      #Pegando o segundo elemento da lista retornada, que e o que contem os dados.
+      DataSet = DataSet$df.tickers
       
-      real_pool <- catboost.load_pool(data=maxmindf,label=maxmindf[,c("price.close")])
-      prediction <- catboost.predict(model, test_pool,verbose = TRUE,thread_count=4)
-      print(prediction)
-      prediction <- data.frame(prediction)
-      prediction$`Preço Real` <- data_test$price.close
-      prediction$Data <- datas[(n-199):n]
-      names(prediction)[1] = c("Preço Previsto")
+      write.csv(DataSet,paste0(input$inAtivoPredict,".csv"))
+      use_condaenv("C:/Users/JoaoV/anaconda3/envs/Eldorado_Deus", required = TRUE)
+      py_run_file(file="real_time.py")
+      #virtualenv_create(envname = "py_env", python = "python3")
       
-      plott <- prediction %>% 
-        select(Data,`Preço Real`, `Preço Previsto`)  %>% 
-        melt(id.var = "Data") %>% 
-        ggplot(aes(Data,value))+geom_line(aes(colour = variable)) + ggtitle("Preço Real x Preço Previsto: ") + theme_light() +labs(x = "Data", y = "Valor da Ação (R$)", colour = "Ativo:") + scale_x_date(date_breaks = "3 weeks", date_labels = "%b/%d")
+      #virtualenv_install(envname = "py_env", "pandas==1.3.4", ignore_installed = TRUE)
+      #virtualenv_install(envname = "py_env", "scikit_learn==1.0.2", ignore_installed = TRUE)
+      #virtualenv_install(envname = "py_env", "tensorflow==2.5.2", ignore_installed = TRUE)
+      #virtualenv_install(envname = "py_env", "utils==1.0.1", ignore_installed = TRUE)
+      #virtualenv_install(envname = "py_env", "keras==2.8.0", ignore_installed = TRUE)
+      #virtualenv_install(envname = "py_env", "keras_nightly==2.5.0.dev2021032900", ignore_installed = TRUE)
       
-      mse = mean((prediction$`Preço Real` - prediction$`Preço Previsto`)^2)
-      mae = caret::MAE(prediction$`Preço Real`, prediction$`Preço Previsto`)
-      rmse = caret::RMSE(prediction$`Preço Real`, prediction$`Preço Previsto`)
-      ggplotly(plott)
-      
-      
-      
-      #cat("MSE: ", mse, "MAE: ", mae, " RMSE: ", rmse)
-      
-      
+      #use_virtualenv("py_env", required = TRUE)
+      valueBox(subtitle = as.character(py$predicao),value = "Nossa predição",color = "yellow",icon = icon("fingerprint")
+        
+        
+      )
     })
     
-    output$outMAE <- renderValueBox({
-      
-      valueBox(subtitle = mae,value = "Mean Absolute Error",color = "yellow",icon = icon("fingerprint")
-        
-        
-      )
-    })
-    output$outMSE <- renderValueBox({
-      
-      valueBox(subtitle = mse,value = "Mean Squared Error",color = "green",icon = icon("fingerprint")
-               
-               
-      )
-    })
-    output$outRMSE <- renderValueBox({
-      
-      valueBox(subtitle = rmse,value = "Root Mean Squared Error",color = "purple",icon = icon("fingerprint")
-               
-               
-      )
-    })
     
     
         

@@ -3,7 +3,6 @@ from pyexpat.errors import XML_ERROR_NOT_STANDALONE
 from re import X
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import tensorflow as tf
 #Importando funções internas:
 import os, sys
@@ -41,7 +40,7 @@ def main():
     #Default: dados do dia anterior mas é possível alterar para os dados do dia atual.
     volume = 42230000
 
-    nome_ativo = 'B3SA3.SA'
+    nome_ativo = 'ABEV3.SA'
     x_test = np.array([preco_abertura,preco_mais_alto,preco_mais_baixo,volume]).reshape(1,-1)
     x_test = pd.DataFrame(x_test, columns=['price.open','price.high','price.low','volume'])
     x_test = normaliza_dados(x_test, nome_ativo)

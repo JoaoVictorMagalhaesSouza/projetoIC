@@ -27,162 +27,115 @@ library("fPortfolio")
 library("timeSeries")
 library("dplyr")
 library("plotrix")
-#library("httr")
 library("dygraphs")
 library("xts")
-
 library("shinydashboard")
-
-
-library("catboost")
-
-
 library("caret")
 library("rpart.plot")
-i <- 0
-#library("tidyr")
-#library("httr")
-#library("lubridate")
-#library("knitr")
-# library("markdown")
-# library("flexdashboard")
+#library("reticulate")
+#devtools::install_github("rstudio/reticulate")
+library('reticulate')
 
-# library("ggthemes")
-# library("treemap")
+system('real_time.py')
 
-# library("readxl")
-# library("readODS")
-# library("htmlTable")
 
-# library("esquisse")
-# library("gridExtra")
-# library("ggpubr")
-
+memory.limit(size=16384)
+memory.size(max=TRUE)
 options(DT.options = list(scrollY="300px",scrollX="300px", 
                           pageLength = 100, 
                           columnDefs = list(list(className = 'dt-center', targets = "_all"))))
 
-##############################################################################
-
-## Define font to be used later
-f1 = list(family = "Arial", size = 10, color = "rgb(30,30,30)")
-
-## Function to format the dates for better plotting
-# printDate = function(date){
-#   # paste0(day(date),"/",month(date, lab=T, locale="us"))
-#   monthsEn=c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
-#   paste0(day(date),"/",monthsEn[month(date)])
-# }
 
 
-#BancoDeDados_Acoes <- readRDS("BancoDeDados_Acoes.rds")
-###############################################################################
-
-
-#tickersIbov = GetIbovStocks() #Retorna as acoes negociadas do Brasil, dados completos.
-#tickersIbov$tickersSA = paste(tickersIbov$tickers,".SA",sep='') #Criar uma coluna e adicionar o .SA nos tickers
-#saveRDS(df_emp,"teste.rds")
+i <- 0
 DI = '2015-01-01' #Data de inicio
 DF = Sys.Date() #Data de fim(hoje)
 benchmark = '^BVSP' #indice da bolsa
 
+
+
 montaCandles <- function(acao){
-candlesDB = BatchGetSymbols(
-  tickers = acao, #Especificando as ações
-  first.date = DI,
-  last.date= DF,
-  bench.ticker = benchmark)
-#Pegando o segundo elemento da lista retornada, que e o que contem os dados.
-candlesDB = candlesDB$df.tickers
-i <- list(line = list(color = '#00FF00'))
-d <- list(line = list(color = '#FF0000'))
-#Selecao de colunas de interesse
-candlesDB <- candlesDB %>% select(c(1,2,3,4,7,8))
-candlesDB$variation <- abs(candlesDB$price.high-candlesDB$price.low)
-candlesDB <- tail(candlesDB, 30) #Ultimos 30 dias
-# 
-# rs <- list(visible = TRUE, x = 0.5, y = -0.055,
-#            xanchor = 'center', yref = 'paper',
-#            font = list(size = 9),
-#            buttons = list(
-#              list(count=1,
-#                   label='RESET',
-#                   step='all'),
-#              list (count=1,
-#                    label="1 SEMANA",
-#                    step="week",
-#                    stepmode="backward"),
-#              list (count=3,
-#                    label = "3 DIAS",
-#                    step="day",
-#                    stepmode="backward")
-#            ))
-names(candlesDB)[5] <- c("Data")
-fig <- candlesDB %>% plot_ly(x = ~Data, type="candlestick",
-                             open = ~price.open, close = ~price.close,
-                             high = ~price.high, low = ~price.low, increasing = i, decreasing = d
-                             ) 
-fig <- fig %>% layout(title = "Gráfico de Candles dos Últimos 30 Dias",yaxis = list(title = "Preço"),legend = list(orientation = 'h', x = 0.5, y = 1,
-                                                                                                       xanchor = 'center', yref = 'paper',
-                                                                                                       font = list(size = 10),
-                                                                                                       bgcolor = 'transparent'))
-
-
-fig
+  candlesDB = BatchGetSymbols(
+    tickers = acao, #Especificando as ações
+    first.date = DI,
+    last.date= DF,
+    bench.ticker = benchmark)
+  #Pegando o segundo elemento da lista retornada, que e o que contem os dados.
+  candlesDB = candlesDB$df.tickers
+  i <- list(line = list(color = '#00FF00'))
+  d <- list(line = list(color = '#FF0000'))
+  #Selecao de colunas de interesse
+  candlesDB <- candlesDB %>% select(c(1,2,3,4,7,8))
+  candlesDB$variation <- abs(candlesDB$price.high-candlesDB$price.low)
+  candlesDB <- tail(candlesDB, 30) #Ultimos 30 dias
   
-}
-montaCandles("B3SA3.SA")
+  names(candlesDB)[5] <- c("Data")
+  fig <- candlesDB %>% plot_ly(x = ~Data, type="candlestick",
+                               open = ~price.open, close = ~price.close,
+                               high = ~price.high, low = ~price.low, increasing = i, decreasing = d
+                               ) 
+  fig <- fig %>% layout(title = "Gráfico de Candles dos Últimos 30 Dias",yaxis = list(title = "Preço"),legend = list(orientation = 'h', x = 0.5, y = 1,
+                                                                                                         xanchor = 'center', yref = 'paper',
+                                                                                                         font = list(size = 10),
+                                                                                                         bgcolor = 'transparent'))
+  
+  
+  fig
+    
+  }
+
 
 montaBDAcoes <- function(acao){
  
-IBOVdatabase = BatchGetSymbols(
-  tickers = acao, #Especificando as ações
-  first.date = DI,
-  last.date= DF,
-  bench.ticker = benchmark)
-
-
-#Pegando o segundo elemento da lista retornada, que e o que contem os dados.
-IBOVdatabase = IBOVdatabase$df.tickers
-
-#Selecao de colunas de interesse
-IBOVdatabase <- IBOVdatabase %>% 
-  select(-c(5,9,10))
-#Estrutura do banco de dados
-str(IBOVdatabase)
-#Lista com varios dataframes de acordo com as acoes presentes em IBOVdatabase
-IBOVdatabase = dlply(IBOVdatabase,.(ticker),function(x){rownames(x)=x$row;x$row=NULL;x}) 
-#Resumir o Banco de Dados
-BancoDeDados_Acoes = IBOVdatabase[[1]][,c(6,5)] #Extrair as colunas 7 e 6 do dataframe 1
-
-colnames(BancoDeDados_Acoes) = c("Data",paste(IBOVdatabase[[1]][1,7])) #Renomeando as colunas
-#teste <- IBOVdatabase[[1]]
-#print(length(acao))
-if(length(acao)>1){
-for(i in 2:length(IBOVdatabase)){
-  
-  itera_BancoDeDados_Acoes = IBOVdatabase[[i]][,c(6,5)] 
-  colnames(itera_BancoDeDados_Acoes) = c("Data",paste(IBOVdatabase[[i]][1,7])) #Renomeando as colunas
-  BancoDeDados_Acoes = merge(BancoDeDados_Acoes,itera_BancoDeDados_Acoes, by = "Data") #Juntando os dataframes usando a Data como coluna chave para fazer os joins.
+    IBOVdatabase = BatchGetSymbols(
+      tickers = acao, #Especificando as ações
+      first.date = DI,
+      last.date= DF,
+      bench.ticker = benchmark)
+    
+    
+    #Pegando o segundo elemento da lista retornada, que e o que contem os dados.
+    IBOVdatabase = IBOVdatabase$df.tickers
+    
+    #Selecao de colunas de interesse
+    IBOVdatabase <- IBOVdatabase %>% 
+      select(-c(5,9,10))
+    #Estrutura do banco de dados
+    str(IBOVdatabase)
+    #Lista com varios dataframes de acordo com as acoes presentes em IBOVdatabase
+    IBOVdatabase = dlply(IBOVdatabase,.(ticker),function(x){rownames(x)=x$row;x$row=NULL;x}) 
+    #Resumir o Banco de Dados
+    BancoDeDados_Acoes = IBOVdatabase[[1]][,c(6,5)] #Extrair as colunas 7 e 6 do dataframe 1
+    
+    colnames(BancoDeDados_Acoes) = c("Data",paste(IBOVdatabase[[1]][1,7])) #Renomeando as colunas
+    #teste <- IBOVdatabase[[1]]
+    #print(length(acao))
+    if(length(acao)>1){
+    for(i in 2:length(IBOVdatabase)){
+      
+      itera_BancoDeDados_Acoes = IBOVdatabase[[i]][,c(6,5)] 
+      colnames(itera_BancoDeDados_Acoes) = c("Data",paste(IBOVdatabase[[i]][1,7])) #Renomeando as colunas
+      BancoDeDados_Acoes = merge(BancoDeDados_Acoes,itera_BancoDeDados_Acoes, by = "Data") #Juntando os dataframes usando a Data como coluna chave para fazer os joins.
+    }
+      rm(itera_BancoDeDados_Acoes)
+      
+      
 }
-  rm(itera_BancoDeDados_Acoes)
+
+  return (BancoDeDados_Acoes)
 }
 
-
-#Tratamento para comecar a partir de 2016
-BancoDeDados_Acoes = BancoDeDados_Acoes[-(1:184),]
-}
 acoesDisponiveis <- c("ABEV3.SA" , "B3SA3.SA" , "BBAS3.SA",  "BBDC3.SA"  ,"BBDC4.SA" , "BBSE3.SA", 
-           "BEEF3.SA"  ,"BRAP4.SA"  ,"BRFS3.SA" , "BRKM5.SA"  ,"BRML3.SA"  , "CCRO3.SA" ,
-            "CIEL3.SA"  ,"CMIG4.SA"  ,"COGN3.SA" , "CPFE3.SA" , "CPLE6.SA",  "CSAN3.SA",  "CSNA3.SA", 
-            "CVCB3.SA"  ,"CYRE3.SA"  ,"ECOR3.SA"  ,"EGIE3.SA" , "ELET3.SA",  "ELET6.SA",  "EMBR3.SA", 
-            "ENBR3.SA"  ,"ENEV3.SA"  ,"ENGI11.SA" ,"EQTL3.SA" , "EZTC3.SA",  "FLRY3.SA",  "GGBR4.SA", 
-            "GOAU4.SA"  ,"GOLL4.SA"  ,"HYPE3.SA" , "IGTA3.SA",  "ITSA4.SA",  "ITUB4.SA", 
-            "JBSS3.SA"  ,"JHSF3.SA"  ,"KLBN11.SA" ,"LAME4.SA"  ,"LCAM3.SA",  "LREN3.SA",  "MGLU3.SA", 
-            "MRFG3.SA"  ,"MRVE3.SA"  ,"MULT3.SA"  ,"PCAR3.SA"  ,"PETR3.SA",  "PETR4.SA",  "PRIO3.SA", 
-            "QUAL3.SA"  ,"RADL3.SA"  ,"RAIL3.SA"  ,"RENT3.SA"  ,"SANB11.SA", "SBSP3.SA",  "SULA11.SA",
-            "SUZB3.SA"  ,"TAEE11.SA" ,"TIMS3.SA"  ,"TOTS3.SA"  ,"UGPA3.SA",  "USIM5.SA",  "VALE3.SA" ,
-            "VIVT3.SA"  ,"WEGE3.SA"  ,"YDUQ3.SA" )
+                      "BEEF3.SA"  ,"BRAP4.SA"  ,"BRFS3.SA" , "BRKM5.SA"  ,"BRML3.SA"  , "CCRO3.SA" ,
+                      "CIEL3.SA"  ,"CMIG4.SA"  ,"COGN3.SA" , "CPFE3.SA" , "CPLE6.SA",  "CSAN3.SA",  "CSNA3.SA", 
+                      "CVCB3.SA"  ,"CYRE3.SA"  ,"ECOR3.SA"  ,"EGIE3.SA" , "ELET3.SA",  "ELET6.SA",  "EMBR3.SA", 
+                      "ENBR3.SA"  ,"ENEV3.SA"  ,"ENGI11.SA" ,"EQTL3.SA" , "EZTC3.SA",  "FLRY3.SA",  "GGBR4.SA", 
+                      "GOAU4.SA"  ,"GOLL4.SA"  ,"HYPE3.SA" ,  "ITSA4.SA",  "ITUB4.SA", 
+                      "JBSS3.SA"  ,"JHSF3.SA"  ,"KLBN11.SA" ,"LAME4.SA"  ,"LCAM3.SA",  "LREN3.SA",  "MGLU3.SA", 
+                      "MRFG3.SA"  ,"MRVE3.SA"  ,"MULT3.SA"  ,"PCAR3.SA"  ,"PETR3.SA",  "PETR4.SA",  "PRIO3.SA", 
+                      "QUAL3.SA"  ,"RADL3.SA"  ,"RAIL3.SA"  ,"RENT3.SA"  ,"SANB11.SA", "SBSP3.SA",  "SULA11.SA",
+                      "SUZB3.SA"  ,"TAEE11.SA" ,"TIMS3.SA"  ,"TOTS3.SA"  ,"UGPA3.SA",  "USIM5.SA",  "VALE3.SA" ,
+                      "VIVT3.SA"  ,"WEGE3.SA"  ,"YDUQ3.SA" )
 
 
 ##
@@ -324,4 +277,3 @@ createMetrics <- function (DataSet){
 normalize <- function(x) {
   return ((x - min(x)) / (max(x) - min(x)))
 }
-

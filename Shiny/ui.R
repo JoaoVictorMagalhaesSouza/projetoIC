@@ -319,6 +319,7 @@ shinyUI(fluidPage(
                  
                ),
                
+               
                tabPanel("Predição de Valores",
                         tabsetPanel(
                           
@@ -328,19 +329,18 @@ shinyUI(fluidPage(
                                                                strong("Escolha um ativo:"),
                                                                multiple = FALSE,
                                                                choices=c(acoesDisponiveis))),
-                                            column(9,
-                                                   plotlyOutput("outPlotPredict", height = 500)),
+                                            
                                             
                                             
                                             
                                    ),
                                    column(9,
                                    fluidRow(
-                                          valueBoxOutput("outMSE"),
+                                          valueBoxOutput("outPredicao"),
                                    
-                                          valueBoxOutput("outMAE"),
+                                          
                                    
-                                          valueBoxOutput("outRMSE"))),
+                                          )),
                           ))),
               # 
               #   

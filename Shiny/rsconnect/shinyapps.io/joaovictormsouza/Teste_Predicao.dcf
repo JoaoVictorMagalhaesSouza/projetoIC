@@ -1,0 +1,13 @@
+name: Teste_Predicao
+title: Teste_Predicao
+username:
+account: joaovictormsouza
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 5704950
+bundleId: 5603931
+url: https://joaovictormsouza.shinyapps.io/Teste_Predicao/
+when: 1645489913.90565
+lastSyncTime: 1645489913.90565
+asMultiple: FALSE
+asStatic: FALSE
