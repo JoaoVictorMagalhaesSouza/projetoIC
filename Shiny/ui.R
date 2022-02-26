@@ -74,7 +74,7 @@ shinyUI(fluidPage(
                                                                 multiple = TRUE,
                                                                  choices=c(acoesDisponiveis))),
                                                      column(9,
-                                                            dygraphOutput("outPlotAtivos", height = 500)),
+                                                            dygraphOutput("outPlotAtivos", height = 500))
                               
                                                      
                                      )
@@ -94,7 +94,7 @@ shinyUI(fluidPage(
                                      fluidRow(column(3, 
                                                      selectInput("inBoxAnualAtivo", 
                                                                  strong("Escolha um ativo:"), 
-                                                                 choices=c(acoesDisponiveis)),
+                                                                 choices=c(acoesDisponiveis))
                                                      
                                                      # selectInput("inBoxAnualAno",
                                                      #             strong("Escolha um ano:"),
@@ -135,8 +135,8 @@ shinyUI(fluidPage(
                                                                  strong("Escolha o setor que deseja monitorar: "),
                                                                  choices = listaSetores,
                                                                  selected = NULL,
-                                                                 multiple = FALSE,
-                                                     ),
+                                                                 multiple = FALSE
+                                                     )
                                      ),
                                      
                                      
@@ -328,7 +328,7 @@ shinyUI(fluidPage(
                                                    selectInput("inAtivoPredict",
                                                                strong("Escolha um ativo:"),
                                                                multiple = FALSE,
-                                                               choices=c(acoesDisponiveis))),
+                                                               choices=c(acoesDisponiveis)))
                                             
                                             
                                             

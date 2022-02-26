@@ -36,11 +36,8 @@ library("rpart.plot")
 #devtools::install_github("rstudio/reticulate")
 library('reticulate')
 
-system('real_time.py')
 
 
-memory.limit(size=16384)
-memory.size(max=TRUE)
 options(DT.options = list(scrollY="300px",scrollX="300px", 
                           pageLength = 100, 
                           columnDefs = list(list(className = 'dt-center', targets = "_all"))))
