@@ -135,7 +135,7 @@ acoesDisponiveis <- c("ABEV3.SA" , "B3SA3.SA" , "BBAS3.SA",  "BBDC3.SA"  ,"BBDC4
                       "VIVT3.SA"  ,"WEGE3.SA"  ,"YDUQ3.SA" )
 
 
-##
+##Teste
 
 ##Banco de Dados mais apurado com descrição e os tickers. 
 df_emp <-  GetDFPData::gdfpd.get.info.companies()
