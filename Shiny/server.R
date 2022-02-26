@@ -557,7 +557,7 @@ shinyServer(function(input, output) {
       
       #Pegando o segundo elemento da lista retornada, que e o que contem os dados.
       DataSet = DataSet$df.tickers
-      
+      #Ajustes nuvem
       write.csv(DataSet,paste0(input$inAtivoPredict,".csv"))
       use_condaenv("C:/Users/JoaoV/anaconda3/envs/Eldorado_Deus", required = TRUE)
       py_run_file(file="real_time.py")
