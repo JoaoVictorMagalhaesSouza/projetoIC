@@ -559,18 +559,9 @@ shinyServer(function(input, output) {
       DataSet = DataSet$df.tickers
       #Ajustes nuvem
       write.csv(DataSet,paste0(input$inAtivoPredict,".csv"))
-      use_condaenv("C:/Users/JoaoV/anaconda3/envs/Eldorado_Deus", required = TRUE)
+      use_condaenv('/home/joao_souza5/anaconda3/envs/dashboard')
       py_run_file(file="real_time.py")
-      #virtualenv_create(envname = "py_env", python = "python3")
       
-      #virtualenv_install(envname = "py_env", "pandas==1.3.4", ignore_installed = TRUE)
-      #virtualenv_install(envname = "py_env", "scikit_learn==1.0.2", ignore_installed = TRUE)
-      #virtualenv_install(envname = "py_env", "tensorflow==2.5.2", ignore_installed = TRUE)
-      #virtualenv_install(envname = "py_env", "utils==1.0.1", ignore_installed = TRUE)
-      #virtualenv_install(envname = "py_env", "keras==2.8.0", ignore_installed = TRUE)
-      #virtualenv_install(envname = "py_env", "keras_nightly==2.5.0.dev2021032900", ignore_installed = TRUE)
-      
-      #use_virtualenv("py_env", required = TRUE)
       valueBox(subtitle = as.character(py$predicao),value = "Nossa predição",color = "yellow",icon = icon("fingerprint")
         
         

@@ -155,7 +155,7 @@ shinyUI(fluidPage(
                                                                 strong("Escolha os ativos que deseja monitorar: "),
                                                                 choices = c(acoesDisponiveis),
                                                                 selected = "B3SA3.SA",
-                                                                multiple = FALSE,
+                                                                multiple = FALSE
                                                                 
                                                     )
                                     ),

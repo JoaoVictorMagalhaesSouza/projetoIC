@@ -36,7 +36,7 @@ library("rpart.plot")
 #devtools::install_github("rstudio/reticulate")
 library('reticulate')
 
-
+setwd('~/Projeto/projetoIC/Shiny')
 
 options(DT.options = list(scrollY="300px",scrollX="300px", 
                           pageLength = 100, 
